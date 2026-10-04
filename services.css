@@ -1,0 +1,133 @@
+/* ==========================================
+   PAGE BACKGROUND & MAIN CONTAINER
+========================================== */
+body {
+  /* #696d51 with 5% transparency (95% light background) */
+  background-color: rgba(105, 109, 81, 0.05);
+}
+
+.services-container {
+  max-width: 950px;
+  margin: 0 auto;
+  padding: 3.5rem 5% 1rem; /* Reduced bottom padding from 5rem to 1rem */
+}
+
+/* ==========================================
+   HEADER / TITLE ROW
+========================================== */
+.service-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  padding-bottom: 0.8rem;
+}
+
+.service-title {
+  font-family: var(--font-header); /* Alice */
+  font-size: 2.2rem;
+  color: #6b4d48;
+  font-weight: 400;
+  line-height: 1.1;
+  margin-bottom: 0.2rem;
+}
+
+.service-note {
+  font-family: var(--font-secondary); /* Outfit */
+  font-size: 0.85rem;
+  color: #6b4d48;
+  font-weight: 400;
+}
+
+/* Book a Service Pill Button */
+.book-btn {
+  display: inline-block;
+  background-color: #ef7c99;
+  color: #ffffff;
+  text-decoration: none;
+  font-family: var(--font-secondary);
+  font-size: 0.85rem;
+  font-weight: 500;
+  padding: 0.55rem 1.4rem;
+  border-radius: 20px;
+  white-space: nowrap;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+/* Hover Effect: Makes the button slightly bigger */
+.book-btn:hover {
+  transform: scale(1.08);
+  background-color: #e06b88; /* Slightly deeper pink on hover */
+}
+
+/* Main Top Divider Line Element (#a5ae95) */
+.menu-divider {
+  width: 100%;
+  height: 1.5px;
+  background-color: #a5ae95;
+  margin-bottom: 2.5rem;
+}
+
+/* ==========================================
+   SERVICE SECTIONS & LISTS
+========================================== */
+.service-section {
+  margin-bottom: 2.8rem;
+}
+
+.service-section:last-child {
+  margin-bottom: 1; /* Removes bottom margin from the Removal section */
+}
+
+.category-title {
+  font-family: var(--font-header); /* Alice */
+  font-size: 1.45rem;
+  color: #ef7c99;
+  font-weight: 400;
+  margin-bottom: 0.4rem;
+}
+
+.price-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.price-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.65rem 0;
+  /* #a5ae95 with 50% opacity border separator line */
+  border-bottom: 1px solid rgba(165, 174, 149, 0.5);
+  font-family: var(--font-header); /* Alice */
+  color: #6b4d48;
+  font-size: 1.1rem;
+}
+
+.item-name {
+  font-weight: 400;
+}
+
+.item-price {
+  font-weight: 400;
+  text-align: right;
+}
+
+/* ==========================================
+   MOBILE RESPONSIVENESS
+========================================== */
+@media (max-width: 600px) {
+  .service-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .service-title {
+    font-size: 1.8rem;
+  }
+
+  .price-list li {
+    font-size: 0.95rem;
+  }
+}
