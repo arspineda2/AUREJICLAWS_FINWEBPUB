@@ -32,12 +32,6 @@
     linear-gradient(135deg, #f5dfdf, #dbe9b0);
 }
 
-/* Current navigation link (active page) */
-.nav-links a.active {
-  font-weight: 700;
-  color: #3b2820;
-}
-
 /* Contact card */
 .contact-card {
   max-width: 1000px;
