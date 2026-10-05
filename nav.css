@@ -28,7 +28,7 @@ body {
 }
 
 /* ==========================================
-   1. HEADER & NAVIGATION BAR
+   HEADER / NAVBAR
 ========================================== */
 .navbar {
   position: sticky;
@@ -37,78 +37,20 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.8rem 5%;
-  background-color: var(--bg-white); /* Pure white header background */
-  border-bottom: 1px solid #f0f0f0;
+  padding: 0.40rem 5%;
+  background-color: #ffffff;
 }
 
-/* Logo Left */
 .logo {
-  z-index: 2;
-  display: flex;
-  align-items: center;
+  z-index: 2; /* Ensures logo stays clickable above centered elements */
 }
 
 .logo img {
-  height: 55px;
+  height: 90px;
   width: auto;
   display: block;
 }
 
-/* Center Navigation Links */
-.nav-links {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  gap: 2.5rem;
-  align-items: center;
-}
-
-.nav-links a {
-  text-decoration: none;
-  font-family: var(--font-header);
-  font-size: 0.95rem;
-  letter-spacing: 1.5px;
-  font-weight: 400;
-  color: var(--color-nav); /* #6b4d48 */
-  display: inline-block;
-  transition: transform 0.2s ease, color 0.2s ease, font-weight 0.2s ease;
-}
-
-/* Hover Effect: Changes text to pink and slightly enlarges */
-.nav-links a:hover {
-  transform: scale(1.12);
-  color: var(--color-pink); /* #ef7c99 - matches the cart hover color */
-}
-
-/* Active State: Bold letters and pink color for current page position */
-.nav-links a.active {
-  font-weight: 800;
-  color: var(--color-pink);
-}
-
-/* Right Cart Icon */
-.cart-icon {
-  z-index: 2;
-  display: flex;
-  align-items: center;
-}
-
-.cart-icon a {
-  color: var(--color-nav); /* #6b4d48 */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: transform 0.2s ease, color 0.2s ease;
-}
-
-.cart-icon a:hover {
-  transform: scale(1.1);
-  color: var(--color-pink);
-}
-
-/* Mobile Hamburger Menu Elements */
 .menu-checkbox {
   display: none;
 }
@@ -127,9 +69,31 @@ body {
   display: block;
   height: 2px;
   width: 100%;
-  background-color: var(--color-nav);
+  background-color: var(--text-dark);
   border-radius: 2px;
   transition: all 0.3s ease;
+}
+
+.nav-links {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 2rem;
+}
+
+.nav-links a {
+  text-decoration: none;
+  font-family: var(--font-secondary);
+  font-size: 0.85rem;
+  letter-spacing: 1.2px;
+  font-weight: 500;
+  color: var(--text-dark);
+  transition: color 0.2s ease;
+}
+
+.nav-links a:hover {
+  color: var(--accent-pink);
 }
 
 /* ==========================================
