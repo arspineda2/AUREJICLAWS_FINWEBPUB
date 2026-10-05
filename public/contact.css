@@ -1,0 +1,235 @@
+/* CSS of contact page */
+
+:root {
+  --periwinkle: #8296d3;
+  --field-bg: #cfd4ea;
+  --sage: #9da58b;
+  --accent-pink: #f082a6;
+  --accent-pink-hover: #e06d93;
+  --font-header: 'Alice', serif;
+  --font-secondary: 'Outfit', sans-serif;
+}
+
+/* Reset only inside the contact page */
+.contact-page,
+.contact-page * {
+  box-sizing: border-box;
+}
+
+.contact-page * {
+  margin: 0;
+  padding: 0;
+}
+
+/* Contact page */
+.contact-page {
+  font-family: var(--font-secondary);
+  line-height: 1.6;
+  padding: 3rem 5%;
+  background:
+    linear-gradient(rgba(250, 249, 245, 0.25), rgba(250, 249, 245, 0.25)),
+    url('photos/herosecimg3.png') center / cover no-repeat,
+    linear-gradient(135deg, #f5dfdf, #dbe9b0);
+}
+
+/* Current navigation link (active page) */
+.nav-links a.active {
+  font-weight: 700;
+  color: #3b2820;
+}
+
+/* Contact card */
+.contact-card {
+  max-width: 1000px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1.7fr;
+  gap: 2.5rem;
+  padding: 2rem 2.25rem;
+  background: rgba(250, 249, 245, 0.88);
+  border-radius: 8px;
+}
+
+/* ---- LEFT: GET IN TOUCH --- */
+
+.contact-info h2 {
+  font-family: var(--font-header);
+  font-weight: 400;
+  font-size: 2rem;
+  color: #F488A6;
+  margin-bottom: 0.75rem;
+}
+
+.contact-info .intro {
+  font-size: 0.8rem;
+  color: #6b4d48;
+  margin-bottom: 2rem;
+}
+
+.contact-list {
+  list-style: none;
+  display: grid;
+  gap: 1.75rem;
+}
+
+.contact-list li {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.contact-list .icon {
+  flex: 0 0 52px;
+  height: 52px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--sage);
+  color: #ffffff;
+}
+
+.contact-list strong {
+  display: block;
+  font-weight: 400;
+  font-size: 0.9rem;
+  color:#6b4d48;
+}
+
+.contact-list a,
+.contact-list span:not(.icon) {
+  font-size: 0.8rem;
+  color: #6b4d48;
+  text-decoration: none;
+}
+
+.contact-list a:hover {
+  color: var(--accent-pink);
+}
+
+.tagline {
+  margin-top: 2rem;
+  text-align: center;
+  font-family: var(--font-header);
+  color: var(--accent-pink);
+  font-size: 0.95rem;
+}
+
+/* --- RIGHT: BOOK A SERVICE --- */
+
+.contact-form h2 {
+  font-family: var(--font-header);
+  font-weight: 400;
+  font-size: 2rem;
+  color: var(--periwinkle);
+  margin-bottom: 1.25rem;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem 1.5rem;
+}
+
+.form-grid label {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: #696d51;
+}
+
+.form-grid .full {
+  grid-column: 1 / -1;
+}
+
+.form-grid input,
+.form-grid select,
+.form-grid textarea {
+  display: block;
+  width: 100%;
+  margin-top: 0.35rem;
+  padding: 0.55rem 0.7rem;
+  border: 2px solid transparent;
+  border-radius: 6px;
+  background: var(--field-bg);
+  font-family: var(--font-secondary);
+  font-size: 0.85rem;
+  color: rgba(105, 109, 81, 0.6); /* #696d51 but with reduced opacity */
+}
+
+.form-grid select option {
+  font-weight: bold;
+  color: #6b705c;
+}
+
+.form-grid textarea {
+  resize: vertical;
+  color: #696d51;
+}
+
+.form-grid input:focus,
+.form-grid select:focus,
+.form-grid textarea:focus {
+  outline: none;
+  border-color: var(--accent-pink);
+}
+
+/* Submit button */
+.submit-row {
+  text-align: right;
+}
+
+.btn {
+  display: inline-block;
+  padding: 0.55rem 1.8rem;
+  border: none;
+  border-radius: 999px;
+  font-family: var(--font-secondary);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background: var(--accent-pink);
+  color: #ffffff;
+  transition: background-color 0.2s ease;
+}
+
+.btn-primary:hover {
+  background: var(--accent-pink-hover);
+}
+
+/* ---------- MESSAGES ---------- */
+
+.notice {
+  margin-bottom: 1rem;
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+}
+
+.notice.success {
+  background: #e4efd0;
+  color: #3b4a22;
+}
+
+.notice.error {
+  background: #fbe0e8;
+  color: #8a2a4a;
+}
+
+.notice ul {
+  padding-left: 1.1rem;
+}
+
+/* ---------- MOBILE ---------- */
+
+@media (max-width: 768px) {
+  .contact-card {
+    grid-template-columns: 1fr;
+    padding: 1.5rem 1.25rem;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+}

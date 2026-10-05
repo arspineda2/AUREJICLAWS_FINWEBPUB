@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact Us | Aureji Claws</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>   <!-- browser connects in advance making the imported fonts load faster -->
+  <link href="https://fonts.googleapis.com/css2?family=Alice&family=Outfit:wght@100..900&display=swap" rel="stylesheet">
+
+  <!-- nav.css first, so contact.css can override it if needed -->
+  <link rel="stylesheet" href="nav.css" />
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="contact.css" />
+</head>
+<body>
+
+  <!-- Header with Navigation (copied from nav.html, CONTACT US is the active page) -->
+  <header class="navbar">
+    <div class="logo">
+      <a href="HomePage.html">
+        <img src="photos/Logo.png" alt="Aureji Claws Logo" />
+      </a>
+    </div>
+
+    <!-- Mobile Hamburger Toggle -->
+    <input type="checkbox" id="menu-toggle" class="menu-checkbox" />
+    <label for="menu-toggle" class="hamburger-btn" aria-label="Toggle navigation">
+      <span></span>
+      <span></span>
+      <span></span>
+    </label>
+
+    <!-- Nav Menu / Mobile Dropdown Drawer -->
+    <nav class="nav-links">
+      <a href="HomePage.html">HOME</a>
+      <a href="#about">ABOUT</a>
+      <a href="PressonPage.html">PRESS-ON</a>
+      <a href="ServicesPage.html">SERVICES</a>
+      <a href="ContactPage.html" class="active">CONTACT US</a>
+    </nav>
+
+    <!-- CART ICON  -->
+    <button id="cartIconBtn" class="cart-icon-btn" aria-label="Open cart">
+      <img src="photos/cart.png" alt="Cart" class="cart-icon-img">
+      <span id="cartCount" class="cart-count">0</span>
+    </button>
+
+    <!-- CART DROPDOWN PANEL -->
+    <div id="cartPanel" class="cart-panel hidden">
+      <div class="cart-panel-header">
+        <span>Your Cart</span>
+      </div>
+      <div id="cartItems" class="cart-items"></div>
+      <div class="cart-panel-footer">
+        <button id="cartRemoveBtn" class="btn btn-outline" disabled>Remove</button>
+        <button id="cartCheckoutBtn" class="btn btn-primary" disabled>Check Out</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="contact-page">
+    <div class="contact-card">
+
+      <!-- Left Side: Get in Touch -->
+      <section class="contact-info">
+        <h2>Get in touch</h2>
+        <p class="intro">Questions, custom requests, or booth bookings, we're just a message away. Send us an email and we'll get back to you as soon as we can.</p>
+
+        <ul class="contact-list">
+          <li>
+            <span class="icon" aria-hidden="true"> <!-- Email Icon -->
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v16H4z"/><path d="M22 6L12 13 2 6"/></svg>
+            </span>
+            <div><strong>Email Us</strong><a href="mailto:aureji2025@gmail.com">aureji2025@gmail.com</a></div>
+          </li>
+
+          <li>
+            <span class="icon" aria-hidden="true"> <!-- Telephone Icon -->
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z"/></svg>
+            </span>
+            <div><strong>Contact Us</strong><span>969-514-7202</span></div>
+          </li>
+
+          <li>
+            <span class="icon" aria-hidden="true"> <!-- Instagram Icon -->
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.6"/></svg>
+            </span>
+            <div><strong>Book via Direct Message</strong><a href="https://instagram.com/aurejiclaws" target="_blank" rel="noopener">@aurejiclaws</a></div>
+          </li>
+        </ul>
+
+        <p class="tagline">Because Basic Nails Aren't Your Thing - Aureji Claws</p>
+      </section>
+
+      <!-- Right Side: Book A Service -->
+      <section class="contact-form">
+        <h2>Book a Service</h2>
+
+        <!-- Messages (hidden until the form is submitted, JS shows them) -->
+        <div class="notice success" id="successNotice" role="status" hidden></div>
+
+        <div class="notice error" id="errorNotice" role="alert" hidden>
+          <ul id="errorList"></ul>
+        </div>
+
+        <!-- novalidate: so our own error messages show instead of the browser's pop-ups -->
+        <form id="bookingForm" class="form-grid" novalidate>
+          <label>Full Name:
+            <input type="text" id="name" name="name" />
+          </label>
+
+          <label>Email:
+            <input type="email" id="email" name="email" />
+          </label>
+
+          <label>Date:
+            <input type="date" id="date" name="date" />
+          </label>
+
+          <label>Time:
+            <select id="slot" name="slot">
+              <option value="" disabled selected>Select Schedule</option>
+              <option value="10:00 AM - 1:30 PM">10:00 AM - 1:30 PM</option>
+              <option value="2:30 PM - 6:00 PM">2:30 PM - 6:00 PM</option>
+              <option value="6:30 PM - 9:00 PM">6:30 PM - 9:00 PM</option>
+            </select>
+          </label>
+
+          <label class="full">Service:
+            <select id="service" name="service">
+              <option value="" disabled selected>Select</option>
+              <option value="Nail Mani">Nail Mani</option>
+              <option value="Nail Extensions">Nail Extensions</option>
+              <option value="Removal">Removal</option>
+            </select>
+          </label>
+
+          <label class="full">Remark/s:
+            <textarea id="remarks" name="remarks" rows="4"></textarea>
+          </label>
+
+          <div class="full submit-row">
+            <button type="submit" class="btn btn-primary">Submit</button>
+          </div>
+        </form>
+      </section>
+
+    </div>
+  </main>
+
+  <footer class="site-footer" id="contact">
+    <div class="footer-top">
+      <div class="footer-col brand-col">
+        <img src="photos/Logo.png" alt="Aureji Claws" class="footer-logo">
+        <ul class="footer-links">
+          <li><a href="#terms">Terms &amp; Conditions</a></li>
+          <li><a href="#privacy">Privacy Policy</a></li>
+          <li><a href="#refund">Refund Policy</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h3 class="footer-heading">LOCATION</h3>
+        <p>City of San Fernando,<br>Pampanga</p>
+      </div>
+
+      <div class="footer-col">
+        <h3 class="footer-heading">CONTACT</h3>
+        <p><a href="mailto:aureji2025@gmail.com">aureji2025@gmail.com</a></p>
+        <p>Tel: 969-514-7202</p>
+      </div>
+
+      <div class="footer-col">
+        <h3 class="footer-heading">HOURS</h3>
+        <p>10:00 AM - 10:00 PM</p>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p>&copy; 2026 by Angel Pineda | Justine Enriquez | Franchesca Sison | Bianca Zepeda</p>
+    </div>
+  </footer>
+
+  <script>
+    
+    // Booking form validation 
+    const form = document.getElementById('bookingForm');
+    const successNotice = document.getElementById('successNotice');
+    const errorNotice = document.getElementById('errorNotice');
+    const errorList = document.getElementById('errorList');
+    const dateInput = document.getElementById('date');
+
+    // Today's date as YYYY-MM-DD d
+    function getToday() {
+      const now = new Date();
+      now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+      return now.toISOString().slice(0, 10);
+    }
+
+    // Past dates can't be picked in the calendar
+    dateInput.min = getToday();
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault(); // stops the page from reloading
+
+      // trim() removes extra spaces (e.g. " Aureji " becomes "Aureji")
+      const name = document.getElementById('name').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const date = dateInput.value;
+      const slot = document.getElementById('slot').value;
+      const service = document.getElementById('service').value;
+
+      const errors = [];
+
+      if (name === '') {
+        errors.push('Enter your name.');
+      }
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        errors.push('Enter a valid email address.');
+      }
+      if (date === '' || date < getToday()) { // empty or in the past
+        errors.push('Select a valid date.');
+      }
+      if (slot === '') {
+        errors.push('Select a valid time slot.');
+      }
+      if (service === '') {
+        errors.push('Select a valid service.');
+      }
+
+      // Reset both messages first
+      successNotice.hidden = true;
+      errorNotice.hidden = true;
+      errorList.innerHTML = '';
+
+      if (errors.length > 0) {
+        errors.forEach(function (message) {
+          const li = document.createElement('li');
+          li.textContent = message;
+          errorList.appendChild(li);
+        });
+        errorNotice.hidden = false;
+        return;
+      }
+
+      // show the success message, then clear the form
+      const niceDate = new Date(date + 'T00:00:00').toLocaleDateString('en-US', {
+        year: 'numeric', month: 'long', day: 'numeric'
+      });
+
+      successNotice.textContent = 'Thanks, ' + name + '! We received your request for ' + service +
+        ' on ' + niceDate + ' (' + slot + "). We'll confirm by email.";
+      successNotice.hidden = false;
+
+      form.reset();
+    });
+  </script>
+
+</body>
+</html>
