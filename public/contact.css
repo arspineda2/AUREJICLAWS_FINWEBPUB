@@ -16,11 +16,6 @@
   box-sizing: border-box;
 }
 
-.contact-page * {
-  margin: 0;
-  padding: 0;
-}
-
 /* Contact page */
 .contact-page {
   font-family: var(--font-secondary);
