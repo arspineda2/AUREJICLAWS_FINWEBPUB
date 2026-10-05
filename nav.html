@@ -20,14 +20,15 @@
 <body>
 
   <!-- ========================================== -->
-  <!-- HEADER / NAVIGATION BAR                    -->
+  <!--          HEADER / NAVIGATION BAR           -->
   <!-- ========================================== -->
+
+  <!-- Added by Angel: Make sure naka download din yung script.js para gumana cart system sa presson (hindi ko knwos how to pagana din sa other page) -->
   <header class="navbar">
-    <!-- Logo Left -->
-    <div class="logo"> 
-      <a href="index.html#home">
-        <img src="photos/Logo.png" alt="Aureji Claws Logo" />
-      </a>
+    <div class="logo">
+        <a href="HomePage.html">
+            <img src="photos/Logo.png" alt="Aureji Claws Logo" />
+        </a>
     </div>
 
     <!-- Mobile Hamburger Toggle -->
@@ -38,25 +39,33 @@
       <span></span>
     </label>
 
-    <!-- Navigation Links -->
+    <!-- Nav Menu / Mobile Dropdown Drawer -->
     <nav class="nav-links">
-      <a href="index.html#home">HOME</a>
-      <a href="about.html">ABOUT</a>
-      <!-- Add class="active" to the page you are currently on to make text bold as shown on PRESS-ON in image 1 -->
-      <a href="press-on.html">PRESS-ON</a>
+      <a href="HomePage.html">HOME</a>
+      <a href="#about">ABOUT</a>
+      <a href="PressonPage.html">PRESS-ON</a>
       <a href="ServicesPage.html">SERVICES</a>
-      <a href="contact.html">CONTACT US</a>
+      <a href="#contact">CONTACT US</a>
     </nav>
 
-    <!-- Shopping Cart Icon Right -->
-    <div class="cart-icon">
-      <a href="cart.html" aria-label="Shopping Cart">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
-          <line x1="3" y1="6" x2="21" y2="6"></line>
-          <path d="M16 10a4 4 0 0 1-8 0"></path>
-        </svg>
-      </a>
+    <!-- CART ICON -->
+    <button id="cartIconBtn" class="cart-icon-btn" aria-label="Open cart">
+      <img src="photos/cart.png" alt="Cart" class="cart-icon-img">
+      <span id="cartCount" class="cart-count">0</span>
+    </button>
+
+    <!-- CART DROPDOWN PANEL -->
+    <div id="cartPanel" class="cart-panel hidden">
+      <div class="cart-panel-header">
+        <span>Your Cart</span>
+      </div>
+      <div id="cartItems" class="cart-items">
+        <!-- JS injects cart item rows here, or shows the empty state -->
+      </div>
+      <div class="cart-panel-footer">
+        <button id="cartRemoveBtn" class="btn btn-outline" disabled>Remove</button>
+        <button id="cartCheckoutBtn" class="btn btn-primary" disabled>Check Out</button>
+      </div>
     </div>
   </header>
 
