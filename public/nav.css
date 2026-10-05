@@ -1,0 +1,289 @@
+  /* Sison, October 4, 2026 
+  css para sa header and footer */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  /* Requested Color Palette */
+  --bg-white: #ffffff;
+  --color-nav: #6b4d48;         /* Navigation text color */
+  --color-pink: #ef7c99;        /* Footer headings / links color */
+  --color-blue: #8398d5;        /* Other details / text color */
+  --color-green: #9da58b;       /* Green shade (from logo/accents) */
+
+  /* Fonts */
+  --font-header: 'Alice', serif;
+  --font-secondary: 'Outfit', sans-serif;
+}
+
+body {
+  font-family: var(--font-secondary);
+  background-color: var(--bg-white);
+  color: var(--color-blue);
+  line-height: 1.6;
+}
+
+/* ==========================================
+   1. HEADER & NAVIGATION BAR
+========================================== */
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.8rem 5%;
+  background-color: var(--bg-white); /* Pure white header background */
+  border-bottom: 1px solid #f0f0f0;
+}
+
+/* Logo Left */
+.logo {
+  z-index: 2;
+  display: flex;
+  align-items: center;
+}
+
+.logo img {
+  height: 55px;
+  width: auto;
+  display: block;
+}
+
+/* Center Navigation Links */
+.nav-links {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 2.5rem;
+  align-items: center;
+}
+
+.nav-links a {
+  text-decoration: none;
+  font-family: var(--font-header);
+  font-size: 0.95rem;
+  letter-spacing: 1.5px;
+  font-weight: 400;
+  color: var(--color-nav); /* #6b4d48 */
+  display: inline-block;
+  transition: transform 0.2s ease, color 0.2s ease, font-weight 0.2s ease;
+}
+
+/* Hover Effect: Changes text to pink and slightly enlarges */
+.nav-links a:hover {
+  transform: scale(1.12);
+  color: var(--color-pink); /* #ef7c99 - matches the cart hover color */
+}
+
+/* Active State: Bold letters and pink color for current page position */
+.nav-links a.active {
+  font-weight: 800;
+  color: var(--color-pink);
+}
+
+/* Right Cart Icon */
+.cart-icon-btn {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+/* Constrain the image so its source file's natural dimensions cannot enlarge the header. */
+.cart-icon-img {
+  display: block;
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
+
+/* Small quantity badge positioned over the cart button. */
+.cart-count {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  display: flex;
+  min-width: 16px;
+  height: 16px;
+  align-items: center;
+  justify-content: center;
+  padding: 0 3px;
+  border-radius: 50%;
+  background: var(--color-pink);
+  color: #fff;
+  font: 700 10px/1 var(--font-secondary);
+}
+
+/* Dropdown is anchored below the sticky navbar and hidden until opened by the cart script. */
+.cart-panel {
+  position: absolute;
+  top: 100%;
+  right: 5%;
+  z-index: 1001;
+  width: min(300px, calc(100vw - 24px));
+  padding: 16px;
+  border: 1px solid #f0f0f0;
+  border-radius: 8px;
+  background: var(--bg-white);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.12);
+}
+
+.cart-panel.hidden {
+  display: none;
+}
+
+/* Mobile Hamburger Menu Elements */
+.menu-checkbox {
+  display: none;
+}
+
+.hamburger-btn {
+  display: none;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 24px;
+  height: 18px;
+  cursor: pointer;
+  z-index: 1001;
+}
+
+.hamburger-btn span {
+  display: block;
+  height: 2px;
+  width: 100%;
+  background-color: var(--color-nav);
+  border-radius: 2px;
+  transition: all 0.3s ease;
+}
+
+/* ==========================================
+   2. FOOTER SECTION
+========================================== */
+.site-footer {
+  background-color: var(--bg-white); /* Pure white footer background */
+  padding: 2.5rem 5% 1.5rem;          /* Reduced top/bottom padding */
+  border-top: 1px solid #f0f0f0;
+}
+
+.footer-top {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1.2fr 1fr;
+  gap: 2rem;
+  max-width: 1100px;
+  margin: 0 auto 1.25rem;              /* Changed bottom margin from 3.5rem to 1.25rem */
+  align-items: start;
+}
+
+.footer-logo {
+  height: 75px;
+  width: auto;
+  margin-bottom: 1.2rem;
+  display: block;
+}
+
+/* Policy Links (Left Side under Logo) */
+.footer-links {
+  list-style: none;
+}
+
+.footer-links li {
+  margin-bottom: 0.4rem;
+}
+
+.footer-links a {
+  text-decoration: none;
+  font-family: var(--font-header);
+  font-size: 0.9rem;
+  color: var(--color-pink); /* #ef7c99 */
+  transition: opacity 0.2s ease;
+}
+
+.footer-links a:hover {
+  opacity: 0.8;
+  text-decoration: underline;
+}
+
+/* Footer Column Headings */
+.footer-heading {
+  font-family: var(--font-header);
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+  margin-bottom: 0.75rem;
+  color: var(--color-pink); /* #ef7c99 */
+}
+
+/* Footer Body Content */
+.footer-col p {
+  font-family: var(--font-secondary);
+  font-size: 0.88rem;
+  color: var(--color-nav);
+  line-height: 1.5;
+}
+
+.footer-col p a {
+  color: var(--color-nav);
+  text-decoration: none;
+}
+
+.footer-col p a:hover {
+  text-decoration: underline;
+}
+
+.footer-bottom {
+  text-align: center;
+  padding-top: 0.5rem;
+  border-top: 1px solid #f7f7f7;
+  font-family: var(--font-secondary);
+  font-size: 0.8rem;
+  color: #9da58b; 
+  opacity: 0.85;
+}
+
+/* ==========================================
+   MOBILE RESPONSIVENESS
+========================================== */
+@media (max-width: 768px) {
+  .hamburger-btn {
+    display: flex;
+  }
+
+  /* Popout Mobile Nav Menu */
+  .nav-links {
+    position: absolute;
+    top: 65px;
+    right: 5%;
+    left: auto;
+    transform: none;
+    background-color: var(--bg-white);
+    border: 1px solid var(--color-green);
+    border-radius: 8px;
+    padding: 1.5rem 2rem;
+    flex-direction: column;
+    gap: 1.2rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    display: none;
+    z-index: 1000;
+  }
+
+  .menu-checkbox:checked ~ .nav-links {
+    display: flex;
+  }
+
+  .footer-top {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+}

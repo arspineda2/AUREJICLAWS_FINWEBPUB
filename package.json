@@ -1,0 +1,29 @@
+{
+  "name": "aurejiclaws_finwebpub",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/arspineda2/AUREJICLAWS_FINWEBPUB.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/arspineda2/AUREJICLAWS_FINWEBPUB/issues"
+  },
+  "homepage": "https://github.com/arspineda2/AUREJICLAWS_FINWEBPUB#readme",
+  "dependencies": {
+    "dotenv": "^18.0.5",
+    "express": "^5.2.1",
+    "mongodb": "^7.7.0",
+    "mongoose": "^9.10.4",
+    "multer": "^2.4.0"
+  }
+}

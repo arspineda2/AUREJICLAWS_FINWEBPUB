@@ -1,0 +1,240 @@
+  <!-- ANGEL WORKING PRESSON PAGE | 10-05-26 -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Aureji Claws</title>
+  <link rel="stylesheet" href="style.css" />
+  <!-- Google Fonts: Alice (Headings) & Outfit (Body / Accents) -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Alice&family=Outfit:wght@100..900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/2.47.0/tabler-icons.min.css">
+</head>
+<body>
+
+  <!-- ========================================== -->
+  <!--          HEADER / NAVIGATION BAR           -->
+  <!-- ========================================== -->
+  <div data-include="header.html"></div> 
+
+<main>
+  <section class="shop-section">
+
+    <div class="shop-heading-row">
+      <h1>Latest Press-on Nails</h1>
+
+      <div class="filter-wrapper">
+        <button id="filterBtn" class="filter-btn" aria-label="Sort products">
+          <img src="photos/menu.png" alt="Cart" class="cart-add">
+        </button>
+        <div id="filterMenu" class="filter-menu hidden">
+          <button class="filter-option" data-sort="latest">Latest Release</button>
+          <button class="filter-option" data-sort="bestselling">Best Selling</button>
+          <button class="filter-option" data-sort="availability">Availability</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-grid" id="productGrid">
+
+      <article class="product-card" data-id="presson-one" data-price="1000" data-name="Amethyst Fang">
+        <div class="product-img-wrap">
+          <img src="photos/presson-one.png" alt="Amethyst Fang press-on nail set">
+          <div class="card-actions-overlay">
+            <button class="cart-add-btn" data-id="presson-one" aria-label="Add Amethyst Fang to cart">
+              <img src="photos/add-cart.png" alt="Cart" class="cart-add">
+            </button>
+            <button class="buy-now-overlay" data-id="presson-one">Buy Now</button>
+          </div>
+        </div>
+        <h3 class="product-name">Amethyst Fang</h3>
+        <p class="product-price">₱1000</p>
+        <p class="product-desc">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor.</p>
+      </article>
+
+      <article class="product-card" data-id="presson-two" data-price="500" data-name="Starlit Nails">
+        <div class="product-img-wrap">
+          <img src="photos/presson-two.png" alt="Starlit Nails press-on nail set">
+          <div class="card-actions-overlay">
+            <button class="cart-add-btn" data-id="presson-two" aria-label="Add Starlit Nails to cart">
+              <img src="photos/add-cart.png" alt="Cart" class="cart-add">
+            </button>
+            <button class="buy-now-overlay" data-id="presson-two">Buy Now</button>
+          </div>
+        </div>
+        <h3 class="product-name">Starlit Nails</h3>
+        <p class="product-price">₱500</p>
+        <p class="product-desc">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor.</p>
+      </article>
+
+      <article class="product-card" data-id="presson-three" data-price="600" data-name="Deep Sea">
+        <div class="product-img-wrap">
+          <img src="photos/presson-three.png" alt="Deep Sea press-on nail set">
+          <div class="card-actions-overlay">
+            <button class="cart-add-btn" data-id="presson-three" aria-label="Add Deep Sea to cart">
+              <img src="photos/add-cart.png" alt="Cart" class="cart-add">
+            </button>
+            <button class="buy-now-overlay" data-id="presson-three">Buy Now</button>
+          </div>
+        </div>
+        <h3 class="product-name">Deep Sea</h3>
+        <p class="product-price">₱600</p>
+        <p class="product-desc">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor.</p>
+      </article>
+
+      <article class="product-card sold-out" data-id="presson-four" data-price="1000" data-name="Lush Green By Ersa">
+        <div class="product-img-wrap">
+          <img src="photos/presson-four.png" alt="Lush Green By Ersa press-on nail set">
+          <span class="sold-badge">SOLD</span>
+        </div>
+        <h3 class="product-name">Lush Green By Ersa</h3>
+        <p class="product-price">₱1000</p>
+        <p class="product-desc">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor.</p>
+      </article>
+
+      <article class="product-card" data-id="presson-five" data-price="500" data-name="Mocha Muse">
+        <div class="product-img-wrap">
+          <img src="photos/presson-five.png" alt="Mocha Muse press-on nail set">
+          <div class="card-actions-overlay">
+            <button class="cart-add-btn" data-id="presson-five" aria-label="Add Mocha Muse to cart">
+              <img src="photos/add-cart.png" alt="Cart" class="cart-add">
+            </button>
+            <button class="buy-now-overlay" data-id="presson-five">Buy Now</button>
+          </div>
+        </div>
+        <h3 class="product-name">Mocha Muse</h3>
+        <p class="product-price">₱500</p>
+        <p class="product-desc">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor.</p>
+      </article>
+
+      <article class="product-card" data-id="presson-six" data-price="400" data-name="Cat Eye Nails">
+        <div class="product-img-wrap">
+          <img src="photos/presson-six.png" alt="Cat Eye Nails press-on nail set">
+          <div class="card-actions-overlay">
+            <button class="cart-add-btn" data-id="presson-six" aria-label="Add Cat Eye Nails to cart">
+              <img src="photos/add-cart.png" alt="Cart" class="cart-add">
+            </button>
+            <button class="buy-now-overlay" data-id="presson-six">Buy Now</button>
+          </div>
+        </div>
+        <h3 class="product-name">Cat Eye Nails</h3>
+        <p class="product-price">₱400</p>
+        <p class="product-desc">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor.</p>
+      </article>
+
+    </div>
+  </section>
+</main>
+
+
+<!-- Checkout modal: JavaScript opens it and handles the three visible stages. -->
+<div id="checkoutModal" class="modal-overlay hidden">
+  <div class="modal-box">
+    <button id="modalCloseBtn" class="modal-close" aria-label="Close checkout">&times;</button>
+    <div class="modal-steps">
+      <span class="step-label active">1. Delivery</span>
+      <span class="step-label">2. Payment</span>
+      <span class="step-label">3. Confirmation</span>
+    </div>
+
+    <div id="orderItemPreview" class="order-item-preview" aria-live="polite"></div>
+
+    <div id="step1" class="modal-step">
+      <h3 class="step-subtitle">Delivery Details</h3>
+      <form id="addressForm" class="modal-form">
+        <div class="form-field">
+          <label for="fullName">Full name</label>
+          <input type="text" id="fullName" name="fullName" maxlength="120" autocomplete="name" required>
+        </div>
+        <div class="form-row">
+          <div class="form-field">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" maxlength="254" autocomplete="email" required>
+          </div>
+          <div class="form-field">
+            <label for="contactNo">Contact number</label>
+            <input type="tel" id="contactNo" name="contactNo" maxlength="40" autocomplete="tel" required>
+          </div>
+        </div>
+        <div class="form-field">
+          <label for="address">Delivery address</label>
+          <input type="text" id="address" name="address" maxlength="500" autocomplete="street-address" required>
+        </div>
+        <div class="form-field">
+          <label for="notes1">Delivery notes (optional)</label>
+          <textarea id="notes1" name="notes1" rows="2" maxlength="1000"></textarea>
+        </div>
+        <label class="consent-row">
+          <input type="checkbox" id="consentCheckbox" name="consent" value="true" required>
+          <span>By submitting your details, you agree that we may use them to process and deliver your order.</span>
+        </label>
+        <button type="submit" class="btn btn-primary modal-submit-btn">Continue to Payment</button>
+      </form>
+    </div>
+
+    <div id="step2" class="modal-step hidden">
+      <h3 class="step-subtitle">Payment Details</h3>
+      <form id="paymentForm" class="modal-form" enctype="multipart/form-data">
+        <div class="form-field">
+          <label for="paymentMethod">Payment method</label>
+          <select id="paymentMethod" name="paymentMethod" required>
+            <option value="" disabled selected>Select a payment method</option>
+            <option value="GCash">GCash</option>
+            <option value="Maya">Maya</option>
+            <option value="Bank Transfer">Bank Transfer</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <div class="form-field">
+            <label for="refNumber">Reference number</label>
+            <input type="text" id="refNumber" name="refNumber" maxlength="100" required>
+          </div>
+          <div class="form-field">
+            <label for="dateSent">Date sent</label>
+            <input type="date" id="dateSent" name="dateSent" required>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-field">
+            <label for="timeSent">Time sent</label>
+            <input type="time" id="timeSent" name="timeSent" required>
+          </div>
+          <div class="form-field">
+            <label for="proofUpload">Payment screenshot (JPEG, PNG, or WebP; max 4 MB)</label>
+            <input type="file" id="proofUpload" name="proofUpload" accept="image/jpeg,image/png,image/webp" required>
+            <span id="fileNameDisplay">No file chosen</span>
+          </div>
+        </div>
+        <div class="form-field">
+          <label for="notes2">Payment notes (optional)</label>
+          <textarea id="notes2" name="notes2" rows="2" maxlength="1000"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary modal-submit-btn">Submit Order</button>
+      </form>
+    </div>
+
+    <div id="step3" class="modal-step hidden">
+      <div class="thank-you-box">
+        <h2>Thank you for ordering from Aureji Claws!</h2>
+        <p>For order updates, order confirmation, and payment confirmation please check your inbox.</p>
+        <p class="thank-you-subnote">(Payment confirmation will be sent as soon as the payment is verified by our team.)</p>
+        <div id="orderConfirmationDetails" class="receipt-box" aria-live="polite"></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+  <!-- ========================================== -->
+  <!--               FOOTER SECTION               -->
+  <!-- ========================================== -->
+  <div data-include="footer.html"></div>
+
+  <script src="components.js" defer></script>
+  <script src="script.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,44 @@
+  <header class="navbar">
+    <div class="logo">
+        <a href="HomePage.html">
+            <img src="photos/Logo.png" alt="Aureji Claws Logo" />
+        </a>
+    </div>
+
+    <!-- Mobile Hamburger Toggle -->
+    <input type="checkbox" id="menu-toggle" class="menu-checkbox" />
+    <label for="menu-toggle" class="hamburger-btn" aria-label="Toggle navigation">
+      <span></span>
+      <span></span>
+      <span></span>
+    </label>
+
+    <!-- Nav Menu / Mobile Dropdown Drawer -->
+    <nav class="nav-links">
+      <a href="HomePage.html">HOME</a>
+      <a href="AboutPage.html">ABOUT</a>
+      <a href="PressonPage.html">PRESS-ON</a>
+      <a href="ServicesPage.html">SERVICES</a>
+      <a href="#contact">CONTACT US</a>
+    </nav>
+
+    <!-- CART ICON -->
+    <button id="cartIconBtn" class="cart-icon-btn" aria-label="Open cart">
+      <img src="photos/cart.png" alt="Cart" class="cart-icon-img">
+      <span id="cartCount" class="cart-count">0</span>
+    </button>
+
+    <!-- CART DROPDOWN PANEL -->
+    <div id="cartPanel" class="cart-panel hidden">
+      <div class="cart-panel-header">
+        <span>Your Cart</span>
+      </div>
+      <div id="cartItems" class="cart-items">
+        <!-- JS injects cart item rows here, or shows the empty state -->
+      </div>
+      <div class="cart-panel-footer">
+        <button id="cartRemoveBtn" class="btn btn-outline" disabled>Remove</button>
+        <button id="cartCheckoutBtn" class="btn btn-primary" disabled>Check Out</button>
+      </div>
+    </div>
+  </header>
