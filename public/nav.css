@@ -42,6 +42,12 @@ body {
   border-bottom: 1px solid #f0f0f0;
 }
 
+header, .navbar {
+  height: 70px; /* Fixed height for the white bar */
+  display: flex;
+  align-items: center;
+}
+
 /* Logo Left */
 .logo {
   z-index: 2;
@@ -50,7 +56,7 @@ body {
 }
 
 .logo img {
-  height: 55px;
+  height: 75px;
   width: auto;
   display: block;
 }
