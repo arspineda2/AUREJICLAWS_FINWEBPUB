@@ -94,6 +94,14 @@ header, .navbar {
   color: var(--color-pink);
 }
 
+/* For Mobile View - Burger icon placed in right side */
+.nav-actions { 
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  z-index: 1001;
+}
+
 /* Right Cart Icon */
 .cart-icon-btn {
   position: relative;
