@@ -5,13 +5,8 @@
         </a>
     </div>
 
-    <!-- Mobile Hamburger Toggle -->
-    <input type="checkbox" id="menu-toggle" class="menu-checkbox" />
-    <label for="menu-toggle" class="hamburger-btn" aria-label="Toggle navigation">
-      <span></span>
-      <span></span>
-      <span></span>
-    </label>
+    <!-- Mobile Hamburger Checkbox -->
+  <input type="checkbox" id="menu-toggle" class="menu-checkbox" />
 
     <!-- Nav Menu / Mobile Dropdown Drawer -->
     <nav class="nav-links">
@@ -22,11 +17,21 @@
       <a href="ContactPage.html">CONTACT US</a>
     </nav>
 
+    <!-- Right Actions Group (Cart & Hamburger Side-by-Side) -->
+    <div class="nav-actions">
     <!-- CART ICON -->
-    <button id="cartIconBtn" class="cart-icon-btn" aria-label="Open cart">
-      <img src="photos/cart.png" alt="Cart" class="cart-icon-img">
-      <span id="cartCount" class="cart-count">0</span>
-    </button>
+      <button id="cartIconBtn" class="cart-icon-btn" aria-label="Open cart">
+        <img src="photos/cart.png" alt="Cart" class="cart-icon-img">
+        <span id="cartCount" class="cart-count">0</span>
+      </button>
+
+    <!-- Mobile Hamburger Toggle (moved line 9 to line 26-->
+    <input type="checkbox" id="menu-toggle" class="menu-checkbox" />
+    <label for="menu-toggle" class="hamburger-btn" aria-label="Toggle navigation">
+      <span></span>
+      <span></span>
+      <span></span>
+    </label>
 
     <!-- CART DROPDOWN PANEL -->
     <div id="cartPanel" class="cart-panel hidden">
