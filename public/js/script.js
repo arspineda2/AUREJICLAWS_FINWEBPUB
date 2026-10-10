@@ -6,12 +6,49 @@
 ========================================================= */
 
 document.addEventListener("components:loaded", initializeCheckout, { once: true });
+document.addEventListener("components:loaded", initializeSharedCart, { once: true });
+
+function initializeSharedCart() {
+  const cartIconBtn = document.getElementById("cartIconBtn");
+  const cartPanel = document.getElementById("cartPanel");
+  const cartItemsEl = document.getElementById("cartItems");
+  const cartCountEl = document.getElementById("cartCount");
+
+  if (!cartIconBtn || !cartPanel || !cartItemsEl || !cartCountEl) {
+    console.error("Cart could not start: required shared cart elements are missing.");
+    return;
+  }
+
+  if (!cartItemsEl.children.length) {
+    const emptyMessage = document.createElement("p");
+    emptyMessage.className = "cart-empty-msg";
+    emptyMessage.textContent = "Your cart is empty.";
+    cartItemsEl.appendChild(emptyMessage);
+  }
+
+  cartIconBtn.addEventListener("click", (event) => {
+    event.stopPropagation();
+    cartPanel.classList.toggle("hidden");
+  });
+
+  cartPanel.addEventListener("click", (event) => {
+    event.stopPropagation();
+  });
+
+  document.addEventListener("click", (event) => {
+    if (!cartPanel.contains(event.target) && !cartIconBtn.contains(event.target)) {
+      cartPanel.classList.add("hidden");
+    }
+  });
+}
 
 async function initializeCheckout() {
   const productGrid = document.getElementById("productGrid");
   const modal = document.getElementById("checkoutModal");
   const addressForm = document.getElementById("addressForm");
   const paymentForm = document.getElementById("paymentForm");
+
+  if (!productGrid && !modal && !addressForm && !paymentForm) return;
 
   if (!productGrid || !modal || !addressForm || !paymentForm) {
     console.error("Checkout could not start: required product or modal elements are missing.");
@@ -199,15 +236,6 @@ async function initializeCheckout() {
     });
   });
 
-  cartIconBtn.addEventListener("click", (event) => {
-    event.stopPropagation();
-    cartPanel.classList.toggle("hidden");
-  });
-
-  cartPanel.addEventListener("click", (event) => {
-    event.stopPropagation();
-  });
-
   cartRemoveBtn.addEventListener("click", () => {
     if (selectedCartIndex === null) return;
     cart.splice(selectedCartIndex, 1);
@@ -224,9 +252,6 @@ async function initializeCheckout() {
 
   // Close popovers when clicking outside them.
   document.addEventListener("click", (event) => {
-    if (!cartPanel.contains(event.target) && !cartIconBtn.contains(event.target)) {
-      cartPanel.classList.add("hidden");
-    }
     if (!filterMenu.contains(event.target) && !filterBtn.contains(event.target)) {
       filterMenu.classList.add("hidden");
     }

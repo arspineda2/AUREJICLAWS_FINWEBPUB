@@ -158,6 +158,111 @@ header, .navbar {
   display: none;
 }
 
+.cart-panel-header {
+  margin-bottom: 10px;
+  color: #222;
+  font-family: var(--font-header);
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.cart-items {
+  max-height: 240px;
+  overflow-y: auto;
+}
+
+.cart-empty-msg {
+  margin: 0 0 2px;
+  color: #222;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.cart-item-row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  width: 100%;
+  padding: 8px 0;
+  border: 0;
+  border-bottom: 1px solid #f1e9e4;
+  border-radius: 6px;
+  background: transparent;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.cart-item-row img {
+  width: 48px;
+  height: 48px;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.cart-item-info {
+  flex: 1;
+}
+
+.cart-item-name {
+  display: block;
+  margin: 0;
+  color: #222;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.cart-item-price {
+  display: block;
+  margin: 2px 0 0;
+  color: var(--color-pink);
+  font-size: 12px;
+}
+
+.cart-panel-footer {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.cart-panel .btn {
+  display: inline-block;
+  padding: 10px 22px;
+  border: 0;
+  border-radius: 20px;
+  font-family: var(--font-secondary);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.cart-panel .btn-primary {
+  background: #f082a6;
+  color: #fff;
+}
+
+.cart-panel .btn-primary:hover {
+  background: #e06d93;
+}
+
+.cart-panel .btn-primary:disabled {
+  background: #f3c6d3;
+  cursor: not-allowed;
+}
+
+.cart-panel .btn-outline {
+  border: 1.5px solid #f082a6;
+  background: none;
+  color: #f082a6;
+}
+
+.cart-panel .btn-outline:disabled {
+  border-color: #f3c6d3;
+  color: #f3c6d3;
+  cursor: not-allowed;
+}
+
 /* Mobile Hamburger Menu Elements */
 .menu-checkbox {
   display: none;

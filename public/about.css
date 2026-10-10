@@ -21,9 +21,9 @@
 .about-story {
   position: relative;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(360px, min(48vw, 720px));
+  grid-template-columns: minmax(0, 1fr) minmax(360px, 1fr);
   align-items: stretch;
-  gap: clamp(1.25rem, 3vw, 3rem);
+  gap: 0; 
   width: 100%;
   min-height: max(620px, 78vh);
   padding: 3.5rem 0 3.5rem max(6%, calc((100vw - 1200px) / 2));
@@ -95,18 +95,19 @@
   display: flex;
   min-height: 0;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-end; 
   overflow: hidden;
+  width: 100%;
 }
 
 .about-image-wrap img {
   display: block;
-  width: 112%;
-  height: 112%;
+  width: 100%;
+  height: 100%;
   max-width: none;
   object-fit: cover;
-  object-position: 62% center;
-  transform: translateX(-5%);
+  object-position: center; 
+  transform: none;
   filter: drop-shadow(0 14px 20px rgba(107, 77, 72, 0.12));
 }
 

@@ -123,7 +123,10 @@ function renderServiceMenu(menu) {
   if (button) button.textContent = menu.buttonText;
 
   container.replaceChildren();
-  menu.categories.forEach((category) => {
+  const visibleCategories = menu.categories.filter(
+    (category) => category.title.trim().replace(/:$/, "").trim().toLowerCase() !== "naols"
+  );
+  visibleCategories.forEach((category) => {
     const section = document.createElement("section");
     section.className = "service-section";
     const heading = document.createElement("h2");
