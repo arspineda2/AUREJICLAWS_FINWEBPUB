@@ -7,7 +7,7 @@
 
 document.addEventListener("components:loaded", initializeCheckout, { once: true });
 
-function initializeCheckout() {
+async function initializeCheckout() {
   const productGrid = document.getElementById("productGrid");
   const modal = document.getElementById("checkoutModal");
   const addressForm = document.getElementById("addressForm");
@@ -15,6 +15,20 @@ function initializeCheckout() {
 
   if (!productGrid || !modal || !addressForm || !paymentForm) {
     console.error("Checkout could not start: required product or modal elements are missing.");
+    return;
+  }
+
+  try {
+    const response = await fetch("/api/products");
+    const result = await response.json();
+    if (!response.ok || !result.success || !Array.isArray(result.products)) {
+      throw new Error(result.message || "Products could not be loaded.");
+    }
+    renderProductCatalog(productGrid, result.products);
+  } catch (error) {
+    console.error("Product catalog could not be loaded:", error);
+    productGrid.textContent = "The product catalog is temporarily unavailable. Please try again later.";
+    productGrid.setAttribute("role", "alert");
     return;
   }
 
@@ -109,6 +123,62 @@ function initializeCheckout() {
       cart.push({ ...product, quantity: 1 });
     }
     renderCart();
+  }
+
+  function renderProductCatalog(container, products) {
+    container.replaceChildren();
+    products.forEach((product) => {
+      const soldOut = product.soldOut || product.stocks < 1;
+      const card = document.createElement("article");
+      card.className = `product-card${soldOut ? " sold-out" : ""}`;
+      card.dataset.id = product.productId;
+      card.dataset.price = String(product.price);
+      card.dataset.name = product.productName;
+
+      const imageWrap = document.createElement("div");
+      imageWrap.className = "product-img-wrap";
+      const image = document.createElement("img");
+      image.src = product.imageUrl.startsWith("/") ? product.imageUrl : `/${product.imageUrl}`;
+      image.alt = `${product.productName} press-on nail set`;
+      imageWrap.appendChild(image);
+
+      if (soldOut) {
+        const badge = document.createElement("span");
+        badge.className = "sold-badge";
+        badge.textContent = "SOLD";
+        imageWrap.appendChild(badge);
+      } else {
+        const overlay = document.createElement("div");
+        overlay.className = "card-actions-overlay";
+        const add = document.createElement("button");
+        add.className = "cart-add-btn";
+        add.dataset.id = product.productId;
+        add.setAttribute("aria-label", `Add ${product.productName} to cart`);
+        const cartImage = document.createElement("img");
+        cartImage.src = "/photos/add-cart.png";
+        cartImage.alt = "Cart";
+        cartImage.className = "cart-add";
+        add.appendChild(cartImage);
+        const buy = document.createElement("button");
+        buy.className = "buy-now-overlay";
+        buy.dataset.id = product.productId;
+        buy.textContent = "Buy Now";
+        overlay.append(add, buy);
+        imageWrap.appendChild(overlay);
+      }
+
+      const name = document.createElement("h3");
+      name.className = "product-name";
+      name.textContent = product.productName;
+      const price = document.createElement("p");
+      price.className = "product-price";
+      price.textContent = `₱${product.price}`;
+      const description = document.createElement("p");
+      description.className = "product-desc";
+      description.textContent = product.description;
+      card.append(imageWrap, name, price, description);
+      container.appendChild(card);
+    });
   }
 
   // Add-to-cart changes only the temporary cart; Buy Now opens checkout directly.

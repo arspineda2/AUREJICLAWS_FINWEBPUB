@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Aureji Claws - Admin Portal</title>
+
+  <!-- Google Fonts: Alice (Headings) & Outfit (Body / Accents) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Alice&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="/admin.css">
+</head>
+<body>
+  <!-- =========================================================
+       AUTHENTICATED DASHBOARD
+       ========================================================= -->
+  <div id="dashboardApp">
+
+    <!-- 1. TOP HEADER -->
+    <header class="admin-header">
+      <div class="header-brand">
+        <div class="header-logo-wrap">
+          <img src="photos/logo.png" alt="Aureji Claws Logo" onerror="applyImgFallback(this, 'Logo')" />
+        </div>
+        <h1 class="header-title">Admin Dashboard</h1>
+      </div>
+
+      <div class="header-actions-wrap">
+        <div class="admin-session-badge">
+          <span id="sessionUserLabel">admin</span>
+          <button type="button" class="btn-logout-link" onclick="handlePortalLogout()">Log out</button>
+        </div>
+      </div>
+    </header>
+
+    <!-- 2. WORKSPACE CONTAINER (SIDEBAR + MAIN CONTENT) -->
+    <div class="admin-layout">
+
+      <!-- LEFT SIDEBAR -->
+      <aside class="admin-sidebar" aria-label="Admin Navigation">
+        
+        <!-- Home -->
+        <div class="sidebar-group">
+          <button class="sidebar-heading-btn" onclick="toggleSidebarGroup('navHome', this)">
+            <span>Home</span>
+            <span class="sidebar-arrow open">▼</span>
+          </button>
+          <div class="sidebar-sublist" id="navHome">
+            <a href="javascript:void(0)" class="sidebar-subitem active" id="subitem-hero" onclick="switchPage('hero')">Hero page</a>
+            <a href="javascript:void(0)" class="sidebar-subitem" id="subitem-ig" onclick="switchPage('instagram')">Instagram Posts</a>
+          </div>
+        </div>
+
+        <!-- Press-on -->
+        <div class="sidebar-group">
+          <button class="sidebar-heading-btn" onclick="toggleSidebarGroup('navPresson', this)">
+            <span>Press-on</span>
+            <span class="sidebar-arrow open">▼</span>
+          </button>
+          <div class="sidebar-sublist" id="navPresson">
+            <a href="javascript:void(0)" class="sidebar-subitem" id="subitem-products" onclick="switchPage('products')">Products</a>
+            <a href="javascript:void(0)" class="sidebar-subitem" id="subitem-orders" onclick="switchPage('orders')">Orders</a>
+          </div>
+        </div>
+
+        <!-- Services -->
+        <div class="sidebar-group">
+          <button class="sidebar-heading-btn" onclick="toggleSidebarGroup('navServices', this)">
+            <span>Services</span>
+            <span class="sidebar-arrow">▼</span>
+          </button>
+          <div class="sidebar-sublist" id="navServices" style="display: none;">
+            <a href="javascript:void(0)" class="sidebar-subitem" onclick="showEmptyNotice('Services List')">Services List</a>
+            <a href="javascript:void(0)" class="sidebar-subitem" onclick="showEmptyNotice('Schedules')">Schedules</a>
+            <a href="javascript:void(0)" class="sidebar-subitem" id="subitem-bookings" onclick="switchPage('bookings')">Scheduled Customers</a>
+          </div>
+        </div>
+
+        <!-- Contacts -->
+        <div class="sidebar-group">
+          <button class="sidebar-heading-btn" onclick="toggleSidebarGroup('navContacts', this)">
+            <span>Contacts</span>
+            <span class="sidebar-arrow">▼</span>
+          </button>
+          <div class="sidebar-sublist" id="navContacts" style="display: none;">
+            <a href="javascript:void(0)" class="sidebar-subitem" onclick="showEmptyNotice('Form Submissions')">Form</a>
+          </div>
+        </div>
+
+      </aside>
+
+      <!-- MAIN CONTENT WORKSPACE -->
+      <main class="admin-main">
+
+        <!-- PAGE 1: EDIT HERO PAGE -->
+        <section id="panelHero" class="hero-editor-container">
+          <h2 class="page-title">Edit Hero Page</h2>
+
+          <div class="hero-slide-switcher">
+            <button class="hero-slide-chip active" id="slideChip0" onclick="selectHeroSlide(0)">Slide 1 (Amethyst Fang)</button>
+            <button class="hero-slide-chip" id="slideChip1" onclick="selectHeroSlide(1)">Slide 2 (Events / Pop-up)</button>
+            <button class="hero-slide-chip" id="slideChip2" onclick="selectHeroSlide(2)">Slide 3 (Handmade / Brand)</button>
+          </div>
+
+          <div class="hero-preview-plate" id="heroPlate">
+            <div class="hero-preview-content">
+              <h1 class="hero-preview-title" id="previewHeroTitle">Amethyst Fang</h1>
+              <p class="hero-preview-desc" id="previewHeroDesc">
+                introducing amethyst fang – our newest press-on design, ready to wear in minutes!
+              </p>
+              <div id="previewHeroBtnWrap">
+                <span class="hero-preview-btn" id="previewHeroBtn">Shop Now</span>
+              </div>
+            </div>
+          </div>
+
+          <form id="heroForm" onsubmit="handleHeroUpdate(event)">
+            <div class="hero-form-grid">
+              <div>
+                <label class="form-label" for="heroTitleInput">Title</label>
+                <input type="text" id="heroTitleInput" class="form-input" required />
+              </div>
+              <div>
+                <label class="form-label" for="heroBtnTextInput">Button Text</label>
+                <input type="text" id="heroBtnTextInput" class="form-input" placeholder="e.g. Shop Now" />
+              </div>
+              <div>
+                <label class="form-label" for="heroDescInput">Description</label>
+                <textarea id="heroDescInput" rows="3" class="form-textarea" required></textarea>
+              </div>
+              <div>
+                <label class="form-label" for="heroPhotoInput">Background Photo</label>
+                <input type="text" id="heroPhotoInput" class="form-input" placeholder="photos/herosecimg.png" required />
+                <input type="file" id="heroFilePicker" accept="image/*" style="display: none;" onchange="handleHeroLocalFile(event)" />
+                <button type="button" onclick="document.getElementById('heroFilePicker').click()" style="margin-top: 6px; font-size: 0.75rem; background: none; border: none; color: var(--dusty-pink); text-decoration: underline; cursor: pointer;">
+                  Browse local file
+                </button>
+              </div>
+            </div>
+            <div class="hero-form-actions">
+              <button type="submit" class="btn-update">Update</button>
+            </div>
+          </form>
+        </section>
+
+        <!-- PAGE 2: EDIT INSTAGRAM POST -->
+        <section id="panelInstagram" class="ig-editor-container" style="display: none;">
+          <h2 class="page-title">Edit Instagram Post</h2>
+
+          <form id="igForm" onsubmit="handleIgUpdate(event)">
+            <div class="ig-form-bar">
+              <div>
+                <label class="form-label" for="igLinkInput">Add Post Link</label>
+                <input type="url" id="igLinkInput" class="form-input" placeholder="https://instagram.com/..." required />
+              </div>
+              <div>
+                <label class="form-label" for="igPhotoInput">Photo</label>
+                <input type="text" id="igPhotoInput" class="form-input" placeholder="photos/reel.png" required />
+                <input type="file" id="igFilePicker" accept="image/*" hidden onchange="handleIgLocalFile(event)" />
+                <button type="button" onclick="document.getElementById('igFilePicker').click()" style="margin-top: 6px; font-size: 0.75rem; background: none; border: none; color: var(--dusty-pink); text-decoration: underline; cursor: pointer;">
+                  Browse local file
+                </button>
+              </div>
+              <div>
+                <button type="submit" class="btn-update" style="height: 42px;">Update</button>
+              </div>
+            </div>
+          </form>
+
+          <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 14px;">
+            Select a post slot below to update its link or photo:
+          </p>
+
+          <div class="ig-grid-container" id="igGridContainer"></div>
+        </section>
+
+        <!-- PAGE 3: EDIT PRODUCTS -->
+        <section id="panelProducts" class="products-container" style="display: none;">
+          <div class="products-top-row">
+            <h2 class="page-title" style="margin-bottom: 0;">Edit Products</h2>
+            <button type="button" class="btn-update" style="font-size: 0.82rem; padding: 6px 18px;" onclick="resetProductForm()">
+              + Add New Set
+            </button>
+          </div>
+
+          <div class="product-form-box">
+            <h3 id="productFormHeading" style="font-family: var(--font-alice); font-size: 1.15rem; color: var(--dusty-pink); margin-bottom: 14px;">
+              Editing: Amethyst Fang
+            </h3>
+
+            <form id="productForm" onsubmit="handleProductUpdate(event)">
+              <input type="hidden" id="prodIdInput" value="presson-one" />
+
+              <div class="product-form-grid">
+                <div>
+                  <label class="form-label" for="prodNameInput">Product Name</label>
+                  <input type="text" id="prodNameInput" class="form-input" required />
+                </div>
+                <div>
+                  <label class="form-label" for="prodPriceInput">Price (₱ PHP)</label>
+                  <input type="number" id="prodPriceInput" class="form-input" min="0" step="50" required />
+                </div>
+                <div>
+                  <label class="form-label" for="prodPhotoInput">Photo Path</label>
+                  <input type="text" id="prodPhotoInput" class="form-input" required />
+                </div>
+              </div>
+
+              <div style="margin-bottom: 16px;">
+                <label class="form-label" for="prodDescInput">Description</label>
+                <textarea id="prodDescInput" rows="2" class="form-textarea" required></textarea>
+              </div>
+
+              <div style="display: flex; align-items: center; justify-content: space-between;">
+                <label style="display: flex; align-items: center; gap: 8px; font-size: 0.85rem; cursor: pointer;">
+                  <input type="checkbox" id="prodSoldOutInput" style="accent-color: var(--dusty-pink);" />
+                  <span>Mark as <strong>SOLD OUT</strong></span>
+                </label>
+                <button type="submit" class="btn-update">Save Product</button>
+              </div>
+            </form>
+          </div>
+
+          <div class="product-cards-grid" id="productGridContainer"></div>
+        </section>
+
+        <!-- PAGE 4: ORDERS -->
+        <section id="panelOrders" style="display: none;">
+          <h2 class="page-title">Orders</h2>
+          <div id="ordersContent"></div>
+        </section>
+
+        <!-- PAGE 5: SCHEDULED CUSTOMERS / BOOKINGS MENU BOARD -->
+        <section id="panelBookings" style="display: none;">
+          <h2 class="page-title">Scheduled Customers & Bookings Board</h2>
+          <div id="bookingsContent"></div>
+        </section>
+
+        <!-- Services & Contacts Placeholder Notice -->
+        <section id="panelPlaceholder" style="display: none;">
+          <h2 class="page-title" id="placeholderTitle">Section</h2>
+          <div class="empty-state-box">
+            <svg class="empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+              <polyline points="14 2 14 8 20 8"></polyline>
+              <line x1="16" y1="13" x2="8" y2="13"></line>
+              <line x1="16" y1="17" x2="8" y2="17"></line>
+            </svg>
+            <h3 class="empty-title" id="placeholderMsg">No records available yet</h3>
+            <p class="empty-desc">Records will appear automatically as client forms are completed on the live site.</p>
+          </div>
+        </section>
+
+      </main>
+    </div>
+
+    <!-- CLIENT VIEW MODAL -->
+    <div class="client-modal-backdrop" id="clientModal" onclick="closeClientModalOnBackdrop(event)">
+      <div class="client-modal-window">
+        <div class="client-modal-header">
+          <div class="client-modal-tabs">
+            <button class="client-tab-btn active" id="tabClientHome" onclick="switchClientTab('home')">Home Page View</button>
+            <button class="client-tab-btn" id="tabClientShop" onclick="switchClientTab('shop')">Press-on Shop View</button>
+          </div>
+          <button class="client-modal-close" onclick="closeClientModal()" aria-label="Close modal">&times;</button>
+        </div>
+
+        <div class="client-modal-body">
+          <div id="cvHomeSection">
+            <div class="cv-hero-section" id="cvHeroSec">
+              <div class="cv-hero-content">
+                <h1 class="cv-hero-title" id="cvHeroTitle">Amethyst Fang</h1>
+                <p class="cv-hero-desc" id="cvHeroDesc"></p>
+                <div id="cvHeroBtnWrap"><span class="hero-preview-btn" id="cvHeroBtn">Shop Now</span></div>
+              </div>
+            </div>
+
+            <div class="cv-features">
+              <div class="cv-feature-card">
+                <img src="photos/homepress-on.png" alt="Press-on Nails" class="cv-feature-img" onerror="applyImgFallback(this, 'Press-on')" />
+                <h3 class="cv-feature-title">Press-on</h3>
+                <p class="cv-feature-text">Custom press-on nails made to fit your nails and your style. Pick your shape, color, and art, then apply at home.</p>
+              </div>
+
+              <div class="cv-feature-card">
+                <img src="photos/homeservices.png" alt="Services" class="cv-feature-img" onerror="applyImgFallback(this, 'Services')" />
+                <h3 class="cv-feature-title">Services</h3>
+                <p class="cv-feature-text">Choose from gel manicures, Gel-X and custom press-on extensions, and a full range of nail art add-ons.</p>
+              </div>
+            </div>
+
+            <div class="cv-club-heading">
+              <h2 class="cv-club-title">JOIN THE CLAW CLUB</h2>
+              <div class="cv-club-handle">@aurejiclaws</div>
+            </div>
+
+            <div class="cv-ig-grid" id="cvIgGrid"></div>
+          </div>
+
+          <div id="cvShopSection" style="display: none;">
+            <h2 style="font-family: var(--font-alice); font-size: 1.8rem; color: #6B4D48; margin-bottom: 24px;">Latest Press-on Nails</h2>
+            <div class="cv-shop-grid" id="cvShopGrid"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Toast Container -->
+  <div class="admin-toast" id="adminToast">
+    <span id="toastMessage">Changes updated successfully!</span>
+  </div>
+
+  <script src="/js/admin.js"></script>
+</body>
+</html>

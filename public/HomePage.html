@@ -1,5 +1,3 @@
-  <!-- ANGEL WORKING HOME PAGE | 10-05-26 -->
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -119,8 +117,13 @@
       </div>
 
       <div class="gallery-grid">
-          <!-- added by injel ito yung reel pero hindi pa uploaded yung video/reel-one.mov | 10-10-26
+          <!-- added by injel ito yung reel pero hindi pa uploaded yung video/reel-one.mov | 10-10-26 -->
         <a href="https://instagram.com/aurejiclaws" target="_blank" rel="noopener noreferrer" class="gallery-reelitem">
+          <video autoplay muted loop playsinline>
+            <source src="videos/reel-one.mov" type="video/mp4" />
+            <source src="videos/reel-one.mov" type="video/quicktime" />
+            Your browser does not support the video tag.
+          </video>
           <video autoplay muted loop playsinline>
             <source src="videos/reel-one.mov" type="video/mp4" />
             <source src="videos/reel-one.mov" type="video/quicktime" />
@@ -147,7 +150,7 @@
         <a href="https://instagram.com/aurejiclaws" target="_blank" rel="noopener noreferrer" class="gallery-item">
           <img src="photos/igpost-five.png" alt="Club post 6" />
           <span class="view-post-text">View Post</span>
-        </a> -->
+        </a>
       </div>
     </section>
   </main>
@@ -279,48 +282,9 @@
   <!-- ========================================== -->
   <div data-include="footer.html"></div>
 
-  <script src="components.js" defer></script>
+  <script src="/js/components.js" defer></script>
 
-  <script>
-    const slides = document.querySelectorAll('.hero-slider .slide');
-    const dots = document.querySelectorAll('.slider-dots .dot');
-    let currentIndex = 0;
-    let slideTimer;
-
-    function showSlide(index) {
-      slides[currentIndex].classList.remove('active');
-      dots[currentIndex].classList.remove('active');
-
-      currentIndex = index;
-
-      slides[currentIndex].classList.add('active');
-      dots[currentIndex].classList.add('active');
-    }
-
-    function nextSlide() {
-      const nextIndex = (currentIndex + 1) % slides.length;
-      showSlide(nextIndex);
-    }
-
-    function startAutoSlide() {
-      slideTimer = setInterval(nextSlide, 8000);
-    }
-
-    function resetTimer() {
-      clearInterval(slideTimer);
-      startAutoSlide();
-    }
-
-    dots.forEach((dot) => {
-      dot.addEventListener('click', (e) => {
-        const selectedIndex = parseInt(e.target.getAttribute('data-index'), 10);
-        showSlide(selectedIndex);
-        resetTimer();
-      });
-    });
-
-    startAutoSlide();
-  </script>
+  <script src="/js/public-content.js" defer></script>
 
 </body>
 </html>

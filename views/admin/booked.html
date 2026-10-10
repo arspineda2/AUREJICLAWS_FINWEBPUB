@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <base href="/" />
+  <title>Aureji Claws - Booked Services</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Alice&family=Outfit:wght@100..900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/admin.css" />
+  <script src="/js/admin-pages.js" defer></script>
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="dash-header">
+    <div class="flex items-center gap-3">
+      <div class="dash-logo-box">
+        <img src="photos/Logo.png" alt="Logo" onerror="applyImgFallback(this, 'A')" />
+      </div>
+      <h1 class="font-alice text-2xl text-dustyPink">Admin Dashboard</h1>
+    </div>
+    <div class="flex items-center gap-6 text-sm">
+      <span class="text-textDark font-medium">admin</span>
+      <a href="/login.html" onclick="adminPageLogout(event)" class="text-danger hover:underline font-medium">Log out</a>
+    </div>
+  </header>
+
+  <!-- Main Body -->
+  <div class="dash-main-body">
+    <!-- Left Sidebar Navigation -->
+    <aside class="dash-sidebar">
+      <!-- Home Dropdown -->
+      <div>
+        <button class="nav-dropdown-btn" onclick="toggleSubMenu('homeSub')">
+          <span>Home</span>
+          <span id="homeIcon">▼</span>
+        </button>
+        <div id="homeSub" class="nav-submenu" hidden>
+          <a href="/admin/hero" class="nav-sublink">Hero page</a>
+          <a href="/admin/instagram" class="nav-sublink">Instagram Posts</a>
+        </div>
+      </div>
+
+      <!-- Press-on Dropdown -->
+      <div>
+        <button class="nav-dropdown-btn" onclick="toggleSubMenu('pressSub')">
+          <span>Press-on</span>
+          <span id="pressIcon">▼</span>
+        </button>
+        <div id="pressSub" class="nav-submenu" hidden>
+          <a href="/admin/products" class="nav-sublink">Products</a>
+          <a href="/admin/orders" class="nav-sublink">Orders</a>
+        </div>
+      </div>
+
+      <!-- Services Dropdown -->
+      <div>
+        <button class="nav-dropdown-btn" onclick="toggleSubMenu('servSub')">
+          <span>Services</span>
+          <span id="servIcon">▲</span>
+        </button>
+        <div id="servSub" class="nav-submenu">
+          <a href="/admin/services" class="nav-sublink">Services List</a>
+          <a href="/admin/bookings" class="nav-sublink active">Booked</a>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Center Workspace -->
+    <main class="dash-content-area">
+      <div class="dash-content-inner">
+        <h2 class="font-alice text-3xl text-periwinkleTitle">Booked Appointments</h2>
+
+        <!-- Top Box: Get In Touch Contact Details Editor -->
+        <div class="bg-white p-6 rounded-2xl border border-borderSoft shadow-sm flex flex-col gap-4">
+          <h3 class="font-alice text-xl text-dustyPink">Get in Touch Contact Settings</h3>
+          
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="flex flex-col gap-1.5">
+              <label class="text-xs font-semibold text-periwinkleTitle">Email Us</label>
+              <input type="email" id="inputContactEmail" class="form-input" value="aureji2025@gmail.com" />
+            </div>
+
+            <div class="flex flex-col gap-1.5">
+              <label class="text-xs font-semibold text-periwinkleTitle">Contact Us</label>
+              <input type="text" id="inputContactPhone" class="form-input" value="969-514-7202" />
+            </div>
+
+            <div class="flex flex-col gap-1.5">
+              <label class="text-xs font-semibold text-periwinkleTitle">Book via Direct Message</label>
+              <input type="text" id="inputContactDM" class="form-input" value="@aurejiclaws" />
+            </div>
+          </div>
+
+          <div class="flex justify-end pt-1">
+            <button onclick="saveContactSettings()" class="bg-lavenderInput hover:bg-lavenderInputFocus text-periwinkleTitle font-semibold px-6 py-2 rounded-xl border border-borderSoft transition cursor-pointer text-sm">
+              Update Contact Info
+            </button>
+          </div>
+        </div>
+
+        <!-- Bookings Container -->
+        <div id="bookingsContainer" class="flex flex-col gap-6">
+          <!-- Rendered via JS -->
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toastNotification"></div>
+
+  <script>
+    function applyImgFallback(imgElement, text) {
+      const parent = imgElement.parentElement;
+      const fallback = document.createElement('span');
+      fallback.textContent = text;
+      parent.replaceChildren(fallback);
+    }
+
+    function showToast(message) {
+      const toast = document.getElementById('toastNotification');
+      toast.textContent = message;
+      toast.classList.add('show');
+      setTimeout(() => { toast.classList.remove('show'); }, 3500);
+    }
+
+    function toggleSubMenu(id) {
+      const el = document.getElementById(id);
+      const isHidden = el.hidden;
+      el.hidden = !isHidden;
+      const iconId = id.replace('Sub', 'Icon');
+      document.getElementById(iconId).textContent = isHidden ? '\u25B2' : '\u25BC';
+    }
+
+    async function saveContactSettings() {
+      const button = document.querySelector('button[onclick="saveContactSettings()"]');
+      button.disabled = true;
+      try {
+        const { content } = await adminRequest('/api/site-content/contact', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email: document.getElementById('inputContactEmail').value.trim(),
+            phone: document.getElementById('inputContactPhone').value.trim(),
+            instagram: document.getElementById('inputContactDM').value.trim()
+          })
+        });
+        document.getElementById('inputContactEmail').value = content.contact.email;
+        document.getElementById('inputContactPhone').value = content.contact.phone;
+        document.getElementById('inputContactDM').value = `@${content.contact.instagram.replace(/^@/, '')}`;
+        showToast('Contact settings saved to the website.');
+      } catch (error) {
+        console.error('Contact settings save failed:', error);
+        showToast(error.message || 'Could not save contact settings.');
+      } finally {
+        button.disabled = false;
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      adminRequest('/api/site-content').then(({ content }) => {
+        document.getElementById('inputContactEmail').value = content.contact.email;
+        document.getElementById('inputContactPhone').value = content.contact.phone;
+        document.getElementById('inputContactDM').value = `@${content.contact.instagram.replace(/^@/, '')}`;
+      }).catch(error => {
+        console.error('Contact settings load failed:', error);
+        showToast(error.message || 'Could not load contact settings.');
+      });
+    });
+  </script>
+  <script src="/js/admin-bookings.js"></script>
+</body>
+</html>

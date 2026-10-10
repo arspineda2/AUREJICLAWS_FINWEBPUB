@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <base href="/" />
+  <title>Aureji Claws - Services List Manager</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Alice&family=Outfit:wght@100..900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/admin.css" />
+  <script src="/js/admin-pages.js" defer></script>
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="dash-header">
+    <div class="flex items-center gap-3">
+      <div class="dash-logo-box">
+        <img src="photos/Logo.png" alt="Logo" onerror="applyImgFallback(this, 'A')" />
+      </div>
+      <h1 class="font-alice text-2xl text-dustyPink">Admin Dashboard</h1>
+    </div>
+    <div class="flex items-center gap-6 text-sm">
+      <span class="text-textDark font-medium">admin</span>
+      <a href="/login.html" onclick="adminPageLogout(event)" class="text-danger hover:underline font-medium">Log out</a>
+    </div>
+  </header>
+
+  <!-- Main Body -->
+  <div class="dash-main-body">
+    <!-- Left Sidebar Navigation -->
+    <aside class="dash-sidebar">
+      <!-- Home Dropdown -->
+      <div>
+        <button class="nav-dropdown-btn" onclick="toggleSubMenu('homeSub')">
+          <span>Home</span>
+          <span id="homeIcon">▼</span>
+        </button>
+        <div id="homeSub" class="nav-submenu" hidden>
+          <a href="/admin/hero" class="nav-sublink">Hero page</a>
+          <a href="/admin/instagram" class="nav-sublink">Instagram Posts</a>
+        </div>
+      </div>
+
+      <!-- Press-on Dropdown -->
+      <div>
+        <button class="nav-dropdown-btn" onclick="toggleSubMenu('pressSub')">
+          <span>Press-on</span>
+          <span id="pressIcon">▼</span>
+        </button>
+        <div id="pressSub" class="nav-submenu" hidden>
+          <a href="/admin/products" class="nav-sublink">Products</a>
+          <a href="/admin/orders" class="nav-sublink">Orders</a>
+        </div>
+      </div>
+
+      <!-- Services Dropdown -->
+      <div>
+        <button class="nav-dropdown-btn" onclick="toggleSubMenu('servSub')">
+          <span>Services</span>
+          <span id="servIcon">▲</span>
+        </button>
+        <div id="servSub" class="nav-submenu">
+          <a href="/admin/services" class="nav-sublink active">Services List</a>
+          <a href="/admin/bookings" class="nav-sublink">Booked</a>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Center Workspace -->
+    <main class="dash-content-area">
+      <div class="dash-content-inner">
+        <h2 class="font-alice text-3xl text-periwinkleTitle">Edit Services List</h2>
+
+        <section class="bg-white p-6 rounded-2xl border border-borderSoft shadow-sm flex flex-col gap-4" aria-labelledby="serviceEditorTitle">
+          <h3 class="font-alice text-xl text-dustyPink" id="serviceEditorTitle">Edit Service</h3>
+          <p class="text-xs text-textMuted" id="serviceEditorCategory">Choose a service below, or add one to a category.</p>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="flex flex-col gap-1.5">
+              <label class="text-xs font-semibold text-periwinkleTitle" for="inputServiceName">Service Name</label>
+              <input type="text" id="inputServiceName" class="form-input" maxlength="100" placeholder="e.g. Gel Manicure" />
+            </div>
+            <div class="flex flex-col gap-1.5">
+              <label class="text-xs font-semibold text-periwinkleTitle" for="inputServicePrice">Price / Text</label>
+              <input type="text" id="inputServicePrice" class="form-input" maxlength="80" placeholder="e.g. ₱300 or starting price: ₱600+" />
+            </div>
+          </div>
+          <div class="flex justify-end gap-3">
+            <button id="cancelServiceEdit" type="button" onclick="cancelServiceEdit()" class="bg-lavenderInput hover:bg-lavenderInputFocus text-periwinkleTitle font-semibold px-5 py-2 rounded-xl border border-borderSoft transition cursor-pointer" hidden>Cancel</button>
+            <button id="deleteService" type="button" onclick="deleteCurrentService()" class="bg-red-50 hover:bg-red-100 text-danger font-semibold px-5 py-2 rounded-xl border border-red-200 transition cursor-pointer" hidden>Delete Service</button>
+            <button type="button" onclick="saveService()" class="bg-lavenderInput hover:bg-lavenderInputFocus text-periwinkleTitle font-semibold px-6 py-2 rounded-xl border border-borderSoft transition cursor-pointer">Save Service</button>
+          </div>
+        </section>
+
+        <section class="bg-white p-8 rounded-2xl border border-borderSoft shadow-sm flex flex-col gap-6" aria-labelledby="serviceListTitle">
+          <h3 class="font-alice text-xl text-dustyPink" id="serviceListTitle">Services</h3>
+          <div id="categoriesContainer" class="flex flex-col gap-8">
+            <!-- Rendered by JS -->
+          </div>
+        </section>
+
+        <details class="bg-white rounded-2xl border border-borderSoft shadow-sm">
+          <summary class="p-5 font-semibold text-periwinkleTitle cursor-pointer">Website service menu heading</summary>
+          <div class="p-6 pt-0 flex flex-col gap-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div class="flex flex-col gap-1.5">
+                <label class="text-xs font-semibold text-periwinkleTitle" for="inputMenuTitle">Menu Title</label>
+                <input type="text" id="inputMenuTitle" class="form-input" />
+              </div>
+              <div class="flex flex-col gap-1.5 md:col-span-2">
+                <label class="text-xs font-semibold text-periwinkleTitle" for="inputMenuNote">Subtitle / Description Note</label>
+                <input type="text" id="inputMenuNote" class="form-input" />
+              </div>
+            </div>
+            <div class="flex flex-wrap justify-between items-center gap-3">
+              <div class="flex items-center gap-2 flex-1">
+                <label class="text-xs font-semibold text-periwinkleTitle whitespace-nowrap" for="inputMenuBtnText">Button Text</label>
+                <input type="text" id="inputMenuBtnText" class="form-input flex-1" />
+              </div>
+              <button type="button" onclick="saveHeaderConfig()" class="bg-lavenderInput hover:bg-lavenderInputFocus text-periwinkleTitle font-semibold px-6 py-2 rounded-xl border border-borderSoft transition cursor-pointer">Update Heading</button>
+            </div>
+          </div>
+        </details>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toastNotification"></div>
+
+  <script>
+    // Initial Data Model matching your services.html content
+    let serviceCategories = [
+      {
+        id: 1,
+        title: "Nails:",
+        items: [
+          { id: 101, name: "Gel Manicure", price: "₱300" },
+          { id: 102, name: "Cat Eye (Magnet) Gel Manicure", price: "₱400" },
+          { id: 103, name: "Gel French Manicure", price: "₱400" }
+        ]
+      },
+      {
+        id: 2,
+        title: "Nail Extensions:",
+        items: [
+          { id: 201, name: "Custom Press-on", price: "starting price: ₱600+" },
+          { id: 202, name: "Gel-X", price: "₱1300" }
+        ]
+      },
+      {
+        id: 3,
+        title: "Nail Arts and other add ons:",
+        items: [
+          { id: 301, name: "Cat Eye", price: "₱100" },
+          { id: 302, name: "Nail Sticker", price: "₱100" },
+          { id: 303, name: "Chrome", price: "₱100" },
+          { id: 304, name: "French Tip", price: "₱150" },
+          { id: 305, name: "Ombre", price: "₱100" },
+          { id: 306, name: "3D Nail Art", price: "₱200" },
+          { id: 307, name: "Gel Nail Art", price: "₱300" },
+          { id: 308, name: "Nail Stones", price: "₱100" }
+        ]
+      },
+      {
+        id: 4,
+        title: "Removal:",
+        items: [
+          { id: 401, name: "Gel-X Removal", price: "₱50" },
+          { id: 402, name: "Gel-X Removal (for extensions not done at Aurejiclaws)", price: "₱100" }
+        ]
+      }
+    ];
+
+    let activeCatId = null;
+    let activeItemId = null;
+
+    function applyImgFallback(imgElement, text) {
+      const parent = imgElement.parentElement;
+      parent.innerHTML = `<span class="admin-image-fallback">${text}</span>`;
+    }
+
+    function showToast(message) {
+      const toast = document.getElementById('toastNotification');
+      toast.textContent = message;
+      toast.classList.add('show');
+      setTimeout(() => { toast.classList.remove('show'); }, 3500);
+    }
+
+    function toggleSubMenu(id) {
+      const el = document.getElementById(id);
+      const isHidden = el.hidden;
+      el.hidden = !isHidden;
+      const iconId = id.replace('Sub', 'Icon');
+      document.getElementById(iconId).textContent = isHidden ? '▲' : '▼';
+    }
+
+    function escapeServiceHtml(value) {
+      return String(value).replace(/[&<>"']/g, character => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+      })[character]);
+    }
+
+    function makeServiceId(value) {
+      return value.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 60)
+        || `service-${Date.now()}`;
+    }
+
+    async function persistServices() {
+      return adminRequest('/api/site-content/services', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          title: document.getElementById('inputMenuTitle').value.trim(),
+          note: document.getElementById('inputMenuNote').value.trim(),
+          buttonText: document.getElementById('inputMenuBtnText').value.trim(),
+          categories: serviceCategories
+        })
+      });
+    }
+
+    async function reloadServices(selectedItemId) {
+      const { content } = await adminRequest('/api/site-content');
+      serviceCategories = content.serviceMenu.categories;
+      document.getElementById('inputMenuTitle').value = content.serviceMenu.title;
+      document.getElementById('inputMenuNote').value = content.serviceMenu.note;
+      document.getElementById('inputMenuBtnText').value = content.serviceMenu.buttonText;
+      renderServicesList();
+      const allServices = serviceCategories.flatMap(category =>
+        category.items.map(item => ({ category, item })));
+      const selected = allServices.find(entry => entry.item.id === selectedItemId) || allServices[0] || null;
+      if (selected) editService(selected.category.id, selected.item.id);
+      else prepareNewService(serviceCategories[0]?.id);
+    }
+
+    async function saveHeaderConfig() {
+      try {
+        await persistServices();
+        showToast('Service menu header saved to the website.');
+      } catch (error) {
+        console.error('Service header save failed:', error);
+        showToast(error.message || 'Could not save service menu header.');
+      }
+    }
+
+    /* Categories remain fixed; only service items are editable. */
+    function renderServicesList() {
+      const container = document.getElementById('categoriesContainer');
+      container.innerHTML = '';
+
+      serviceCategories.forEach(cat => {
+        const catBox = document.createElement('div');
+        catBox.className = "flex flex-col gap-3";
+
+        let itemsListHtml = cat.items.map(item => `
+          <div class="service-item-row">
+            <span class="font-alice text-sm text-textDark">${escapeServiceHtml(item.name)}</span>
+            <div class="flex items-center gap-3">
+              <span class="font-alice text-sm text-textDark">${escapeServiceHtml(item.price)}</span>
+              <div class="flex items-center gap-1 ml-2">
+                <button onclick="editService('${escapeServiceHtml(cat.id)}', '${escapeServiceHtml(item.id)}')" class="action-btn-sm bg-lavenderInput hover:bg-lavenderInputFocus text-periwinkleTitle">Edit</button>
+                <button onclick="deleteItem('${escapeServiceHtml(cat.id)}', '${escapeServiceHtml(item.id)}')" class="action-btn-sm bg-red-50 hover:bg-red-100 text-danger">Delete</button>
+              </div>
+            </div>
+          </div>
+        `).join('');
+
+        catBox.innerHTML = `
+          <div class="flex items-center justify-between pb-1 border-b border-dustyPink/30">
+            <h2 class="font-alice text-2xl text-dustyPink">${escapeServiceHtml(cat.title)}</h2>
+            <button onclick="prepareNewService('${escapeServiceHtml(cat.id)}')" class="text-xs font-semibold text-dustyPink hover:underline cursor-pointer">
+              + Add a service
+            </button>
+          </div>
+          <div class="flex flex-col gap-1 pl-1">
+            ${itemsListHtml}
+          </div>
+        `;
+
+        container.appendChild(catBox);
+      });
+    }
+
+    function prepareNewService(catId) {
+      activeCatId = catId;
+      activeItemId = null;
+      const category = serviceCategories.find(item => item.id === catId);
+      document.getElementById('serviceEditorTitle').textContent = 'Add Service';
+      document.getElementById('serviceEditorCategory').textContent = category
+        ? `Adding a service to ${category.title}`
+        : 'Choose a category below to add a service.';
+      document.getElementById('inputServiceName').value = '';
+      document.getElementById('inputServicePrice').value = '';
+      document.getElementById('deleteService').hidden = true;
+      document.getElementById('cancelServiceEdit').hidden = true;
+    }
+
+    function editService(catId, itemId) {
+      activeCatId = catId;
+      activeItemId = itemId;
+      const cat = serviceCategories.find(c => c.id === catId);
+      const item = cat ? cat.items.find(i => i.id === itemId) : null;
+      if (!item) return;
+
+      document.getElementById('serviceEditorTitle').textContent = `Editing: ${item.name}`;
+      document.getElementById('serviceEditorCategory').textContent = cat.title;
+      document.getElementById('inputServiceName').value = item.name;
+      document.getElementById('inputServicePrice').value = item.price;
+      document.getElementById('deleteService').hidden = false;
+      document.getElementById('cancelServiceEdit').hidden = false;
+    }
+
+    function cancelServiceEdit() {
+      prepareNewService(activeCatId);
+    }
+
+    async function saveService() {
+      const name = document.getElementById('inputServiceName').value.trim();
+      const price = document.getElementById('inputServicePrice').value.trim();
+
+      if (!name || !price) {
+        showToast("Please fill up both service name and price!");
+        return;
+      }
+
+      const cat = serviceCategories.find(c => c.id === activeCatId);
+      if (!cat) return;
+
+      if (activeItemId === null) {
+        let id = `${makeServiceId(name)}-${Date.now()}`;
+        while (serviceCategories.some(category => category.items.some(item => item.id === id))) {
+          id = `${makeServiceId(name)}-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
+        }
+        cat.items.push({ id, name, price });
+      } else {
+        const item = cat.items.find(i => i.id === activeItemId);
+        if (item) {
+          item.name = name;
+          item.price = price;
+        }
+      }
+
+      try {
+        const savedItemId = activeItemId || cat.items[cat.items.length - 1].id;
+        await persistServices();
+        await reloadServices(savedItemId);
+        showToast(`Service "${name}" saved to the website.`);
+      } catch (error) {
+        console.error('Service item save failed:', error);
+        await reloadServices(activeItemId);
+        showToast(error.message || 'Could not save service item.');
+      }
+    }
+
+    async function deleteCurrentService() {
+      if (!activeCatId || !activeItemId) return;
+      await deleteItem(activeCatId, activeItemId);
+    }
+
+    async function deleteItem(catId, itemId) {
+      const cat = serviceCategories.find(c => c.id === catId);
+      if (!cat) return;
+      const item = cat.items.find(i => i.id === itemId);
+      if (item && confirm(`Delete service "${item.name}"?`)) {
+        cat.items = cat.items.filter(i => i.id !== itemId);
+        try {
+          await persistServices();
+          await reloadServices();
+          showToast('Service deleted from the website.');
+        } catch (error) {
+          console.error('Service delete failed:', error);
+          await reloadServices();
+          showToast(error.message || 'Could not delete service.');
+        }
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      reloadServices().catch(error => {
+        console.error('Services load failed:', error);
+        showToast(error.message || 'Could not load services.');
+      });
+    });
+  </script>
+</body>
+</html>

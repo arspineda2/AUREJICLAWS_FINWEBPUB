@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#FAF9F5">
+  <title>Aureji Claws - Admin Portal</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Alice&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg-cream: #FAF9F5;
+      --bg-white: #FFFFFF;
+      --text-brown: #5E5757;
+      --text-dark: #222222;
+      --text-muted: #888080;
+      --dusty-pink: #D87D9A;
+      --dusty-pink-hover: #C56E8A;
+      --periwinkle-title: #7B88B4;
+      --lavender-input: #DCE1EE;
+      --lavender-input-focus: #D0D6E6;
+      --border-soft: #EDE8DE;
+      --font-alice: 'Alice', serif;
+      --font-outfit: 'Outfit', sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      overflow-x: hidden;
+      background-color: var(--bg-cream);
+      color: var(--text-brown);
+      font-family: var(--font-outfit);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .portal-container {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+    }
+
+    .portal-card {
+      width: 100%;
+      max-width: 440px;
+      padding: 42px 38px;
+      border: 1px solid var(--border-soft);
+      border-radius: 20px;
+      background: var(--bg-white);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+      text-align: center;
+      animation: fadeIn 0.3s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .portal-logo-wrap {
+      width: 60px;
+      height: 60px;
+      margin: 0 auto 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .portal-logo-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .portal-title {
+      margin-bottom: 6px;
+      color: var(--dusty-pink);
+      font-family: var(--font-alice);
+      font-size: 1.9rem;
+      font-weight: 400;
+    }
+
+    .portal-desc {
+      margin-bottom: 26px;
+      color: var(--text-muted);
+      font-size: 0.88rem;
+      line-height: 1.5;
+    }
+
+    .portal-form {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      text-align: left;
+    }
+
+    .portal-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .portal-group label {
+      color: var(--periwinkle-title);
+      font-size: 0.8rem;
+      font-weight: 500;
+    }
+
+    .portal-input {
+      width: 100%;
+      padding: 11px 14px;
+      border: 1px solid transparent;
+      border-radius: 10px;
+      outline: none;
+      background-color: var(--lavender-input);
+      color: var(--text-dark);
+      font-family: var(--font-outfit);
+      font-size: 0.92rem;
+      transition: background-color 0.2s ease, border-color 0.2s ease;
+    }
+
+    .portal-input:focus {
+      border-color: var(--dusty-pink);
+      background-color: var(--lavender-input-focus);
+    }
+
+    .portal-input::placeholder {
+      color: var(--text-muted);
+      opacity: 0.8;
+    }
+
+    .btn-portal-submit {
+      width: 100%;
+      margin-top: 10px;
+      padding: 12px;
+      border: none;
+      border-radius: 10px;
+      background-color: var(--dusty-pink);
+      color: #FFFFFF;
+      font-family: var(--font-outfit);
+      font-size: 0.95rem;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+      cursor: pointer;
+      transition: background-color 0.2s ease, transform 0.1s ease;
+    }
+
+    .btn-portal-submit:hover {
+      background-color: var(--dusty-pink-hover);
+    }
+
+    .btn-portal-submit:active {
+      transform: translateY(1px);
+    }
+
+    .otp-message {
+      margin-bottom: 18px;
+      color: var(--text-muted);
+      font-size: 0.88rem;
+      line-height: 1.5;
+    }
+
+    .otp-input {
+      text-align: center;
+      font-size: 1.2rem;
+      font-weight: 600;
+      letter-spacing: 0.35em;
+    }
+
+    .portal-back-link {
+      display: inline-block;
+      margin-top: 24px;
+      color: var(--dusty-pink);
+      font-size: 0.82rem;
+      font-weight: 600;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
+    .portal-back-link:hover {
+      color: var(--dusty-pink-hover);
+    }
+
+    @media (max-width: 480px) {
+      body {
+        padding: 16px;
+      }
+
+      .portal-card {
+        padding: 34px 24px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="portal-container">
+    <section class="portal-card" aria-labelledby="portalTitle">
+      <div class="portal-logo-wrap">
+        <img src="photos/Logo.png" alt="Aureji Claws logo">
+      </div>
+      <h1 class="portal-title" id="portalTitle">Admin Portal</h1>
+      <p class="portal-desc">Sign in with your administrator credentials to continue.</p>
+
+      <form class="portal-form" id="loginForm">
+        <div class="portal-group">
+          <label for="email">Email</label>
+          <input class="portal-input" type="email" id="email" name="email" placeholder="you@example.com" autocomplete="username" required>
+        </div>
+        <div class="portal-group">
+          <label for="password">Password</label>
+          <input class="portal-input" type="password" id="password" name="password" placeholder="Enter your password" autocomplete="current-password" required>
+        </div>
+        <button class="btn-portal-submit" type="submit">Continue to Verification</button>
+      </form>
+
+      <form class="portal-form" id="otpForm" style="display: none;" aria-label="OTP verification">
+        <p class="otp-message">Enter the 6-digit verification code sent to your email.</p>
+        <div class="portal-group">
+          <label for="otpInput">Verification code</label>
+          <input class="portal-input otp-input" type="text" id="otpInput" name="otp" placeholder="000000" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]{6}" aria-describedby="otpHelp" required>
+          <span id="otpHelp" class="portal-desc" style="margin: 0; font-size: 0.78rem;">Use the code from the email sent to your account.</span>
+        </div>
+        <button class="btn-portal-submit" type="submit">Verify &amp; Login</button>
+      </form>
+
+      <a class="portal-back-link" href="/HomePage.html">Return to Aureji Claws</a>
+    </section>
+  </main>
+
+  <script src="/js/login.js"></script>
+</body>
+</html>

@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <base href="/" />
+  <title>Aureji Claws - Edit Products</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Alice&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/admin.css" />
+  <script src="/js/admin-pages.js" defer></script>
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="dash-header">
+    <div class="flex items-center gap-3">
+      <div class="dash-logo-box">
+        <img src="photos/Logo.png" alt="Logo" onerror="applyImgFallback(this, 'A')" />
+      </div>
+      <h1 class="font-alice text-2xl text-dustyPink">Admin Dashboard</h1>
+    </div>
+    <div class="flex items-center gap-6 text-sm">
+      <span class="text-textDark font-medium">admin</span>
+      <a href="/login.html" onclick="adminPageLogout(event)" class="text-danger hover:underline font-medium">Log out</a>
+    </div>
+  </header>
+
+  <!-- Main Body -->
+  <div class="dash-main-body">
+    <!-- Left Sidebar Navigation -->
+    <aside class="dash-sidebar">
+      <!-- Home Dropdown -->
+      <div>
+        <button class="nav-dropdown-btn" onclick="toggleSubMenu('homeSub')">
+          <span>Home</span>
+          <span id="homeIcon">▼</span>
+        </button>
+        <div id="homeSub" class="nav-submenu" hidden>
+          <a href="/admin/hero" class="nav-sublink">Hero page</a>
+          <a href="/admin/instagram" class="nav-sublink">Instagram Posts</a>
+        </div>
+      </div>
+
+      <!-- Press-on Dropdown -->
+      <div>
+        <button class="nav-dropdown-btn" onclick="toggleSubMenu('pressSub')">
+          <span>Press-on</span>
+          <span id="pressIcon">▲</span>
+        </button>
+        <div id="pressSub" class="nav-submenu">
+          <a href="/admin/products" class="nav-sublink active">Products</a>
+          <a href="/admin/orders" class="nav-sublink">Orders</a>
+        </div>
+      </div>
+
+      <!-- Services Dropdown -->
+      <div>
+        <button class="nav-dropdown-btn" onclick="toggleSubMenu('servSub')">
+          <span>Services</span>
+          <span id="servIcon">▼</span>
+        </button>
+        <div id="servSub" class="nav-submenu" hidden>
+          <a href="/admin/services" class="nav-sublink">Services List</a>
+          <a href="/admin/bookings" class="nav-sublink">Booked</a>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Center Workspace -->
+    <main class="dash-content-area">
+      <div class="dash-content-inner">
+        <!-- Title & Add New Set Header -->
+        <div class="flex items-center justify-between">
+          <h2 class="font-alice text-3xl text-periwinkleTitle">Edit Products</h2>
+          <button onclick="switchToAddNewMode()" class="bg-lavenderInput hover:bg-lavenderInputFocus text-periwinkleTitle font-semibold px-4 py-2 rounded-xl border border-borderSoft text-sm transition cursor-pointer">+ Add New Set</button>
+        </div>
+
+        <!-- CRUD Form Box -->
+        <div class="bg-white p-6 rounded-2xl border border-borderSoft shadow-sm flex flex-col gap-4">
+          <h3 class="font-alice text-xl text-dustyPink" id="formHeaderTitle">Editing: Amethyst Fang</h3>
+
+          <!-- Row 1: Name, Price, Photo -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="flex flex-col gap-1.5">
+              <label class="text-xs font-semibold text-periwinkleTitle">Product Name</label>
+              <input type="text" id="inputProdName" class="form-input" maxlength="100" placeholder="e.g. Amethyst Fang" />
+            </div>
+
+            <div class="flex flex-col gap-1.5">
+              <label class="text-xs font-semibold text-periwinkleTitle">Price (₱ PHP)</label>
+              <input type="number" id="inputProdPrice" step="50" class="form-input" placeholder="1000" />
+            </div>
+
+            <div class="flex flex-col gap-1.5">
+              <div class="flex items-center justify-between">
+                <label class="text-xs font-semibold text-periwinkleTitle">Photo Path</label>
+                <button type="button" onclick="document.getElementById('hiddenFileInput').click()" class="text-xs text-dustyPink font-semibold hover:underline cursor-pointer">Browse local file</button>
+              </div>
+              <input type="text" id="inputProdPhoto" class="form-input" placeholder="photos/presson-one.png" readonly />
+              <input type="file" id="hiddenFileInput" hidden accept="image/jpeg,image/png,image/webp" onchange="handleFileSelect(event)" />
+            </div>
+          </div>
+
+          <!-- Row 2: Description -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="flex flex-col gap-1.5 md:col-span-2">
+              <label class="text-xs font-semibold text-periwinkleTitle">Description</label>
+              <textarea id="inputProdDesc" class="form-input resize-vertical" rows="3" placeholder="Product description"></textarea>
+            </div>
+            <div class="flex flex-col gap-1.5">
+              <label class="text-xs font-semibold text-periwinkleTitle">Stock quantity</label>
+              <input type="number" id="inputProdStock" min="0" step="1" class="form-input" value="100" />
+            </div>
+          </div>
+
+          <!-- Row 3: Sold Out Checkbox & Action Buttons (Delete + Save) -->
+          <div class="flex items-center justify-between pt-2">
+            <label class="flex items-center gap-2 cursor-pointer text-xs font-medium text-textDark">
+              <input type="checkbox" id="chkSoldOut" class="accent-dustyPink w-4 h-4" />
+              Mark as <strong>SOLD OUT</strong>
+            </label>
+
+            <div class="flex items-center gap-3">
+              <button id="btnDeleteProd" onclick="deleteCurrentProduct()" class="bg-red-50 hover:bg-red-100 text-danger font-semibold px-5 py-2.5 rounded-xl border border-red-200 transition cursor-pointer">
+                Delete Set
+              </button>
+              <button onclick="saveProduct()" class="bg-lavenderInput hover:bg-lavenderInputFocus text-periwinkleTitle font-semibold px-8 py-2.5 rounded-xl border border-borderSoft transition cursor-pointer">
+                Save Product
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Products Display Grid (3 columns) -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="productsGridContainer">
+          <!-- Cards injected dynamically via JS -->
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toastNotification"></div>
+
+  <script>
+    let productsList = [];
+    let currentEditingId = null;
+    let selectedProductImage = null;
+
+    function escapeHtml(value) {
+      return String(value).replace(/[&<>"']/g, character => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+      })[character]);
+    }
+
+    function applyImgFallback(imgElement, text) {
+      const parent = imgElement.parentElement;
+      parent.innerHTML = `<span class="admin-image-fallback">${text}</span>`;
+    }
+
+    function showToast(message) {
+      const toast = document.getElementById('toastNotification');
+      toast.textContent = message;
+      toast.classList.add('show');
+      setTimeout(() => { toast.classList.remove('show'); }, 3500);
+    }
+
+    function toggleSubMenu(id) {
+      const el = document.getElementById(id);
+      const isHidden = el.hidden;
+      el.hidden = !isHidden;
+      const iconId = id.replace('Sub', 'Icon');
+      document.getElementById(iconId).textContent = isHidden ? '▲' : '▼';
+    }
+
+    function renderProductsGrid() {
+      const container = document.getElementById('productsGridContainer');
+      container.innerHTML = '';
+
+      productsList.forEach(prod => {
+        const isActive = currentEditingId === prod.id;
+        const card = document.createElement('div');
+        card.className = `product-card ${isActive ? 'active' : ''} ${prod.soldOut ? 'sold-out' : ''}`;
+        card.onclick = () => editProduct(prod.id);
+
+        card.innerHTML = `
+          <div class="product-img-wrap">
+            <img src="${escapeHtml(prod.photo)}" alt="${escapeHtml(prod.name)}" />
+            ${prod.soldOut ? '<div class="sold-badge">SOLD</div>' : ''}
+          </div>
+          <div class="p-4 flex flex-col gap-1 border-t border-borderSoft bg-white flex-1">
+            <h4 class="font-alice text-lg text-dustyPink leading-tight">${escapeHtml(prod.name)}</h4>
+            <span class="font-outfit font-bold text-sm text-textDark">₱${prod.price}</span>
+            <p class="text-xs text-textMuted line-clamp-2 mt-1 leading-relaxed">${escapeHtml(prod.desc)}</p>
+            <div class="flex items-center justify-between mt-4 pt-2 border-t border-dashed border-borderSoft">
+              <span class="text-xs font-semibold ${prod.soldOut ? 'text-danger' : 'text-textMuted'}">
+                ${prod.soldOut ? 'Sold Out' : 'Available'}
+              </span>
+              <button onclick="toggleProductStatus(event, '${escapeHtml(prod.id)}')" class="bg-lavenderInput hover:bg-lavenderInputFocus text-xs font-semibold text-textDark px-3 py-1.5 rounded-lg border border-borderSoft transition cursor-pointer">
+                Toggle Status
+              </button>
+            </div>
+          </div>
+        `;
+
+        container.appendChild(card);
+      });
+    }
+
+    function editProduct(id) {
+      currentEditingId = id;
+      const prod = productsList.find(p => p.id === id);
+      if (!prod) return;
+
+      document.getElementById('formHeaderTitle').textContent = `Editing: ${prod.name}`;
+      document.getElementById('inputProdName').value = prod.name;
+      document.getElementById('inputProdPrice').value = prod.price;
+      document.getElementById('inputProdPhoto').value = prod.photo;
+      document.getElementById('inputProdDesc').value = prod.desc;
+      document.getElementById('inputProdStock').value = prod.stocks;
+      document.getElementById('chkSoldOut').checked = prod.soldOut;
+      document.getElementById('btnDeleteProd').hidden = false;
+      selectedProductImage = null;
+      document.getElementById('hiddenFileInput').value = '';
+
+      renderProductsGrid();
+    }
+
+    function switchToAddNewMode() {
+      currentEditingId = null;
+      document.getElementById('formHeaderTitle').textContent = 'Add New Press-on Set';
+      document.getElementById('inputProdName').value = '';
+      document.getElementById('inputProdPrice').value = '';
+      document.getElementById('inputProdPhoto').value = 'photos/presson-one.png';
+      document.getElementById('inputProdDesc').value = '';
+      document.getElementById('inputProdStock').value = '100';
+      document.getElementById('chkSoldOut').checked = false;
+      document.getElementById('btnDeleteProd').hidden = true;
+      selectedProductImage = null;
+      document.getElementById('hiddenFileInput').value = '';
+
+      renderProductsGrid();
+      showToast('Form cleared! Enter details to add a new set.');
+    }
+
+    function handleFileSelect(event) {
+      const file = event.target.files[0];
+      if (file) {
+        selectedProductImage = file;
+        document.getElementById('inputProdPhoto').value = `${file.name} (uploads when saved)`;
+      }
+    }
+
+    async function saveProduct() {
+      const name = document.getElementById('inputProdName').value.trim();
+      const price = Number(document.getElementById('inputProdPrice').value);
+      const stocks = Number(document.getElementById('inputProdStock').value);
+      const desc = document.getElementById('inputProdDesc').value.trim();
+      const soldOut = document.getElementById('chkSoldOut').checked;
+
+      if (!name) {
+        showToast('Please enter a product name!');
+        return;
+      }
+      if (!desc) {
+        showToast('Please enter a product description.');
+        return;
+      }
+      if (!Number.isFinite(price) || price < 0 || !Number.isInteger(stocks) || stocks < 0) {
+        showToast('Enter a valid price and whole-number stock quantity.');
+        return;
+      }
+      if (!soldOut && stocks === 0) {
+        showToast('Set the stock quantity above zero or mark this product sold out.');
+        return;
+      }
+
+      try {
+        const current = productsList.find(product => product.id === currentEditingId);
+        const productId = current?.productId
+          || name.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 80)
+          || `product-${Date.now()}`;
+        if (!current && productsList.some(product => product.productId === productId)) {
+          showToast('A product with this name already exists. Choose a different name.');
+          return;
+        }
+        const imageUrl = selectedProductImage
+          ? await adminUploadImage(selectedProductImage)
+          : (current?.photo || document.getElementById('inputProdPhoto').value.trim());
+        const result = await adminRequest(`/api/products/${encodeURIComponent(productId)}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ productName: name, price, stocks, soldOut, description: desc, imageUrl })
+        });
+        await loadProducts(result.product.productId);
+        showToast(`Saved "${name}" successfully.`);
+      } catch (error) {
+        console.error('Product save failed:', error);
+        showToast(error.message || 'Could not save product.');
+      }
+    }
+
+    async function deleteCurrentProduct() {
+      if (currentEditingId === null) return;
+      const prod = productsList.find(p => p.id === currentEditingId);
+      if (!prod) return;
+
+      if (confirm(`Are you sure you want to delete "${prod.name}"?`)) {
+        try {
+          await adminRequest(`/api/products/${encodeURIComponent(prod.productId)}`, { method: 'DELETE' });
+          await loadProducts(productsList.find(product => product.id !== currentEditingId)?.productId);
+          showToast(`Deleted "${prod.name}" successfully.`);
+        } catch (error) {
+          console.error('Product delete failed:', error);
+          showToast(error.message || 'Could not delete product.');
+        }
+      }
+    }
+
+    async function toggleProductStatus(event, id) {
+      event.stopPropagation();
+      const prod = productsList.find(p => p.id === id);
+      if (prod) {
+        const soldOut = !prod.soldOut;
+        if (!soldOut && prod.stocks < 1) {
+          showToast('Set the stock quantity above zero before marking this product available.');
+          return;
+        }
+        try {
+          await adminRequest(`/api/products/${encodeURIComponent(prod.productId)}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              productName: prod.name,
+              price: prod.price,
+              stocks: prod.stocks,
+              soldOut,
+              description: prod.desc,
+              imageUrl: prod.photo
+            })
+          });
+          await loadProducts(prod.productId);
+          showToast(`"${prod.name}" status set to ${soldOut ? 'Sold Out' : 'Available'}.`);
+        } catch (error) {
+          console.error('Product availability update failed:', error);
+          showToast(error.message || 'Could not update product availability.');
+        }
+      }
+    }
+
+    async function loadProducts(selectedProductId) {
+      const result = await adminRequest('/api/products');
+      productsList = result.products.map(product => ({
+        id: product.productId,
+        productId: product.productId,
+        name: product.productName,
+        price: product.price,
+        stocks: product.stocks,
+        photo: product.imageUrl,
+        desc: product.description,
+        soldOut: product.soldOut
+      }));
+      renderProductsGrid();
+      const selected = productsList.find(product => product.productId === selectedProductId) || productsList[0];
+      if (selected) editProduct(selected.id);
+      else switchToAddNewMode();
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      loadProducts().catch(error => {
+        console.error('Product catalog load failed:', error);
+        document.getElementById('productsGridContainer').textContent = error.message || 'Could not load products.';
+      });
+    });
+  </script>
+</body>
+</html>

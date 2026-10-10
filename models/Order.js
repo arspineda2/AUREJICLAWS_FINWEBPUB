@@ -1,10 +1,7 @@
-/* Defines what an order looks like in MongoDB: customer details, 
-purchased items, total, payment proof, and status. 
-Mongoose uses this schema to create and validate order documents. */
+/* Defines what an order looks like in MongoDB: customer details,
+purchased items, total, payment proof, and status. */
 const mongoose = require("mongoose");
 
-// A checkout is one document so its purchased items and payment proof stay tied together.
-// The proof is stored as binary data in Atlas and is never served as a public static file.
 const orderSchema = new mongoose.Schema({
   customer: {
     fullName: { type: String, required: true, trim: true, maxlength: 120 },
@@ -29,7 +26,7 @@ const orderSchema = new mongoose.Schema({
   },
   totalAmount: { type: Number, required: true, min: 0 },
   payment: {
-    method: { type: String, required: true, enum: ["GCash", "Maya", "Bank Transfer"] },
+    method: { type: String, required: true, enum: ["GCash"] },
     referenceNumber: { type: String, required: true, trim: true, maxlength: 100 },
     dateSent: { type: String, required: true },
     timeSent: { type: String, required: true },
@@ -39,6 +36,9 @@ const orderSchema = new mongoose.Schema({
       data: { type: Buffer, required: true }
     }
   },
+
+  isDeleted: { type: Boolean, default: false },
+  
   status: {
     type: String,
     enum: ["Pending Review", "Approved", "Rejected"],
@@ -46,4 +46,4 @@ const orderSchema = new mongoose.Schema({
   }
 }, { timestamps: true });
 
-module.exports = mongoose.model("Order", orderSchema);
+module.exports = mongoose.models.Order || mongoose.model("Order", orderSchema);

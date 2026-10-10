@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <base href="/" />
+  <title>Aureji Claws - Instagram Posts Manager</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Alice&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/admin.css" />
+  <script src="/js/admin-pages.js" defer></script>
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="dash-header">
+    <div class="flex items-center gap-3">
+      <div class="dash-logo-box">
+        <img src="photos/Logo.png" alt="Logo" onerror="applyImgFallback(this, 'A')" />
+      </div>
+      <h1 class="font-alice text-2xl text-dustyPink">Admin Dashboard</h1>
+    </div>
+    <div class="flex items-center gap-6 text-sm">
+      <span class="text-textDark font-medium">admin</span>
+      <a href="/login.html" onclick="adminPageLogout(event)" class="text-danger hover:underline font-medium">Log out</a>
+    </div>
+  </header>
+
+  <!-- Main Body -->
+  <div class="dash-main-body">
+    <!-- Left Sidebar Navigation -->
+    <aside class="dash-sidebar">
+      <!-- Home Dropdown -->
+      <div>
+        <button class="nav-dropdown-btn" onclick="toggleSubMenu('homeSub')">
+          <span>Home</span>
+          <span id="homeIcon">▲</span>
+        </button>
+        <div id="homeSub" class="nav-submenu">
+          <a href="/admin/hero" class="nav-sublink">Hero page</a>
+          <a href="/admin/instagram" class="nav-sublink active">Instagram Posts</a>
+        </div>
+      </div>
+
+      <!-- Press-on Dropdown -->
+      <div>
+        <button class="nav-dropdown-btn" onclick="toggleSubMenu('pressSub')">
+          <span>Press-on</span>
+          <span id="pressIcon">▼</span>
+        </button>
+        <div id="pressSub" class="nav-submenu" hidden>
+          <a href="/admin/products" class="nav-sublink">Products</a>
+          <a href="/admin/orders" class="nav-sublink">Orders</a>
+        </div>
+      </div>
+
+      <!-- Services Dropdown -->
+      <div>
+        <button class="nav-dropdown-btn" onclick="toggleSubMenu('servSub')">
+          <span>Services</span>
+          <span id="servIcon">▼</span>
+        </button>
+        <div id="servSub" class="nav-submenu" hidden>
+          <a href="/admin/services" class="nav-sublink">Services List</a>
+          <a href="/admin/bookings" class="nav-sublink">Booked</a>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Center Workspace -->
+    <main class="dash-content-area">
+      <div class="dash-content-inner">
+        <h2 class="font-alice text-3xl text-periwinkleTitle">Edit Instagram Post</h2>
+
+        <section class="instagram-preview-section" aria-labelledby="instagramPreviewHeading">
+          <div class="instagram-preview-copy">
+            <h3 id="instagramPreviewHeading" class="font-alice text-2xl text-periwinkleTitle">Post Preview</h3>
+            <p class="text-sm text-textMuted">Preview the selected post photo before saving. The six cards below show each post slot.</p>
+          </div>
+          <div class="instagram-preview-frame">
+            <img id="instagramPreviewImage" class="instagram-preview-image" alt="Selected Instagram post preview" />
+            <div id="instagramPreviewFallback" class="instagram-preview-fallback" hidden>Choose or upload a photo to preview this post.</div>
+            <span id="instagramPreviewSlot" class="instagram-preview-slot">Slot 1</span>
+          </div>
+        </section>
+
+        <!-- Top Controls: Link, Photo, Update -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end bg-white p-6 rounded-2xl border border-borderSoft shadow-sm">
+          <div class="flex flex-col gap-1.5">
+            <label class="text-xs font-semibold text-periwinkleTitle">Add Post Link</label>
+            <input type="text" id="inputPostLink" class="form-input" placeholder="https://instagram.com/..." />
+          </div>
+          <div class="flex flex-col gap-1.5">
+            <div class="flex items-center justify-between">
+              <label class="text-xs font-semibold text-periwinkleTitle">Photo</label>
+              <button type="button" onclick="document.getElementById('hiddenFileInput').click()" class="text-xs text-dustyPink font-semibold hover:underline cursor-pointer">Browse local file</button>
+            </div>
+            <input type="text" id="inputPostPhoto" class="form-input" placeholder="photos/reel.png" readonly />
+            <input type="file" id="hiddenFileInput" hidden accept="image/jpeg,image/png,image/webp" onchange="handleFileSelect(event)" />
+          </div>
+          <div>
+            <button onclick="savePostChanges()" class="bg-lavenderInput hover:bg-lavenderInputFocus text-periwinkleTitle font-semibold w-full py-3 rounded-xl border border-borderSoft transition cursor-pointer">Update</button>
+          </div>
+        </div>
+
+        <p class="text-xs text-textMuted">Select a post slot below to update its link or photo:</p>
+
+        <!-- 6 Post Slots Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="post-slot-card active" id="slot1Card" onclick="selectSlot(1)">
+            <span class="slot-badge">Slot 1</span>
+            <img class="post-slot-image" id="slot1Image" alt="" />
+            <span class="font-outfit text-sm font-semibold text-periwinkleTitle" id="slot1Label">Post 1</span>
+          </div>
+          <div class="post-slot-card" id="slot2Card" onclick="selectSlot(2)">
+            <span class="slot-badge">Slot 2</span>
+            <img class="post-slot-image" id="slot2Image" alt="" />
+            <span class="font-outfit text-sm font-semibold text-periwinkleTitle" id="slot2Label">Post 2</span>
+          </div>
+          <div class="post-slot-card" id="slot3Card" onclick="selectSlot(3)">
+            <span class="slot-badge">Slot 3</span>
+            <img class="post-slot-image" id="slot3Image" alt="" />
+            <span class="font-outfit text-sm font-semibold text-periwinkleTitle" id="slot3Label">Post 3</span>
+          </div>
+          <div class="post-slot-card" id="slot4Card" onclick="selectSlot(4)">
+            <span class="slot-badge">Slot 4</span>
+            <img class="post-slot-image" id="slot4Image" alt="" />
+            <span class="font-outfit text-sm font-semibold text-periwinkleTitle" id="slot4Label">Post 4</span>
+          </div>
+          <div class="post-slot-card" id="slot5Card" onclick="selectSlot(5)">
+            <span class="slot-badge">Slot 5</span>
+            <img class="post-slot-image" id="slot5Image" alt="" />
+            <span class="font-outfit text-sm font-semibold text-periwinkleTitle" id="slot5Label">Post 5</span>
+          </div>
+          <div class="post-slot-card" id="slot6Card" onclick="selectSlot(6)">
+            <span class="slot-badge">Slot 6</span>
+            <img class="post-slot-image" id="slot6Image" alt="" />
+            <span class="font-outfit text-sm font-semibold text-periwinkleTitle" id="slot6Label">Post 6</span>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toastNotification"></div>
+
+  <script>
+    const postsData = {
+      1: { link: "https://instagram.com/aurejiclaws", photo: "photos/reel.png" },
+      2: { link: "https://www.instagram.com/p/DXel9ykkcB5/?u", photo: "photos/igpost-one.png" },
+      3: { link: "https://www.instagram.com/p/DdE-oU_5Emh/?i", photo: "photos/igpost-two.png" },
+      4: { link: "https://www.instagram.com/p/DXel9ykkcB5/?u", photo: "photos/igpost-three.png" },
+      5: { link: "https://instagram.com/aurejiclaws", photo: "photos/igpost-four.png" },
+      6: { link: "https://instagram.com/aurejiclaws", photo: "photos/igpost-five.png" }
+    };
+
+    let currentSlot = 1;
+    const selectedPostImages = {};
+    const selectedPostPreviewUrls = {};
+
+    function applyImgFallback(imgElement, text) {
+      const parent = imgElement.parentElement;
+      parent.innerHTML = `<span class="admin-image-fallback">${text}</span>`;
+    }
+
+    function resolvePostImageUrl(url) {
+      if (!url) return '';
+      if (/^(?:https?:|data:|blob:)/i.test(url) || url.startsWith('/')) return url;
+      return `/${url.replace(/^\.?\//, '')}`;
+    }
+
+    function renderSlotImage(slotNum, imageUrl) {
+      const image = document.getElementById(`slot${slotNum}Image`);
+      image.onerror = () => { image.hidden = true; };
+      image.onload = () => { image.hidden = false; };
+      image.src = resolvePostImageUrl(imageUrl);
+    }
+
+    function renderPostPreview(slotNum) {
+      const imageUrl = selectedPostPreviewUrls[slotNum] || postsData[slotNum].photo;
+      const image = document.getElementById('instagramPreviewImage');
+      const fallback = document.getElementById('instagramPreviewFallback');
+      document.getElementById('instagramPreviewSlot').textContent = `Slot ${slotNum}`;
+      image.onerror = () => {
+        image.hidden = true;
+        fallback.hidden = false;
+      };
+      image.onload = () => {
+        image.hidden = false;
+        fallback.hidden = true;
+      };
+      image.hidden = !imageUrl;
+      fallback.hidden = Boolean(imageUrl);
+      image.src = resolvePostImageUrl(imageUrl);
+    }
+
+    function showToast(message) {
+      const toast = document.getElementById('toastNotification');
+      toast.textContent = message;
+      toast.classList.add('show');
+      setTimeout(() => { toast.classList.remove('show'); }, 3500);
+    }
+
+    function toggleSubMenu(id) {
+      const el = document.getElementById(id);
+      const isHidden = el.hidden;
+      el.hidden = !isHidden;
+      const iconId = id.replace('Sub', 'Icon');
+      document.getElementById(iconId).textContent = isHidden ? '▲' : '▼';
+    }
+
+    function selectSlot(slotNum) {
+      currentSlot = slotNum;
+      document.querySelectorAll('.post-slot-card').forEach((card, idx) => {
+        if (idx + 1 === slotNum) card.classList.add('active');
+        else card.classList.remove('active');
+      });
+      loadSlotInputs(slotNum);
+    }
+
+    function loadSlotInputs(slotNum) {
+      const data = postsData[slotNum];
+      document.getElementById('inputPostLink').value = data.link;
+      document.getElementById('inputPostPhoto').value = data.photo;
+      renderPostPreview(slotNum);
+    }
+
+    function handleFileSelect(event) {
+      const file = event.target.files[0];
+      if (file) {
+        selectedPostImages[currentSlot] = file;
+        if (selectedPostPreviewUrls[currentSlot]) URL.revokeObjectURL(selectedPostPreviewUrls[currentSlot]);
+        selectedPostPreviewUrls[currentSlot] = URL.createObjectURL(file);
+        document.getElementById('inputPostPhoto').value = `${file.name} (uploads when saved)`;
+        renderPostPreview(currentSlot);
+        renderSlotImage(currentSlot, selectedPostPreviewUrls[currentSlot]);
+      }
+    }
+
+    async function savePostChanges() {
+      const post = postsData[currentSlot];
+      const link = document.getElementById('inputPostLink').value.trim();
+      try {
+        if (selectedPostImages[currentSlot]) {
+          post.photo = await adminUploadImage(selectedPostImages[currentSlot]);
+          delete selectedPostImages[currentSlot];
+          document.getElementById('hiddenFileInput').value = '';
+        }
+        post.link = link;
+        await adminRequest('/api/site-content/instagram', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            posts: Object.entries(postsData).map(([slot, item]) => ({
+              slot: Number(slot),
+              link: item.link,
+              imageUrl: item.photo
+            }))
+          })
+        });
+        if (selectedPostPreviewUrls[currentSlot]) {
+          URL.revokeObjectURL(selectedPostPreviewUrls[currentSlot]);
+          delete selectedPostPreviewUrls[currentSlot];
+        }
+        document.getElementById('inputPostPhoto').value = post.photo;
+        renderPostPreview(currentSlot);
+        renderSlotImage(currentSlot, post.photo);
+        showToast(`Instagram Post Slot ${currentSlot} saved to the website.`);
+      } catch (error) {
+        console.error('Instagram post save failed:', error);
+        showToast(error.message || 'Could not save Instagram post.');
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      adminRequest('/api/site-content').then(({ content }) => {
+        content.instagramPosts.forEach(post => {
+          postsData[post.slot] = { link: post.link, photo: post.imageUrl };
+          renderSlotImage(post.slot, post.imageUrl);
+        });
+        loadSlotInputs(1);
+        for (let slot = 1; slot <= 6; slot += 1) {
+          renderSlotImage(slot, postsData[slot].photo);
+        }
+      }).catch(error => {
+        console.error('Instagram content load failed:', error);
+        showToast(error.message || 'Could not load Instagram posts.');
+      });
+    });
+  </script>
+</body>
+</html>
