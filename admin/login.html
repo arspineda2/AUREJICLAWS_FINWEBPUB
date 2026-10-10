@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Aureji Claws - Admin Portal</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Alice&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            cream: '#FDF8F6',
+            dustyPinK: '#C88A96',
+            dustyPinkHover: '#B57783',
+            periwinkleTitle: '#6B6882',
+            lavenderInput: '#EDEEF5',
+            lavenderInputFocus: '#E2E4F0',
+            borderSoft: '#E5DCD8',
+            textDark: '#2D2930',
+            textMuted: '#8C858F',
+            danger: '#A93226'
+          },
+          fontFamily: {
+            alice: ['Alice', 'serif'],
+            outfit: ['Outfit', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    :root {
+      --bg-cream: #FDF8F6;
+      --bg-white: #FFFFFF;
+      --dusty-pink: #C88A96;
+      --dusty-pink-hover: #B57783;
+      --periwinkle-title: #6B6882;
+      --lavender-input: #EDEEF5;
+      --lavender-input-focus: #E2E4F0;
+      --border-soft: #E5DCD8;
+      --text-dark: #2D2930;
+      --text-muted: #8C858F;
+      --danger: #A93226;
+      --font-alice: 'Alice', serif;
+      --font-outfit: 'Outfit', sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-cream);
+      font-family: var(--font-outfit);
+      color: var(--text-dark);
+      margin: 0;
+      padding: 0;
+    }
+
+    .portal-container {
+      position: fixed;
+      inset: 0;
+      background-color: var(--bg-cream);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      z-index: 9999;
+    }
+
+    .portal-card {
+      background: var(--bg-white);
+      border: 1px solid var(--border-soft);
+      border-radius: 20px;
+      padding: 42px 38px;
+      width: 100%;
+      max-width: 440px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+      text-align: center;
+      animation: fadeIn 0.3s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .portal-logo-wrap {
+      width: 72px;
+      height: 72px;
+      background-color: var(--bg-cream);
+      border-radius: 20px;
+      margin: 0 auto 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.02);
+    }
+
+    .portal-logo-wrap img {
+      width: 34px;
+      height: 34px;
+      object-fit: contain;
+    }
+
+    .portal-title {
+      font-family: var(--font-alice);
+      font-size: 1.9rem;
+      color: var(--dusty-pink);
+      margin-bottom: 6px;
+    }
+
+    .portal-desc {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      margin-bottom: 26px;
+      line-height: 1.5;
+    }
+
+    .portal-form {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      text-align: left;
+    }
+
+    .portal-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .portal-group label {
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--periwinkle-title);
+    }
+
+    .form-input {
+      background-color: var(--lavender-input);
+      border: 1px solid var(--border-soft);
+      border-radius: 10px;
+      padding: 12px 14px;
+      font-size: 0.95rem;
+      color: var(--text-dark);
+      outline: none;
+      transition: background-color 0.2s, border-color 0.2s;
+    }
+
+    .form-input:focus {
+      background-color: var(--lavender-input-focus);
+      border-color: var(--dusty-pink);
+    }
+
+    .btn-portal-submit {
+      background-color: var(--dusty-pink);
+      color: #FFFFFF;
+      border: none;
+      border-radius: 10px;
+      padding: 12px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+      margin-top: 10px;
+      transition: background-color 0.2s ease, transform 0.1s ease;
+      width: 100%;
+      cursor: pointer;
+    }
+
+    .btn-portal-submit:hover {
+      background-color: var(--dusty-pink-hover);
+    }
+
+    .btn-portal-submit:active {
+      transform: translateY(1px);
+    }
+
+    .portal-error-badge {
+      background: #FDEDEC;
+      color: var(--danger);
+      font-size: 0.82rem;
+      padding: 10px 14px;
+      border-radius: 8px;
+      display: none;
+      text-align: left;
+      margin-bottom: 16px;
+      border: 1px solid #F5C6CB;
+    }
+
+    .otp-digits-container {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      margin: 14px 0 20px;
+    }
+
+    .otp-cell {
+      width: 48px;
+      height: 56px;
+      text-align: center;
+      font-size: 1.4rem;
+      font-weight: 600;
+      font-family: var(--font-outfit);
+      color: var(--text-dark);
+      border: 1px solid var(--border-soft);
+      background-color: var(--lavender-input);
+      border-radius: 10px;
+      outline: none;
+      transition: border-color 0.2s, background-color 0.2s;
+    }
+
+    .otp-cell:focus {
+      background-color: var(--lavender-input-focus);
+      border-color: var(--dusty-pink);
+    }
+
+    .portal-footer-link {
+      background: none;
+      border: none;
+      color: var(--dusty-pink);
+      font-size: 0.82rem;
+      font-weight: 600;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+
+    .portal-footer-link:disabled {
+      color: var(--text-muted);
+      text-decoration: none;
+      cursor: not-allowed;
+    }
+
+    /* Toast notification */
+    #toastNotification {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: #2D2930;
+      color: #FFFFFF;
+      padding: 12px 20px;
+      border-radius: 10px;
+      font-size: 0.88rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      display: none;
+      z-index: 10000;
+      animation: slideUp 0.3s ease;
+    }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+  <section class="portal-container" id="adminPortalGateway">
+    
+    <!-- Admin Portal Login Form Card -->
+    <div class="portal-card" id="stagePortalLogin">
+      <div class="portal-logo-wrap">
+        <img src="photos/Logo.png" alt="Aureji Claws Logo" onerror="applyImgFallback(this, 'Logo')" />
+      </div>
+      <h2 class="portal-title">Admin Portal</h2>
+      <p class="portal-desc">Sign in with authorized administrator credentials to enter the management system.</p>
+
+      <div class="portal-error-badge" id="portalLoginError"></div>
+
+      <form class="portal-form" onsubmit="handlePortalAuth(event)">
+        <div class="portal-group">
+          <label for="adminUsernameInput">Username / Email</label>
+          <input type="text" id="adminUsernameInput" class="form-input" placeholder="admin" required value="admin" />
+        </div>
+        <div class="portal-group">
+          <label for="adminPasswordInput">Password</label>
+          <input type="password" id="adminPasswordInput" class="form-input" placeholder="admin123" required value="admin123" />
+        </div>
+        <button type="submit" class="btn-portal-submit">Continue to Validation</button>
+      </form>
+      <p style="font-size: 0.78rem; color: var(--text-muted); margin-top: 18px;">
+        Test mode: username: <strong>admin</strong> | password: <strong>admin123</strong>
+      </p>
+    </div>
+
+    <!-- Login OTP Validation Stage -->
+    <div class="portal-card" id="stageOtpValidation" style="display: none;">
+      <div class="portal-logo-wrap">
+        <img src="photos/Logo.png" alt="Aureji Claws Logo" onerror="applyImgFallback(this, 'Logo')" />
+      </div>
+      <h2 class="portal-title">Validate OTP</h2>
+      <p class="portal-desc">
+        A 6-digit one-time password has been dispatched to: <br /><strong id="displayAdminUser" style="color: var(--text-dark);">admin</strong>
+      </p>
+
+      <div class="portal-error-badge" id="portalOtpError"></div>
+
+      <form onsubmit="handleOtpVerification(event)">
+        <div class="otp-digits-container" id="otpGroup">
+          <input type="text" maxlength="1" class="otp-cell" inputmode="numeric" autocomplete="one-time-code" required />
+          <input type="text" maxlength="1" class="otp-cell" inputmode="numeric" required />
+          <input type="text" maxlength="1" class="otp-cell" inputmode="numeric" required />
+          <input type="text" maxlength="1" class="otp-cell" inputmode="numeric" required />
+          <input type="text" maxlength="1" class="otp-cell" inputmode="numeric" required />
+          <input type="text" maxlength="1" class="otp-cell" inputmode="numeric" required />
+        </div>
+
+        <button type="submit" class="btn-portal-submit">Verify & Access Dashboard</button>
+      </form>
+
+      <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 16px;">
+        Didn't receive the email code? 
+        <button type="button" class="portal-footer-link" id="btnResendOtp" onclick="resendOtpCode()" disabled>
+          Resend OTP (<span id="resendCountdown">45</span>s)
+        </button>
+      </p>
+
+      <div style="margin-top: 14px;">
+        <button type="button" class="portal-footer-link" onclick="returnToPortalLogin()" style="font-size: 0.78rem;">
+          ← Return to Admin Login
+        </button>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- Toast Notification -->
+  <div id="toastNotification"></div>
+
+  <script>
+    let generatedOtpCode = '';
+    let resendTimer = null;
+    let countdownSeconds = 45;
+
+    function applyImgFallback(imgElement, text) {
+      const parent = imgElement.parentElement;
+      parent.innerHTML = `<span style="font-size: 0.75rem; font-weight: 600; color: var(--dusty-pink);">${text}</span>`;
+    }
+
+    function showToast(message) {
+      const toast = document.getElementById('toastNotification');
+      toast.textContent = message;
+      toast.style.display = 'block';
+      setTimeout(() => {
+        toast.style.display = 'none';
+      }, 4000);
+    }
+
+    function handlePortalAuth(event) {
+      event.preventDefault();
+      const username = document.getElementById('adminUsernameInput').value.trim();
+      const password = document.getElementById('adminPasswordInput').value;
+      const errorBadge = document.getElementById('portalLoginError');
+
+      if (username === 'admin' && password === 'admin123') {
+        errorBadge.style.display = 'none';
+        
+        // Generate 6-digit OTP
+        generatedOtpCode = Math.floor(100000 + Math.random() * 900000).toString();
+        
+        // Clear any previous OTP validation errors and inputs
+        const otpError = document.getElementById('portalOtpError');
+        otpError.style.display = 'none';
+        otpError.textContent = '';
+        clearOtpInputs();
+
+        showToast(`One-time OTP sent! (Testing Code: ${generatedOtpCode})`);
+
+        // Switch stages
+        document.getElementById('stagePortalLogin').style.display = 'none';
+        document.getElementById('stageOtpValidation').style.display = 'block';
+
+        // Start resend countdown
+        startResendTimer();
+      } else {
+        errorBadge.textContent = 'Invalid administrator credentials. Please use admin / admin123.';
+        errorBadge.style.display = 'block';
+      }
+    }
+
+    function clearOtpInputs() {
+      const cells = document.querySelectorAll('.otp-cell');
+      cells.forEach(cell => cell.value = '');
+      if (cells.length > 0) cells[0].focus();
+    }
+
+    function returnToPortalLogin() {
+      document.getElementById('stageOtpValidation').style.display = 'none';
+      document.getElementById('stagePortalLogin').style.display = 'block';
+      document.getElementById('portalLoginError').style.display = 'none';
+      document.getElementById('portalOtpError').style.display = 'none';
+      if (resendTimer) clearInterval(resendTimer);
+    }
+
+    function startResendTimer() {
+      if (resendTimer) clearInterval(resendTimer);
+      countdownSeconds = 45;
+      const btnResend = document.getElementById('btnResendOtp');
+      const spanCountdown = document.getElementById('resendCountdown');
+      btnResend.disabled = true;
+
+      resendTimer = setInterval(() => {
+        countdownSeconds--;
+        spanCountdown.textContent = countdownSeconds;
+        if (countdownSeconds <= 0) {
+          clearInterval(resendTimer);
+          btnResend.disabled = false;
+          spanCountdown.parentElement.textContent = 'Resend OTP';
+        }
+      }, 1000);
+    }
+
+    function resendOtpCode() {
+      generatedOtpCode = Math.floor(100000 + Math.random() * 900000).toString();
+      
+      // Clear OTP error badge when resending
+      const otpError = document.getElementById('portalOtpError');
+      otpError.style.display = 'none';
+      otpError.textContent = '';
+      clearOtpInputs();
+
+      showToast(`New OTP dispatched! (Testing Code: ${generatedOtpCode})`);
+      
+      // Reset resend text and restart timer
+      const btnResend = document.getElementById('btnResendOtp');
+      btnResend.innerHTML = `Resend OTP (<span id="resendCountdown">45</span>s)`;
+      startResendTimer();
+    }
+
+    // OTP Input Navigation Setup
+    document.addEventListener('DOMContentLoaded', () => {
+      const cells = document.querySelectorAll('.otp-cell');
+      cells.forEach((cell, index) => {
+        cell.addEventListener('input', (e) => {
+          const val = e.target.value;
+          if (val && !isNaN(val)) {
+            e.target.value = val.slice(-1);
+            if (index < cells.length - 1) {
+              cells[index + 1].focus();
+            }
+          } else {
+            e.target.value = '';
+          }
+        });
+
+        cell.addEventListener('keydown', (e) => {
+          if (e.key === 'Backspace' && !cell.value && index > 0) {
+            cells[index - 1].focus();
+          }
+        });
+      });
+    });
+
+function handleOtpVerification(event) {
+  event.preventDefault();
+  const cells = document.querySelectorAll('.otp-cell');
+  let enteredOtp = '';
+  cells.forEach(cell => enteredOtp += cell.value);
+
+  const otpError = document.getElementById('portalOtpError');
+
+  if (enteredOtp === generatedOtpCode) {
+    otpError.style.display = 'none';
+    showToast('Authentication successful! Opening admin dashboard...');
+    setTimeout(() => {
+      window.location.href = 'HeroPage.html'; // Directs to HeroPage.html
+    }, 600);
+  } else {
+    otpError.textContent = `Incorrect verification code. (Hint: Current testing OTP is ${generatedOtpCode})`;
+    otpError.style.display = 'block';
+    clearOtpInputs();
+  }
+}
+  </script>
+</body>
+</html>

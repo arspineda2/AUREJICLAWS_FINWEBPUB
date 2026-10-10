@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Aureji Claws - Booked Services</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Alice&family=Outfit:wght@100..900&display=swap" rel="stylesheet">
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            cream: '#FDF8F6',
+            dustyPink: '#C88A96',
+            dustyPinkHover: '#B57783',
+            periwinkleTitle: '#6B6882',
+            lavenderInput: '#EDEEF5',
+            lavenderInputFocus: '#E2E4F0',
+            borderSoft: '#E5DCD8',
+            textDark: '#2D2930',
+            textMuted: '#8C858F',
+            danger: '#A93226',
+            success: '#27AE60'
+          },
+          fontFamily: {
+            alice: ['Alice', 'serif'],
+            outfit: ['Outfit', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    :root {
+      --bg-cream: #FDF8F6;
+      --bg-white: #FFFFFF;
+      --dusty-pink: #C88A96;
+      --dusty-pink-hover: #B57783;
+      --periwinkle-title: #6B6882;
+      --lavender-input: #EDEEF5;
+      --lavender-input-focus: #E2E4F0;
+      --border-soft: #E5DCD8;
+      --text-dark: #2D2930;
+      --text-muted: #8C858F;
+      --danger: #A93226;
+      --font-alice: 'Alice', serif;
+      --font-outfit: 'Outfit', sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-cream);
+      font-family: var(--font-outfit);
+      color: var(--text-dark);
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Header */
+    .dash-header {
+      height: 70px;
+      background-color: var(--bg-white);
+      border-bottom: 1px solid var(--border-soft);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .dash-logo-box {
+      width: 38px;
+      height: 38px;
+      background-color: var(--bg-cream);
+      border: 1px solid var(--border-soft);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .dash-logo-box img {
+      width: 20px;
+      height: 20px;
+      object-fit: contain;
+    }
+
+    /* Layout */
+    .dash-main-body {
+      display: flex;
+      flex: 1;
+    }
+
+    .dash-sidebar {
+      width: 240px;
+      background-color: var(--bg-white);
+      border-right: 1px solid var(--border-soft);
+      padding: 24px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .nav-dropdown-btn {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 12px;
+      font-weight: 500;
+      font-size: 0.92rem;
+      color: var(--text-dark);
+      background: none;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      text-align: left;
+      transition: color 0.2s ease, background-color 0.2s ease;
+    }
+
+    .nav-dropdown-btn:hover {
+      background-color: var(--lavender-input);
+      color: var(--dusty-pink);
+    }
+
+    .nav-submenu {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      padding-left: 16px;
+      margin-top: 4px;
+    }
+
+    .nav-sublink {
+      padding: 8px 12px;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      text-decoration: none;
+      border-radius: 6px;
+      transition: all 0.2s;
+    }
+
+    .nav-sublink:hover, .nav-sublink.active {
+      color: var(--dusty-pink);
+      background-color: var(--lavender-input);
+      font-weight: 600;
+    }
+
+    /* Content Area */
+    .dash-content-area {
+      flex: 1;
+      padding: 32px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .dash-content-inner {
+      width: 100%;
+      max-width: 900px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .form-input {
+      background-color: var(--lavender-input);
+      border: 1px solid var(--border-soft);
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-size: 0.92rem;
+      color: var(--text-dark);
+      outline: none;
+      transition: background-color 0.2s, border-color 0.2s;
+    }
+
+    .form-input:focus {
+      background-color: var(--lavender-input-focus);
+      border-color: var(--dusty-pink);
+    }
+
+    /* Booking Card */
+    .booking-card {
+      background-color: #FFFFFF;
+      border: 1px solid var(--border-soft);
+      border-radius: 16px;
+      padding: 28px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.02);
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    /* Toast Notification */
+    #toastNotification {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: #2D2930;
+      color: #FFFFFF;
+      padding: 12px 20px;
+      border-radius: 10px;
+      font-size: 0.88rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      display: none;
+      z-index: 10000;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="dash-header">
+    <div class="flex items-center gap-3">
+      <div class="dash-logo-box">
+        <img src="photos/Logo.png" alt="Logo" onerror="applyImgFallback(this, 'A')" />
+      </div>
+      <h1 class="font-alice text-2xl text-dustyPink">Admin Dashboard</h1>
+    </div>
+    <div class="flex items-center gap-6 text-sm">
+      <a href="../index.html" class="text-textMuted hover:text-dustyPink font-medium transition">switch view</a>
+      <span class="text-textDark font-medium">admin</span>
+      <a href="login.html" class="text-danger hover:underline font-medium">Log out</a>
+    </div>
+  </header>
+
+  <!-- Main Body -->
+  <div class="dash-main-body">
+    <!-- Left Sidebar Navigation -->
+    <aside class="dash-sidebar">
+      <!-- Home Dropdown -->
+      <div>
+        <button class="nav-dropdown-btn" onclick="toggleSubMenu('homeSub')">
+          <span>Home</span>
+          <span id="homeIcon">▼</span>
+        </button>
+        <div id="homeSub" class="nav-submenu" style="display: none;">
+          <a href="HeroPage.html" class="nav-sublink">Hero page</a>
+          <a href="post.html" class="nav-sublink">Instagram Posts</a>
+        </div>
+      </div>
+
+      <!-- Press-on Dropdown -->
+      <div>
+        <button class="nav-dropdown-btn" onclick="toggleSubMenu('pressSub')">
+          <span>Press-on</span>
+          <span id="pressIcon">▼</span>
+        </button>
+        <div id="pressSub" class="nav-submenu" style="display: none;">
+          <a href="products.html" class="nav-sublink">Products</a>
+          <a href="orders.html" class="nav-sublink">Orders</a>
+        </div>
+      </div>
+
+      <!-- Services Dropdown -->
+      <div>
+        <button class="nav-dropdown-btn" onclick="toggleSubMenu('servSub')">
+          <span>Services</span>
+          <span id="servIcon">▲</span>
+        </button>
+        <div id="servSub" class="nav-submenu">
+          <a href="servicesList.html" class="nav-sublink">Services List</a>
+          <a href="booked.html" class="nav-sublink active">Booked</a>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Center Workspace -->
+    <main class="dash-content-area">
+      <div class="dash-content-inner">
+        <h2 class="font-alice text-3xl text-periwinkleTitle">Booked Appointments</h2>
+
+        <!-- Top Box: Get In Touch Contact Details Editor -->
+        <div class="bg-white p-6 rounded-2xl border border-borderSoft shadow-sm flex flex-col gap-4">
+          <h3 class="font-alice text-xl text-dustyPink">Get in Touch Contact Settings</h3>
+          
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="flex flex-col gap-1.5">
+              <label class="text-xs font-semibold text-periwinkleTitle">Email Us</label>
+              <input type="email" id="inputContactEmail" class="form-input" value="aureji2025@gmail.com" />
+            </div>
+
+            <div class="flex flex-col gap-1.5">
+              <label class="text-xs font-semibold text-periwinkleTitle">Contact Us</label>
+              <input type="text" id="inputContactPhone" class="form-input" value="969-514-7202" />
+            </div>
+
+            <div class="flex flex-col gap-1.5">
+              <label class="text-xs font-semibold text-periwinkleTitle">Book via Direct Message</label>
+              <input type="text" id="inputContactDM" class="form-input" value="@aurejiclaws" />
+            </div>
+          </div>
+
+          <div class="flex justify-end pt-1">
+            <button onclick="saveContactSettings()" class="bg-lavenderInput hover:bg-lavenderInputFocus text-periwinkleTitle font-semibold px-6 py-2 rounded-xl border border-borderSoft transition cursor-pointer text-sm">
+              Update Contact Info
+            </button>
+          </div>
+        </div>
+
+        <!-- Bookings Container -->
+        <div id="bookingsContainer" class="flex flex-col gap-6">
+          <!-- Rendered via JS -->
+        </div>
+
+        <!-- See Sample Toggle Button -->
+        <div class="flex justify-center mt-2">
+          <button onclick="toggleSampleBooking()" id="seeSampleBtn" class="text-xs text-dustyPink font-semibold hover:underline cursor-pointer bg-transparent border-none">
+            See Sample
+          </button>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toastNotification"></div>
+
+  <script>
+    let sampleActive = false;
+    let sampleBooking = {
+      bookingNum: "01",
+      fullName: "Sample Customer",
+      email: "sample@gmail.com",
+      service: "Nail Extensions",
+      dateTime: "10/10/2026, 1:07:57 AM",
+      remarks: "", // Hidden when empty
+      status: "Pending" // Pending, Verified, Rejected
+    };
+
+    function applyImgFallback(imgElement, text) {
+      const parent = imgElement.parentElement;
+      parent.innerHTML = `<span style="font-size: 0.75rem; font-weight: 600; color: var(--dusty-pink);">${text}</span>`;
+    }
+
+    function showToast(message) {
+      const toast = document.getElementById('toastNotification');
+      toast.textContent = message;
+      toast.style.display = 'block';
+      setTimeout(() => { toast.style.display = 'none'; }, 3500);
+    }
+
+    function toggleSubMenu(id) {
+      const el = document.getElementById(id);
+      const isHidden = el.style.display === 'none';
+      el.style.display = isHidden ? 'flex' : 'none';
+      const iconId = id.replace('Sub', 'Icon');
+      document.getElementById(iconId).textContent = isHidden ? '▲' : '▼';
+    }
+
+    function saveContactSettings() {
+      showToast("Contact details updated successfully!");
+    }
+
+    function toggleSampleBooking() {
+      sampleActive = !sampleActive;
+      const btn = document.getElementById('seeSampleBtn');
+      btn.textContent = sampleActive ? "Hide Sample" : "See Sample";
+      renderBookings();
+    }
+
+    function setBookingStatus(statusStr) {
+      sampleBooking.status = statusStr;
+      if (statusStr === 'Verified') showToast("Booking status changed to Booked!");
+      else if (statusStr === 'Pending') showToast("Booking status set to Pending.");
+      else if (statusStr === 'Rejected') showToast("Booking status changed to Rejected!");
+      renderBookings();
+    }
+
+    function renderBookings() {
+      const container = document.getElementById('bookingsContainer');
+      container.innerHTML = '';
+
+      if (!sampleActive) {
+        container.innerHTML = `
+          <div class="bg-white border border-borderSoft rounded-2xl p-16 text-center flex flex-col items-center justify-center gap-4 shadow-sm">
+            <div class="w-14 h-14 bg-lavenderInput rounded-xl flex items-center justify-center text-periwinkleTitle mb-2">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+            </div>
+            <h3 class="font-alice text-2xl text-textDark">No booked customer entries yet</h3>
+            <p class="text-xs text-textMuted max-w-sm leading-relaxed">
+              When a customer submits a service booking request on your website, their appointment details and contact info will appear here.
+            </p>
+          </div>
+        `;
+      } else {
+        const card = document.createElement('div');
+        card.className = "booking-card";
+
+        let statusBadgeClass = "bg-amber-100 text-amber-800";
+        let statusDisplayTitle = "Booking (Pending)";
+
+        if (sampleBooking.status === "Verified") {
+          statusBadgeClass = "bg-green-100 text-green-800";
+          statusDisplayTitle = "Booked";
+        } else if (sampleBooking.status === "Rejected") {
+          statusBadgeClass = "bg-red-100 text-red-800";
+          statusDisplayTitle = "Rejected Booking";
+        }
+
+        let remarksHtml = sampleBooking.remarks ? `<div><strong>Remarks:</strong> ${sampleBooking.remarks}</div>` : '';
+
+        card.innerHTML = `
+          <div class="flex items-start justify-between">
+            <h3 class="font-alice text-2xl text-dustyPink">Booking #${sampleBooking.bookingNum}</h3>
+            <span class="px-4 py-1.5 rounded-full text-xs font-semibold ${statusBadgeClass}">
+              ${statusDisplayTitle}
+            </span>
+          </div>
+
+          <div class="flex flex-col gap-2.5 text-sm text-textDark">
+            <div><strong>Full name:</strong> ${sampleBooking.fullName}</div>
+            <div><strong>Email:</strong> ${sampleBooking.email}</div>
+            <div><strong>Service:</strong> ${sampleBooking.service}</div>
+            <div><strong>Selected Date and Time:</strong> ${sampleBooking.dateTime}</div>
+            ${remarksHtml}
+          </div>
+
+          <div class="pt-4 border-t border-borderSoft flex items-center justify-between">
+            <span class="text-xs font-semibold text-periwinkleTitle">Change Status:</span>
+            <div class="flex items-center gap-2">
+              <button onclick="setBookingStatus('Pending')" class="px-4 py-2 text-xs font-semibold rounded-xl border transition cursor-pointer ${sampleBooking.status === 'Pending' ? 'bg-amber-200 border-amber-400 text-amber-900' : 'bg-lavenderInput hover:bg-lavenderInputFocus text-textDark'}">
+                Pending
+              </button>
+              <button onclick="setBookingStatus('Verified')" class="px-4 py-2 text-xs font-semibold rounded-xl border transition cursor-pointer ${sampleBooking.status === 'Verified' ? 'bg-green-200 border-green-400 text-green-900' : 'bg-green-50 hover:bg-green-100 text-green-700'}">
+                Verified
+              </button>
+              <button onclick="setBookingStatus('Rejected')" class="px-4 py-2 text-xs font-semibold rounded-xl border transition cursor-pointer ${sampleBooking.status === 'Rejected' ? 'bg-red-200 border-red-400 text-red-900' : 'bg-red-50 hover:bg-red-100 text-danger'}">
+                Rejected
+              </button>
+            </div>
+          </div>
+        `;
+
+        container.appendChild(card);
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      renderBookings();
+    });
+  </script>
+</body>
+</html>

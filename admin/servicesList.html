@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Aureji Claws - Services List Manager</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Alice&family=Outfit:wght@100..900&display=swap" rel="stylesheet">
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            cream: '#FDF8F6',
+            dustyPink: '#C88A96',
+            dustyPinkHover: '#B57783',
+            periwinkleTitle: '#6B6882',
+            lavenderInput: '#EDEEF5',
+            lavenderInputFocus: '#E2E4F0',
+            borderSoft: '#E5DCD8',
+            textDark: '#2D2930',
+            textMuted: '#8C858F',
+            danger: '#A93226'
+          },
+          fontFamily: {
+            alice: ['Alice', 'serif'],
+            outfit: ['Outfit', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    :root {
+      --bg-cream: #FDF8F6;
+      --bg-white: #FFFFFF;
+      --dusty-pink: #C88A96;
+      --dusty-pink-hover: #B57783;
+      --periwinkle-title: #6B6882;
+      --lavender-input: #EDEEF5;
+      --lavender-input-focus: #E2E4F0;
+      --border-soft: #E5DCD8;
+      --text-dark: #2D2930;
+      --text-muted: #8C858F;
+      --danger: #A93226;
+      --font-alice: 'Alice', serif;
+      --font-outfit: 'Outfit', sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-cream);
+      font-family: var(--font-outfit);
+      color: var(--text-dark);
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Header */
+    .dash-header {
+      height: 70px;
+      background-color: var(--bg-white);
+      border-bottom: 1px solid var(--border-soft);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .dash-logo-box {
+      width: 38px;
+      height: 38px;
+      background-color: var(--bg-cream);
+      border: 1px solid var(--border-soft);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .dash-logo-box img {
+      width: 20px;
+      height: 20px;
+      object-fit: contain;
+    }
+
+    /* Layout */
+    .dash-main-body {
+      display: flex;
+      flex: 1;
+    }
+
+    .dash-sidebar {
+      width: 240px;
+      background-color: var(--bg-white);
+      border-right: 1px solid var(--border-soft);
+      padding: 24px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .nav-dropdown-btn {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 12px;
+      font-weight: 500;
+      font-size: 0.92rem;
+      color: var(--text-dark);
+      background: none;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      text-align: left;
+      transition: color 0.2s ease, background-color 0.2s ease;
+    }
+
+    .nav-dropdown-btn:hover {
+      background-color: var(--lavender-input);
+      color: var(--dusty-pink);
+    }
+
+    .nav-submenu {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      padding-left: 16px;
+      margin-top: 4px;
+    }
+
+    .nav-sublink {
+      padding: 8px 12px;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      text-decoration: none;
+      border-radius: 6px;
+      transition: all 0.2s;
+    }
+
+    .nav-sublink:hover, .nav-sublink.active {
+      color: var(--dusty-pink);
+      background-color: var(--lavender-input);
+      font-weight: 600;
+    }
+
+    /* Content Area */
+    .dash-content-area {
+      flex: 1;
+      padding: 32px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .dash-content-inner {
+      width: 100%;
+      max-width: 900px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .form-input {
+      background-color: var(--lavender-input);
+      border: 1px solid var(--border-soft);
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-size: 0.92rem;
+      color: var(--text-dark);
+      outline: none;
+      transition: background-color 0.2s, border-color 0.2s;
+    }
+
+    .form-input:focus {
+      background-color: var(--lavender-input-focus);
+      border-color: var(--dusty-pink);
+    }
+
+    /* Service Menu Live Box */
+    .service-item-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 14px;
+      border-bottom: 1px solid #F0ECE8;
+      border-radius: 8px;
+      transition: background-color 0.15s ease;
+    }
+
+    .service-item-row:hover {
+      background-color: #F8F5F2;
+    }
+
+    /* Action Buttons */
+    .action-btn-sm {
+      padding: 4px 10px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    /* Modal Backdrop */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.35);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 999;
+    }
+
+    /* Toast Notification */
+    #toastNotification {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: #2D2930;
+      color: #FFFFFF;
+      padding: 12px 20px;
+      border-radius: 10px;
+      font-size: 0.88rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      display: none;
+      z-index: 10000;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="dash-header">
+    <div class="flex items-center gap-3">
+      <div class="dash-logo-box">
+        <img src="photos/Logo.png" alt="Logo" onerror="applyImgFallback(this, 'A')" />
+      </div>
+      <h1 class="font-alice text-2xl text-dustyPink">Admin Dashboard</h1>
+    </div>
+    <div class="flex items-center gap-6 text-sm">
+      <a href="../index.html" class="text-textMuted hover:text-dustyPink font-medium transition">switch view</a>
+      <span class="text-textDark font-medium">admin</span>
+      <a href="login.html" class="text-danger hover:underline font-medium">Log out</a>
+    </div>
+  </header>
+
+  <!-- Main Body -->
+  <div class="dash-main-body">
+    <!-- Left Sidebar Navigation -->
+    <aside class="dash-sidebar">
+      <!-- Home Dropdown -->
+      <div>
+        <button class="nav-dropdown-btn" onclick="toggleSubMenu('homeSub')">
+          <span>Home</span>
+          <span id="homeIcon">▼</span>
+        </button>
+        <div id="homeSub" class="nav-submenu" style="display: none;">
+          <a href="HeroPage.html" class="nav-sublink">Hero page</a>
+          <a href="post.html" class="nav-sublink">Instagram Posts</a>
+        </div>
+      </div>
+
+      <!-- Press-on Dropdown -->
+      <div>
+        <button class="nav-dropdown-btn" onclick="toggleSubMenu('pressSub')">
+          <span>Press-on</span>
+          <span id="pressIcon">▼</span>
+        </button>
+        <div id="pressSub" class="nav-submenu" style="display: none;">
+          <a href="products.html" class="nav-sublink">Products</a>
+          <a href="orders.html" class="nav-sublink">Orders</a>
+        </div>
+      </div>
+
+      <!-- Services Dropdown -->
+      <div>
+        <button class="nav-dropdown-btn" onclick="toggleSubMenu('servSub')">
+          <span>Services</span>
+          <span id="servIcon">▲</span>
+        </button>
+        <div id="servSub" class="nav-submenu">
+          <a href="servicesList.html" class="nav-sublink active">Services List</a>
+          <a href="booked.html" class="nav-sublink">Booked</a>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Center Workspace -->
+    <main class="dash-content-area">
+      <div class="dash-content-inner">
+        <h2 class="font-alice text-3xl text-periwinkleTitle">Edit Services List</h2>
+
+        <!-- Top Box: Header Metadata Form -->
+        <div class="bg-white p-6 rounded-2xl border border-borderSoft shadow-sm flex flex-col gap-4">
+          <h3 class="font-alice text-xl text-dustyPink">Service Menu Header Configuration</h3>
+          
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="flex flex-col gap-1.5">
+              <label class="text-xs font-semibold text-periwinkleTitle">Menu Title</label>
+              <input type="text" id="inputMenuTitle" class="form-input" value="Service Menu" oninput="updateHeaderPreview()" />
+            </div>
+
+            <div class="flex flex-col gap-1.5 md:col-span-2">
+              <label class="text-xs font-semibold text-periwinkleTitle">Subtitle / Description Note</label>
+              <input type="text" id="inputMenuNote" class="form-input" value="For custom press-on nails, please message us via instagram dm: @aurejiclaws" oninput="updateHeaderPreview()" />
+            </div>
+          </div>
+
+          <div class="flex justify-between items-center pt-2">
+            <div class="flex items-center gap-2 w-1/2">
+              <label class="text-xs font-semibold text-periwinkleTitle whitespace-nowrap">Button Text</label>
+              <input type="text" id="inputMenuBtnText" class="form-input flex-1" value="Book a service" oninput="updateHeaderPreview()" />
+            </div>
+            <button onclick="saveHeaderConfig()" class="bg-lavenderInput hover:bg-lavenderInputFocus text-periwinkleTitle font-semibold px-6 py-2 rounded-xl border border-borderSoft transition cursor-pointer">
+              Update Header
+            </button>
+          </div>
+        </div>
+
+        <!-- Service Menu Live Preview & Interactive CRUD Section -->
+        <div class="bg-white p-8 rounded-2xl border border-borderSoft shadow-sm flex flex-col gap-6">
+          
+          <!-- Live Service Header -->
+          <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-borderSoft">
+            <div>
+              <h1 class="font-alice text-3xl text-textDark" id="previewHeaderTitle">Service Menu</h1>
+              <p class="text-xs text-textMuted mt-1" id="previewHeaderNote">For custom press-on nails, please message us via instagram dm: @aurejiclaws</p>
+            </div>
+            <a href="#" class="bg-dustyPink text-white text-xs font-semibold px-5 py-2.5 rounded-full hover:bg-dustyPinkHover transition text-center self-start md:self-auto" id="previewHeaderBtn">Book a service</a>
+          </div>
+
+          <!-- Dynamic Categories & Items Container -->
+          <div id="categoriesContainer" class="flex flex-col gap-8">
+            <!-- Rendered by JS -->
+          </div>
+
+          <!-- Add New Category Button at bottom -->
+          <div class="pt-4 border-t border-borderSoft flex justify-center">
+            <button onclick="openAddCategoryModal()" class="bg-lavenderInput hover:bg-lavenderInputFocus text-periwinkleTitle font-semibold px-6 py-2.5 rounded-xl border border-borderSoft transition cursor-pointer text-sm">
+              + Add Category
+            </button>
+          </div>
+
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- MODAL: Add / Edit Item -->
+  <div id="itemModal" class="modal-backdrop" style="display: none;">
+    <div class="bg-white p-6 rounded-2xl border border-borderSoft w-full max-w-md shadow-lg flex flex-col gap-4">
+      <h3 class="font-alice text-xl text-dustyPink" id="itemModalTitle">Add Service Item</h3>
+      
+      <div class="flex flex-col gap-1.5">
+        <label class="text-xs font-semibold text-periwinkleTitle">Service Name</label>
+        <input type="text" id="modalItemName" class="form-input" placeholder="e.g. Gel Manicure" />
+      </div>
+
+      <div class="flex flex-col gap-1.5">
+        <label class="text-xs font-semibold text-periwinkleTitle">Price / Text</label>
+        <input type="text" id="modalItemPrice" class="form-input" placeholder="e.g. ₱300 or starting price: ₱600+" />
+      </div>
+
+      <div class="flex justify-end gap-2 pt-2">
+        <button onclick="closeItemModal()" class="px-4 py-2 text-xs font-semibold text-textMuted hover:bg-lavenderInput rounded-lg">Cancel</button>
+        <button onclick="saveItemFromModal()" class="bg-dustyPink hover:bg-dustyPinkHover text-white px-5 py-2 text-xs font-semibold rounded-lg shadow-sm">Save Service</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Add / Edit Category -->
+  <div id="categoryModal" class="modal-backdrop" style="display: none;">
+    <div class="bg-white p-6 rounded-2xl border border-borderSoft w-full max-w-md shadow-lg flex flex-col gap-4">
+      <h3 class="font-alice text-xl text-dustyPink" id="categoryModalTitle">Add Category</h3>
+      
+      <div class="flex flex-col gap-1.5">
+        <label class="text-xs font-semibold text-periwinkleTitle">Category Title</label>
+        <input type="text" id="modalCategoryTitle" class="form-input" placeholder="e.g. Nails:" />
+      </div>
+
+      <div class="flex justify-end gap-2 pt-2">
+        <button onclick="closeCategoryModal()" class="px-4 py-2 text-xs font-semibold text-textMuted hover:bg-lavenderInput rounded-lg">Cancel</button>
+        <button onclick="saveCategoryFromModal()" class="bg-dustyPink hover:bg-dustyPinkHover text-white px-5 py-2 text-xs font-semibold rounded-lg shadow-sm">Save Category</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toastNotification"></div>
+
+  <script>
+    // Initial Data Model matching your services.html content
+    let serviceCategories = [
+      {
+        id: 1,
+        title: "Nails:",
+        items: [
+          { id: 101, name: "Gel Manicure", price: "₱300" },
+          { id: 102, name: "Cat Eye (Magnet) Gel Manicure", price: "₱400" },
+          { id: 103, name: "Gel French Manicure", price: "₱400" }
+        ]
+      },
+      {
+        id: 2,
+        title: "Nail Extensions:",
+        items: [
+          { id: 201, name: "Custom Press-on", price: "starting price: ₱600+" },
+          { id: 202, name: "Gel-X", price: "₱1300" }
+        ]
+      },
+      {
+        id: 3,
+        title: "Nail Arts and other add ons:",
+        items: [
+          { id: 301, name: "Cat Eye", price: "₱100" },
+          { id: 302, name: "Nail Sticker", price: "₱100" },
+          { id: 303, name: "Chrome", price: "₱100" },
+          { id: 304, name: "French Tip", price: "₱150" },
+          { id: 305, name: "Ombre", price: "₱100" },
+          { id: 306, name: "3D Nail Art", price: "₱200" },
+          { id: 307, name: "Gel Nail Art", price: "₱300" },
+          { id: 308, name: "Nail Stones", price: "₱100" }
+        ]
+      },
+      {
+        id: 4,
+        title: "Removal:",
+        items: [
+          { id: 401, name: "Gel-X Removal", price: "₱50" },
+          { id: 402, name: "Gel-X Removal (for extensions not done at Aurejiclaws)", price: "₱100" }
+        ]
+      }
+    ];
+
+    let activeCatId = null;
+    let activeItemId = null; // null = adding new
+
+    function applyImgFallback(imgElement, text) {
+      const parent = imgElement.parentElement;
+      parent.innerHTML = `<span style="font-size: 0.75rem; font-weight: 600; color: var(--dusty-pink);">${text}</span>`;
+    }
+
+    function showToast(message) {
+      const toast = document.getElementById('toastNotification');
+      toast.textContent = message;
+      toast.style.display = 'block';
+      setTimeout(() => { toast.style.display = 'none'; }, 3500);
+    }
+
+    function toggleSubMenu(id) {
+      const el = document.getElementById(id);
+      const isHidden = el.style.display === 'none';
+      el.style.display = isHidden ? 'flex' : 'none';
+      const iconId = id.replace('Sub', 'Icon');
+      document.getElementById(iconId).textContent = isHidden ? '▲' : '▼';
+    }
+
+    /* Header Config Functions */
+    function updateHeaderPreview() {
+      document.getElementById('previewHeaderTitle').textContent = document.getElementById('inputMenuTitle').value;
+      document.getElementById('previewHeaderNote').textContent = document.getElementById('inputMenuNote').value;
+      document.getElementById('previewHeaderBtn').textContent = document.getElementById('inputMenuBtnText').value;
+    }
+
+    function saveHeaderConfig() {
+      showToast('Service Menu header updated successfully!');
+    }
+
+    /* Render Categories & Items */
+    function renderServicesList() {
+      const container = document.getElementById('categoriesContainer');
+      container.innerHTML = '';
+
+      serviceCategories.forEach(cat => {
+        const catBox = document.createElement('div');
+        catBox.className = "flex flex-col gap-3";
+
+        // Category Header Row
+        let itemsListHtml = cat.items.map(item => `
+          <div class="service-item-row">
+            <span class="font-alice text-sm text-textDark">${item.name}</span>
+            <div class="flex items-center gap-3">
+              <span class="font-alice text-sm text-textDark">${item.price}</span>
+              <div class="flex items-center gap-1 ml-2">
+                <button onclick="openEditItemModal(${cat.id}, ${item.id})" class="action-btn-sm bg-lavenderInput hover:bg-lavenderInputFocus text-periwinkleTitle">Edit</button>
+                <button onclick="deleteItem(${cat.id}, ${item.id})" class="action-btn-sm bg-red-50 hover:bg-red-100 text-danger">Delete</button>
+              </div>
+            </div>
+          </div>
+        `).join('');
+
+        catBox.innerHTML = `
+          <div class="flex items-center justify-between pb-1 border-b border-dustyPink/30">
+            <div class="flex items-center gap-3">
+              <h2 class="font-alice text-2xl text-dustyPink">${cat.title}</h2>
+              <button onclick="openEditCategoryModal(${cat.id})" class="action-btn-sm bg-lavenderInput hover:bg-lavenderInputFocus text-periwinkleTitle">Edit Title</button>
+              <button onclick="deleteCategory(${cat.id})" class="action-btn-sm bg-red-50 hover:bg-red-100 text-danger">Delete Category</button>
+            </div>
+            <button onclick="openAddItemModal(${cat.id})" class="text-xs font-semibold text-dustyPink hover:underline cursor-pointer">
+              + Add a service
+            </button>
+          </div>
+          <div class="flex flex-col gap-1 pl-1">
+            ${itemsListHtml}
+          </div>
+        `;
+
+        container.appendChild(catBox);
+      });
+    }
+
+    /* Category Modal & CRUD */
+    function openAddCategoryModal() {
+      activeCatId = null;
+      document.getElementById('categoryModalTitle').textContent = "Add Category";
+      document.getElementById('modalCategoryTitle').value = "";
+      document.getElementById('categoryModal').style.display = "flex";
+    }
+
+    function openEditCategoryModal(catId) {
+      activeCatId = catId;
+      const cat = serviceCategories.find(c => c.id === catId);
+      if (!cat) return;
+
+      document.getElementById('categoryModalTitle').textContent = "Edit Category Title";
+      document.getElementById('modalCategoryTitle').value = cat.title;
+      document.getElementById('categoryModal').style.display = "flex";
+    }
+
+    function closeCategoryModal() {
+      document.getElementById('categoryModal').style.display = "none";
+    }
+
+    function saveCategoryFromModal() {
+      const title = document.getElementById('modalCategoryTitle').value.trim();
+      if (!title) {
+        showToast("Please enter a category title!");
+        return;
+      }
+
+      if (activeCatId === null) {
+        // Add
+        const newCatId = serviceCategories.length ? Math.max(...serviceCategories.map(c => c.id)) + 1 : 1;
+        serviceCategories.push({ id: newCatId, title, items: [] });
+        showToast(`Added category "${title}"`);
+      } else {
+        // Edit
+        const cat = serviceCategories.find(c => c.id === activeCatId);
+        if (cat) cat.title = title;
+        showToast("Category title updated!");
+      }
+
+      closeCategoryModal();
+      renderServicesList();
+    }
+
+    function deleteCategory(catId) {
+      const cat = serviceCategories.find(c => c.id === catId);
+      if (!cat) return;
+      if (confirm(`Are you sure you want to delete the category "${cat.title}" and all its services?`)) {
+        serviceCategories = serviceCategories.filter(c => c.id !== catId);
+        renderServicesList();
+        showToast(`Category deleted!`);
+      }
+    }
+
+    /* Item Modal & CRUD */
+    function openAddItemModal(catId) {
+      activeCatId = catId;
+      activeItemId = null;
+      document.getElementById('itemModalTitle').textContent = "Add Service Item";
+      document.getElementById('modalItemName').value = "";
+      document.getElementById('modalItemPrice').value = "";
+      document.getElementById('itemModal').style.display = "flex";
+    }
+
+    function openEditItemModal(catId, itemId) {
+      activeCatId = catId;
+      activeItemId = itemId;
+      const cat = serviceCategories.find(c => c.id === catId);
+      const item = cat ? cat.items.find(i => i.id === itemId) : null;
+      if (!item) return;
+
+      document.getElementById('itemModalTitle').textContent = "Edit Service Item";
+      document.getElementById('modalItemName').value = item.name;
+      document.getElementById('modalItemPrice').value = item.price;
+      document.getElementById('itemModal').style.display = "flex";
+    }
+
+    function closeItemModal() {
+      document.getElementById('itemModal').style.display = "none";
+    }
+
+    function saveItemFromModal() {
+      const name = document.getElementById('modalItemName').value.trim();
+      const price = document.getElementById('modalItemPrice').value.trim();
+
+      if (!name || !price) {
+        showToast("Please fill up both service name and price!");
+        return;
+      }
+
+      const cat = serviceCategories.find(c => c.id === activeCatId);
+      if (!cat) return;
+
+      if (activeItemId === null) {
+        // Add item
+        const newItemId = Date.now();
+        cat.items.push({ id: newItemId, name, price });
+        showToast(`Added "${name}" to ${cat.title}`);
+      } else {
+        // Edit item
+        const item = cat.items.find(i => i.id === activeItemId);
+        if (item) {
+          item.name = name;
+          item.price = price;
+          showToast(`Updated "${name}"`);
+        }
+      }
+
+      closeItemModal();
+      renderServicesList();
+    }
+
+    function deleteItem(catId, itemId) {
+      const cat = serviceCategories.find(c => c.id === catId);
+      if (!cat) return;
+      const item = cat.items.find(i => i.id === itemId);
+      if (item && confirm(`Delete service "${item.name}"?`)) {
+        cat.items = cat.items.filter(i => i.id !== itemId);
+        renderServicesList();
+        showToast(`Service deleted!`);
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      renderServicesList();
+    });
+  </script>
+</body>
+</html>

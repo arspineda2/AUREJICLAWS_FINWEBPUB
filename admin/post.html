@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Aureji Claws - Instagram Posts Manager</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Alice&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            cream: '#FDF8F6',
+            dustyPink: '#C88A96',
+            dustyPinkHover: '#B57783',
+            periwinkleTitle: '#6B6882',
+            lavenderInput: '#EDEEF5',
+            lavenderInputFocus: '#E2E4F0',
+            borderSoft: '#E5DCD8',
+            textDark: '#2D2930',
+            textMuted: '#8C858F',
+            danger: '#A93226'
+          },
+          fontFamily: {
+            alice: ['Alice', 'serif'],
+            outfit: ['Outfit', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    :root {
+      --bg-cream: #FDF8F6;
+      --bg-white: #FFFFFF;
+      --dusty-pink: #C88A96;
+      --dusty-pink-hover: #B57783;
+      --periwinkle-title: #6B6882;
+      --lavender-input: #EDEEF5;
+      --lavender-input-focus: #E2E4F0;
+      --border-soft: #E5DCD8;
+      --text-dark: #2D2930;
+      --text-muted: #8C858F;
+      --danger: #A93226;
+      --font-alice: 'Alice', serif;
+      --font-outfit: 'Outfit', sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-cream);
+      font-family: var(--font-outfit);
+      color: var(--text-dark);
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Header */
+    .dash-header {
+      height: 70px;
+      background-color: var(--bg-white);
+      border-bottom: 1px solid var(--border-soft);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .dash-logo-box {
+      width: 38px;
+      height: 38px;
+      background-color: var(--bg-cream);
+      border: 1px solid var(--border-soft);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .dash-logo-box img {
+      width: 20px;
+      height: 20px;
+      object-fit: contain;
+    }
+
+    /* Dashboard Layout */
+    .dash-main-body {
+      display: flex;
+      flex: 1;
+    }
+
+    .dash-sidebar {
+      width: 240px;
+      background-color: var(--bg-white);
+      border-right: 1px solid var(--border-soft);
+      padding: 24px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .nav-dropdown-btn {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 12px;
+      font-weight: 500;
+      font-size: 0.92rem;
+      color: var(--text-dark);
+      background: none;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      text-align: left;
+      transition: color 0.2s ease, background-color 0.2s ease;
+    }
+
+    .nav-dropdown-btn:hover {
+      background-color: var(--lavender-input);
+      color: var(--dusty-pink);
+    }
+
+    .nav-submenu {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      padding-left: 16px;
+      margin-top: 4px;
+    }
+
+    .nav-sublink {
+      padding: 8px 12px;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      text-decoration: none;
+      border-radius: 6px;
+      transition: all 0.2s;
+    }
+
+    .nav-sublink:hover, .nav-sublink.active {
+      color: var(--dusty-pink);
+      background-color: var(--lavender-input);
+      font-weight: 600;
+    }
+
+    /* Content Area Centering */
+    .dash-content-area {
+      flex: 1;
+      padding: 32px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .dash-content-inner {
+      width: 100%;
+      max-width: 900px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .form-input {
+      background-color: var(--lavender-input);
+      border: 1px solid var(--border-soft);
+      border-radius: 10px;
+      padding: 12px 14px;
+      font-size: 0.95rem;
+      color: var(--text-dark);
+      outline: none;
+      transition: background-color 0.2s, border-color 0.2s;
+    }
+
+    .form-input:focus {
+      background-color: var(--lavender-input-focus);
+      border-color: var(--dusty-pink);
+    }
+
+    /* Post Slot Cards */
+    .post-slot-card {
+      background-color: #EFECE9;
+      border: 2px solid transparent;
+      border-radius: 16px;
+      height: 220px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .post-slot-card.active {
+      border-color: var(--dusty-pink);
+      background-color: #EAE5E2;
+    }
+
+    .slot-badge {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background-color: #FFFFFF;
+      border: 1px solid var(--border-soft);
+      font-size: 0.68rem;
+      font-weight: 600;
+      color: var(--text-dark);
+      padding: 2px 8px;
+      border-radius: 12px;
+    }
+
+    /* Toast Notification */
+    #toastNotification {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: #2D2930;
+      color: #FFFFFF;
+      padding: 12px 20px;
+      border-radius: 10px;
+      font-size: 0.88rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      display: none;
+      z-index: 10000;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="dash-header">
+    <div class="flex items-center gap-3">
+      <div class="dash-logo-box">
+        <img src="photos/Logo.png" alt="Logo" onerror="applyImgFallback(this, 'A')" />
+      </div>
+      <h1 class="font-alice text-2xl text-dustyPink">Admin Dashboard</h1>
+    </div>
+    <div class="flex items-center gap-6 text-sm">
+      <a href="../index.html" class="text-textMuted hover:text-dustyPink font-medium transition">switch view</a>
+      <span class="text-textDark font-medium">admin</span>
+      <a href="login.html" class="text-danger hover:underline font-medium">Log out</a>
+    </div>
+  </header>
+
+  <!-- Main Body -->
+  <div class="dash-main-body">
+    <!-- Left Sidebar Navigation -->
+    <aside class="dash-sidebar">
+      <!-- Home Dropdown -->
+      <div>
+        <button class="nav-dropdown-btn" onclick="toggleSubMenu('homeSub')">
+          <span>Home</span>
+          <span id="homeIcon">▲</span>
+        </button>
+        <div id="homeSub" class="nav-submenu">
+          <a href="HeroPage.html" class="nav-sublink">Hero page</a>
+          <a href="post.html" class="nav-sublink active">Instagram Posts</a>
+        </div>
+      </div>
+
+      <!-- Press-on Dropdown -->
+      <div>
+        <button class="nav-dropdown-btn" onclick="toggleSubMenu('pressSub')">
+          <span>Press-on</span>
+          <span id="pressIcon">▼</span>
+        </button>
+        <div id="pressSub" class="nav-submenu" style="display: none;">
+          <a href="products.html" class="nav-sublink">Products</a>
+          <a href="orders.html" class="nav-sublink">Orders</a>
+        </div>
+      </div>
+
+      <!-- Services Dropdown -->
+      <div>
+        <button class="nav-dropdown-btn" onclick="toggleSubMenu('servSub')">
+          <span>Services</span>
+          <span id="servIcon">▼</span>
+        </button>
+        <div id="servSub" class="nav-submenu" style="display: none;">
+          <a href="servicesList.html" class="nav-sublink">Services List</a>
+          <a href="booked.html" class="nav-sublink">Booked</a>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Center Workspace -->
+    <main class="dash-content-area">
+      <div class="dash-content-inner">
+        <h2 class="font-alice text-3xl text-periwinkleTitle">Edit Instagram Post</h2>
+
+        <!-- Top Controls: Link, Photo, Update -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end bg-white p-6 rounded-2xl border border-borderSoft shadow-sm">
+          <div class="flex flex-col gap-1.5">
+            <label class="text-xs font-semibold text-periwinkleTitle">Add Post Link</label>
+            <input type="text" id="inputPostLink" class="form-input" placeholder="https://instagram.com/..." />
+          </div>
+          <div class="flex flex-col gap-1.5">
+            <div class="flex items-center justify-between">
+              <label class="text-xs font-semibold text-periwinkleTitle">Photo</label>
+              <button type="button" onclick="document.getElementById('hiddenFileInput').click()" class="text-xs text-dustyPink font-semibold hover:underline cursor-pointer">Browse local file</button>
+            </div>
+            <input type="text" id="inputPostPhoto" class="form-input" placeholder="photos/reel.png" readonly />
+            <input type="file" id="hiddenFileInput" style="display: none;" accept="image/*" onchange="handleFileSelect(event)" />
+          </div>
+          <div>
+            <button onclick="savePostChanges()" class="bg-lavenderInput hover:bg-lavenderInputFocus text-periwinkleTitle font-semibold w-full py-3 rounded-xl border border-borderSoft transition cursor-pointer">Update</button>
+          </div>
+        </div>
+
+        <p class="text-xs text-textMuted">Select a post slot below to update its link or photo:</p>
+
+        <!-- 6 Post Slots Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="post-slot-card active" id="slot1Card" onclick="selectSlot(1)">
+            <span class="slot-badge">Slot 1</span>
+            <span class="font-outfit text-sm font-semibold text-periwinkleTitle" id="slot1Label">Post 1</span>
+          </div>
+          <div class="post-slot-card" id="slot2Card" onclick="selectSlot(2)">
+            <span class="slot-badge">Slot 2</span>
+            <span class="font-outfit text-sm font-semibold text-periwinkleTitle" id="slot2Label">Post 2</span>
+          </div>
+          <div class="post-slot-card" id="slot3Card" onclick="selectSlot(3)">
+            <span class="slot-badge">Slot 3</span>
+            <span class="font-outfit text-sm font-semibold text-periwinkleTitle" id="slot3Label">Post 3</span>
+          </div>
+          <div class="post-slot-card" id="slot4Card" onclick="selectSlot(4)">
+            <span class="slot-badge">Slot 4</span>
+            <span class="font-outfit text-sm font-semibold text-periwinkleTitle" id="slot4Label">Post 4</span>
+          </div>
+          <div class="post-slot-card" id="slot5Card" onclick="selectSlot(5)">
+            <span class="slot-badge">Slot 5</span>
+            <span class="font-outfit text-sm font-semibold text-periwinkleTitle" id="slot5Label">Post 5</span>
+          </div>
+          <div class="post-slot-card" id="slot6Card" onclick="selectSlot(6)">
+            <span class="slot-badge">Slot 6</span>
+            <span class="font-outfit text-sm font-semibold text-periwinkleTitle" id="slot6Label">Post 6</span>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toastNotification"></div>
+
+  <script>
+    const postsData = {
+      1: { link: "https://instagram.com/aurejiclaws", photo: "photos/reel.png" },
+      2: { link: "https://www.instagram.com/p/DXel9ykkcB5/?u", photo: "photos/igpost-one.png" },
+      3: { link: "https://www.instagram.com/p/DdE-oU_5Emh/?i", photo: "photos/igpost-two.png" },
+      4: { link: "https://www.instagram.com/p/DXel9ykkcB5/?u", photo: "photos/igpost-three.png" },
+      5: { link: "https://instagram.com/aurejiclaws", photo: "photos/igpost-four.png" },
+      6: { link: "https://instagram.com/aurejiclaws", photo: "photos/igpost-five.png" }
+    };
+
+    let currentSlot = 1;
+
+    function applyImgFallback(imgElement, text) {
+      const parent = imgElement.parentElement;
+      parent.innerHTML = `<span style="font-size: 0.75rem; font-weight: 600; color: var(--dusty-pink);">${text}</span>`;
+    }
+
+    function showToast(message) {
+      const toast = document.getElementById('toastNotification');
+      toast.textContent = message;
+      toast.style.display = 'block';
+      setTimeout(() => { toast.style.display = 'none'; }, 3500);
+    }
+
+    function toggleSubMenu(id) {
+      const el = document.getElementById(id);
+      const isHidden = el.style.display === 'none';
+      el.style.display = isHidden ? 'flex' : 'none';
+      const iconId = id.replace('Sub', 'Icon');
+      document.getElementById(iconId).textContent = isHidden ? '▲' : '▼';
+    }
+
+    function selectSlot(slotNum) {
+      currentSlot = slotNum;
+      document.querySelectorAll('.post-slot-card').forEach((card, idx) => {
+        if (idx + 1 === slotNum) card.classList.add('active');
+        else card.classList.remove('active');
+      });
+      loadSlotInputs(slotNum);
+    }
+
+    function loadSlotInputs(slotNum) {
+      const data = postsData[slotNum];
+      document.getElementById('inputPostLink').value = data.link;
+      document.getElementById('inputPostPhoto').value = data.photo;
+    }
+
+    function handleFileSelect(event) {
+      const file = event.target.files[0];
+      if (file) {
+        const filePath = `photos/${file.name}`;
+        document.getElementById('inputPostPhoto').value = filePath;
+        postsData[currentSlot].photo = filePath;
+        showToast(`Attached local file for Slot ${currentSlot}: ${file.name}`);
+      }
+    }
+
+    function savePostChanges() {
+      const link = document.getElementById('inputPostLink').value;
+      const photo = document.getElementById('inputPostPhoto').value;
+      postsData[currentSlot].link = link;
+      postsData[currentSlot].photo = photo;
+      showToast(`Instagram Post Slot ${currentSlot} updated successfully!`);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      loadSlotInputs(1);
+    });
+  </script>
+</body>
+</html>

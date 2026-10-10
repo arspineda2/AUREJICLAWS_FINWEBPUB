@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Aureji Claws - Hero Page Editor</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Alice&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            cream: '#FDF8F6',
+            dustyPink: '#C88A96',
+            dustyPinkHover: '#B57783',
+            periwinkleTitle: '#6B6882',
+            lavenderInput: '#EDEEF5',
+            lavenderInputFocus: '#E2E4F0',
+            borderSoft: '#E5DCD8',
+            textDark: '#2D2930',
+            textMuted: '#8C858F',
+            danger: '#A93226'
+          },
+          fontFamily: {
+            alice: ['Alice', 'serif'],
+            outfit: ['Outfit', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    :root {
+      --bg-cream: #FDF8F6;
+      --bg-white: #FFFFFF;
+      --dusty-pink: #C88A96;
+      --dusty-pink-hover: #B57783;
+      --periwinkle-title: #6B6882;
+      --lavender-input: #EDEEF5;
+      --lavender-input-focus: #E2E4F0;
+      --border-soft: #E5DCD8;
+      --text-dark: #2D2930;
+      --text-muted: #8C858F;
+      --danger: #A93226;
+      --font-alice: 'Alice', serif;
+      --font-outfit: 'Outfit', sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-cream);
+      font-family: var(--font-outfit);
+      color: var(--text-dark);
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Header */
+    .dash-header {
+      height: 70px;
+      background-color: var(--bg-white);
+      border-bottom: 1px solid var(--border-soft);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .dash-logo-box {
+      width: 38px;
+      height: 38px;
+      background-color: var(--bg-cream);
+      border: 1px solid var(--border-soft);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .dash-logo-box img {
+      width: 20px;
+      height: 20px;
+      object-fit: contain;
+    }
+
+    /* Dashboard Layout */
+    .dash-main-body {
+      display: flex;
+      flex: 1;
+    }
+
+    .dash-sidebar {
+      width: 240px;
+      background-color: var(--bg-white);
+      border-right: 1px solid var(--border-soft);
+      padding: 24px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .nav-dropdown-btn {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px 12px;
+        font-weight: 500;
+        font-size: 0.92rem;
+        color: var(--text-dark);
+        background: none;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        text-align: left;
+        transition: color 0.2s ease, background-color 0.2s ease;
+    }
+
+    .nav-dropdown-btn:hover {
+        background-color: var(--lavender-input);
+        color: var(--dusty-pink); /* Turns text pink on hover! */
+    }
+
+    .nav-submenu {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      padding-left: 16px;
+      margin-top: 4px;
+    }
+
+    .nav-sublink {
+      padding: 8px 12px;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      text-decoration: none;
+      border-radius: 6px;
+      transition: all 0.2s;
+    }
+
+    .nav-sublink:hover, .nav-sublink.active {
+      color: var(--dusty-pink);
+      background-color: var(--lavender-input);
+      font-weight: 600;
+    }
+
+    /* Content Area Centering */
+    .dash-content-area {
+      flex: 1;
+      padding: 32px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .dash-content-inner {
+      width: 100%;
+      max-width: 900px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .slide-tab {
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      border: 1px solid var(--border-soft);
+      background-color: var(--bg-white);
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .slide-tab.active {
+      background-color: var(--dusty-pink);
+      color: #FFFFFF;
+      border-color: var(--dusty-pink);
+    }
+
+    .hero-preview-box {
+      width: 100%;
+      height: 340px;
+      background-color: #1A181C;
+      border-radius: 16px;
+      padding: 40px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-start;
+      color: #FFFFFF;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .form-input {
+      background-color: var(--lavender-input);
+      border: 1px solid var(--border-soft);
+      border-radius: 10px;
+      padding: 12px 14px;
+      font-size: 0.95rem;
+      color: var(--text-dark);
+      outline: none;
+      transition: background-color 0.2s, border-color 0.2s;
+    }
+
+    .form-input:focus {
+      background-color: var(--lavender-input-focus);
+      border-color: var(--dusty-pink);
+    }
+
+    /* Toast Notification */
+    #toastNotification {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: #2D2930;
+      color: #FFFFFF;
+      padding: 12px 20px;
+      border-radius: 10px;
+      font-size: 0.88rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      display: none;
+      z-index: 10000;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="dash-header">
+    <div class="flex items-center gap-3">
+      <div class="dash-logo-box">
+        <img src="photos/Logo.png" alt="Logo" onerror="applyImgFallback(this, 'A')" />
+      </div>
+      <h1 class="font-alice text-2xl text-dustyPink">Admin Dashboard</h1>
+    </div>
+    <div class="flex items-center gap-6 text-sm">
+      <a href="../index.html" class="text-textMuted hover:text-dustyPink font-medium transition">switch view</a>
+      <span class="text-textDark font-medium">admin</span>
+      <a href="login.html" class="text-danger hover:underline font-medium">Log out</a>
+    </div>
+  </header>
+
+  <!-- Main Body -->
+  <div class="dash-main-body">
+    <!-- Left Sidebar Navigation -->
+    <aside class="dash-sidebar">
+      <!-- Home Dropdown -->
+      <div>
+        <button class="nav-dropdown-btn" onclick="toggleSubMenu('homeSub')">
+          <span>Home</span>
+          <span id="homeIcon">▲</span>
+        </button>
+        <div id="homeSub" class="nav-submenu">
+          <a href="HeroPage.html" class="nav-sublink active">Hero page</a>
+          <a href="post.html" class="nav-sublink">Instagram Posts</a>
+        </div>
+      </div>
+
+      <!-- Press-on Dropdown -->
+      <div>
+        <button class="nav-dropdown-btn" onclick="toggleSubMenu('pressSub')">
+          <span>Press-on</span>
+          <span id="pressIcon">▼</span>
+        </button>
+        <div id="pressSub" class="nav-submenu" style="display: none;">
+          <a href="products.html" class="nav-sublink">Products</a>
+          <a href="orders.html" class="nav-sublink">Orders</a>
+        </div>
+      </div>
+
+      <!-- Services Dropdown -->
+      <div>
+        <button class="nav-dropdown-btn" onclick="toggleSubMenu('servSub')">
+          <span>Services</span>
+          <span id="servIcon">▼</span>
+        </button>
+        <div id="servSub" class="nav-submenu" style="display: none;">
+          <a href="servicesList.html" class="nav-sublink">Services List</a>
+          <a href="booked.html" class="nav-sublink">Booked</a>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Center Workspace -->
+    <main class="dash-content-area">
+      <div class="dash-content-inner">
+        <h2 class="font-alice text-3xl text-periwinkleTitle">Edit Hero Page</h2>
+
+        <!-- Slide Tabs -->
+        <div class="flex items-center gap-2">
+          <button class="slide-tab active" id="tabSlide1" onclick="selectSlide(1)">Slide 1 (Amethyst Fang)</button>
+          <button class="slide-tab" id="tabSlide2" onclick="selectSlide(2)">Slide 2 (Events / Pop-up)</button>
+          <button class="slide-tab" id="tabSlide3" onclick="selectSlide(3)">Slide 3 (Handmade / Brand)</button>
+        </div>
+
+        <!-- Live Preview -->
+        <div class="hero-preview-box" id="heroPreviewBox">
+          <h3 class="font-alice text-4xl mb-3" id="previewTitle">Amethyst Fang</h3>
+          <p class="text-xs text-gray-300 max-w-md leading-relaxed mb-6 overflow-y-auto max-h-24 pr-2" id="previewDesc">
+            Inspired by the deep sea and its untamed beauty, Amethyst Fang blends deep ocean blues with dreamy amethyst purples for a set that feels both mysterious and enchanting. Delicate butterfly accents flutter across a shark-inspired edge, capturing the perfect balance of soft and fierce.
+          </p>
+          <button class="bg-dustyPink text-white px-5 py-2 rounded-lg text-sm font-semibold shadow" id="previewBtnText">Shop Now</button>
+        </div>
+
+        <!-- Editor Form -->
+        <div class="grid grid-cols-2 gap-6 bg-white p-6 rounded-2xl border border-borderSoft shadow-sm">
+          <div class="flex flex-col gap-1.5">
+            <label class="text-xs font-semibold text-periwinkleTitle">Title</label>
+            <input type="text" id="inputTitle" class="form-input" oninput="liveUpdate()" placeholder="Enter slide title..." />
+          </div>
+          <div class="flex flex-col gap-1.5">
+            <label class="text-xs font-semibold text-periwinkleTitle">Button Text</label>
+            <input type="text" id="inputBtnText" class="form-input" oninput="liveUpdate()" placeholder="Enter button text..." />
+          </div>
+          <div class="flex flex-col gap-1.5">
+            <label class="text-xs font-semibold text-periwinkleTitle">Description</label>
+            <textarea id="inputDesc" class="form-input" rows="4" style="resize: vertical; max-height: 140px;" oninput="liveUpdate()" placeholder="Enter description text..."></textarea>
+          </div>
+          <div class="flex flex-col gap-1.5">
+            <label class="text-xs font-semibold text-periwinkleTitle">Background Photo</label>
+            <div class="flex items-center gap-2">
+              <input type="text" id="inputPhoto" class="form-input flex-1" placeholder="photos/herosecimg.png" readonly />
+              <input type="file" id="hiddenFileInput" style="display: none;" accept="image/*" onchange="handleFileSelect(event)" />
+            </div>
+            <button type="button" onclick="document.getElementById('hiddenFileInput').click()" class="text-xs text-dustyPink font-semibold text-left hover:underline mt-1 cursor-pointer">Browse local file</button>
+          </div>
+        </div>
+
+        <!-- Action Button -->
+        <div class="flex justify-end">
+          <button onclick="saveSlideChanges()" class="bg-lavenderInput hover:bg-lavenderInputFocus text-periwinkleTitle font-semibold px-8 py-2.5 rounded-xl border border-borderSoft transition cursor-pointer">Update</button>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toastNotification"></div>
+
+  <script>
+    // Slide Data Store
+    const slideData = {
+      1: {
+        title: "Amethyst Fang",
+        desc: "Inspired by the deep sea and its untamed beauty, Amethyst Fang blends deep ocean blues with dreamy amethyst purples for a set that feels both mysterious and enchanting. Delicate butterfly accents flutter across a shark-inspired edge, capturing the perfect balance of soft and fierce.",
+        btnText: "Shop Now",
+        photo: "photos/herosecimg.png"
+      },
+      2: {
+        title: "Bring Aureji Claws to Your Next Event",
+        desc: "Whether it's a campus fair, a pop-up market, or a brand collaboration, we'd love to set up shop at your event. Contact us or send an email to book Aureji Claws for your next booth.",
+        btnText: "Get in Touch",
+        photo: "photos/herosecimg2.png"
+      },
+      3: {
+        title: "Made by Hand. Made for You.",
+        desc: "Each set is crafted just for you — sized, styled, and ready to slay.",
+        btnText: "e.g. Shop Now",
+        photo: "photos/herosecimg3.png"
+      }
+    };
+
+    let currentSlide = 1;
+
+    function applyImgFallback(imgElement, text) {
+      const parent = imgElement.parentElement;
+      parent.innerHTML = `<span style="font-size: 0.75rem; font-weight: 600; color: var(--dusty-pink);">${text}</span>`;
+    }
+
+    function showToast(message) {
+      const toast = document.getElementById('toastNotification');
+      toast.textContent = message;
+      toast.style.display = 'block';
+      setTimeout(() => { toast.style.display = 'none'; }, 3500);
+    }
+
+    function toggleSubMenu(id) {
+      const el = document.getElementById(id);
+      const isHidden = el.style.display === 'none';
+      el.style.display = isHidden ? 'flex' : 'none';
+      
+      const iconId = id.replace('Sub', 'Icon');
+      document.getElementById(iconId).textContent = isHidden ? '▲' : '▼';
+    }
+
+    function selectSlide(slideNum) {
+      currentSlide = slideNum;
+      document.querySelectorAll('.slide-tab').forEach((tab, idx) => {
+        if (idx + 1 === slideNum) tab.classList.add('active');
+        else tab.classList.remove('active');
+      });
+      loadSlideInputs(slideNum);
+    }
+
+    function loadSlideInputs(slideNum) {
+      const data = slideData[slideNum];
+      document.getElementById('inputTitle').value = data.title;
+      document.getElementById('inputDesc').value = data.desc;
+      document.getElementById('inputBtnText').value = data.btnText;
+      document.getElementById('inputPhoto').value = data.photo;
+      liveUpdate();
+    }
+
+    function liveUpdate() {
+      const title = document.getElementById('inputTitle').value;
+      const desc = document.getElementById('inputDesc').value;
+      const btnText = document.getElementById('inputBtnText').value;
+
+      document.getElementById('previewTitle').textContent = title;
+      document.getElementById('previewDesc').textContent = desc;
+      
+      const btnElem = document.getElementById('previewBtnText');
+      if (!btnText || btnText.trim() === '') {
+        btnElem.style.display = 'none';
+      } else {
+        btnElem.style.display = 'inline-block';
+        btnElem.textContent = btnText;
+      }
+
+      slideData[currentSlide].title = title;
+      slideData[currentSlide].desc = desc;
+      slideData[currentSlide].btnText = btnText;
+    }
+
+    function handleFileSelect(event) {
+      const file = event.target.files[0];
+      if (file) {
+        const filePath = `photos/${file.name}`;
+        document.getElementById('inputPhoto').value = filePath;
+        slideData[currentSlide].photo = filePath;
+        showToast(`Attached local file: ${file.name}`);
+      }
+    }
+
+    function saveSlideChanges() {
+      showToast(`Slide ${currentSlide} updated successfully!`);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      loadSlideInputs(1);
+    });
+  </script>
+</body>
+</html>

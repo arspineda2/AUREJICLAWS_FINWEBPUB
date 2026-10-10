@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Aureji Claws - Edit Products</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Alice&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            cream: '#FDF8F6',
+            dustyPink: '#C88A96',
+            dustyPinkHover: '#B57783',
+            periwinkleTitle: '#6B6882',
+            lavenderInput: '#EDEEF5',
+            lavenderInputFocus: '#E2E4F0',
+            borderSoft: '#E5DCD8',
+            textDark: '#2D2930',
+            textMuted: '#8C858F',
+            danger: '#A93226',
+            dangerHover: '#922B21'
+          },
+          fontFamily: {
+            alice: ['Alice', 'serif'],
+            outfit: ['Outfit', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    :root {
+      --bg-cream: #FDF8F6;
+      --bg-white: #FFFFFF;
+      --dusty-pink: #C88A96;
+      --dusty-pink-hover: #B57783;
+      --periwinkle-title: #6B6882;
+      --lavender-input: #EDEEF5;
+      --lavender-input-focus: #E2E4F0;
+      --border-soft: #E5DCD8;
+      --text-dark: #2D2930;
+      --text-muted: #8C858F;
+      --danger: #A93226;
+      --font-alice: 'Alice', serif;
+      --font-outfit: 'Outfit', sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-cream);
+      font-family: var(--font-outfit);
+      color: var(--text-dark);
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Header */
+    .dash-header {
+      height: 70px;
+      background-color: var(--bg-white);
+      border-bottom: 1px solid var(--border-soft);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .dash-logo-box {
+      width: 38px;
+      height: 38px;
+      background-color: var(--bg-cream);
+      border: 1px solid var(--border-soft);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .dash-logo-box img {
+      width: 20px;
+      height: 20px;
+      object-fit: contain;
+    }
+
+    /* Layout */
+    .dash-main-body {
+      display: flex;
+      flex: 1;
+    }
+
+    .dash-sidebar {
+      width: 240px;
+      background-color: var(--bg-white);
+      border-right: 1px solid var(--border-soft);
+      padding: 24px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .nav-dropdown-btn {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 12px;
+      font-weight: 500;
+      font-size: 0.92rem;
+      color: var(--text-dark);
+      background: none;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      text-align: left;
+      transition: color 0.2s ease, background-color 0.2s ease;
+    }
+
+    .nav-dropdown-btn:hover {
+      background-color: var(--lavender-input);
+      color: var(--dusty-pink);
+    }
+
+    .nav-submenu {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      padding-left: 16px;
+      margin-top: 4px;
+    }
+
+    .nav-sublink {
+      padding: 8px 12px;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      text-decoration: none;
+      border-radius: 6px;
+      transition: all 0.2s;
+    }
+
+    .nav-sublink:hover, .nav-sublink.active {
+      color: var(--dusty-pink);
+      background-color: var(--lavender-input);
+      font-weight: 600;
+    }
+
+    /* Content Area */
+    .dash-content-area {
+      flex: 1;
+      padding: 32px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .dash-content-inner {
+      width: 100%;
+      max-width: 900px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .form-input {
+      background-color: var(--lavender-input);
+      border: 1px solid var(--border-soft);
+      border-radius: 10px;
+      padding: 12px 14px;
+      font-size: 0.95rem;
+      color: var(--text-dark);
+      outline: none;
+      transition: background-color 0.2s, border-color 0.2s;
+    }
+
+    .form-input:focus {
+      background-color: var(--lavender-input-focus);
+      border-color: var(--dusty-pink);
+    }
+
+    /* Product Cards */
+    .product-card {
+      background-color: #FFFFFF;
+      border: 2px solid transparent;
+      border-radius: 18px;
+      overflow: hidden;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+      transition: all 0.2s ease;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .product-card.active {
+      border-color: var(--dusty-pink);
+    }
+
+    .product-img-wrap {
+      height: 220px;
+      background-color: #EFECE9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      color: var(--periwinkle-title);
+      font-family: var(--font-alice);
+      font-size: 1.1rem;
+      padding: 16px;
+      text-align: center;
+      overflow: hidden;
+    }
+
+    /* Consistent User Website SOLD Overlay Styling */
+    .product-card.sold-out .product-img-wrap {
+      filter: grayscale(40%);
+    }
+
+    .sold-badge {
+      position: absolute;
+      inset: 0;
+      background: rgba(34, 34, 34, 0.5);
+      color: white;
+      font-family: var(--font-outfit);
+      font-weight: 700;
+      font-size: 22px;
+      letter-spacing: 2px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Toast Notification */
+    #toastNotification {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: #2D2930;
+      color: #FFFFFF;
+      padding: 12px 20px;
+      border-radius: 10px;
+      font-size: 0.88rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      display: none;
+      z-index: 10000;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="dash-header">
+    <div class="flex items-center gap-3">
+      <div class="dash-logo-box">
+        <img src="photos/Logo.png" alt="Logo" onerror="applyImgFallback(this, 'A')" />
+      </div>
+      <h1 class="font-alice text-2xl text-dustyPink">Admin Dashboard</h1>
+    </div>
+    <div class="flex items-center gap-6 text-sm">
+      <a href="../index.html" class="text-textMuted hover:text-dustyPink font-medium transition">switch view</a>
+      <span class="text-textDark font-medium">admin</span>
+      <a href="login.html" class="text-danger hover:underline font-medium">Log out</a>
+    </div>
+  </header>
+
+  <!-- Main Body -->
+  <div class="dash-main-body">
+    <!-- Left Sidebar Navigation -->
+    <aside class="dash-sidebar">
+      <!-- Home Dropdown -->
+      <div>
+        <button class="nav-dropdown-btn" onclick="toggleSubMenu('homeSub')">
+          <span>Home</span>
+          <span id="homeIcon">▼</span>
+        </button>
+        <div id="homeSub" class="nav-submenu" style="display: none;">
+          <a href="HeroPage.html" class="nav-sublink">Hero page</a>
+          <a href="post.html" class="nav-sublink">Instagram Posts</a>
+        </div>
+      </div>
+
+      <!-- Press-on Dropdown -->
+      <div>
+        <button class="nav-dropdown-btn" onclick="toggleSubMenu('pressSub')">
+          <span>Press-on</span>
+          <span id="pressIcon">▲</span>
+        </button>
+        <div id="pressSub" class="nav-submenu">
+          <a href="products.html" class="nav-sublink active">Products</a>
+          <a href="orders.html" class="nav-sublink">Orders</a>
+        </div>
+      </div>
+
+      <!-- Services Dropdown -->
+      <div>
+        <button class="nav-dropdown-btn" onclick="toggleSubMenu('servSub')">
+          <span>Services</span>
+          <span id="servIcon">▼</span>
+        </button>
+        <div id="servSub" class="nav-submenu" style="display: none;">
+          <a href="servicesList.html" class="nav-sublink">Services List</a>
+          <a href="booked.html" class="nav-sublink">Booked</a>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Center Workspace -->
+    <main class="dash-content-area">
+      <div class="dash-content-inner">
+        <!-- Title & Add New Set Header -->
+        <div class="flex items-center justify-between">
+          <h2 class="font-alice text-3xl text-periwinkleTitle">Edit Products</h2>
+          <button onclick="switchToAddNewMode()" class="bg-lavenderInput hover:bg-lavenderInputFocus text-periwinkleTitle font-semibold px-4 py-2 rounded-xl border border-borderSoft text-sm transition cursor-pointer">+ Add New Set</button>
+        </div>
+
+        <!-- CRUD Form Box -->
+        <div class="bg-white p-6 rounded-2xl border border-borderSoft shadow-sm flex flex-col gap-4">
+          <h3 class="font-alice text-xl text-dustyPink" id="formHeaderTitle">Editing: Amethyst Fang</h3>
+
+          <!-- Row 1: Name, Price, Photo -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="flex flex-col gap-1.5">
+              <label class="text-xs font-semibold text-periwinkleTitle">Product Name</label>
+              <input type="text" id="inputProdName" class="form-input" placeholder="e.g. Amethyst Fang" />
+            </div>
+
+            <div class="flex flex-col gap-1.5">
+              <label class="text-xs font-semibold text-periwinkleTitle">Price (₱ PHP)</label>
+              <input type="number" id="inputProdPrice" step="50" class="form-input" placeholder="1000" />
+            </div>
+
+            <div class="flex flex-col gap-1.5">
+              <div class="flex items-center justify-between">
+                <label class="text-xs font-semibold text-periwinkleTitle">Photo Path</label>
+                <button type="button" onclick="document.getElementById('hiddenFileInput').click()" class="text-xs text-dustyPink font-semibold hover:underline cursor-pointer">Browse local file</button>
+              </div>
+              <input type="text" id="inputProdPhoto" class="form-input" placeholder="photos/presson-one.png" readonly />
+              <input type="file" id="hiddenFileInput" style="display: none;" accept="image/*" onchange="handleFileSelect(event)" />
+            </div>
+          </div>
+
+          <!-- Row 2: Description -->
+          <div class="flex flex-col gap-1.5">
+            <label class="text-xs font-semibold text-periwinkleTitle">Description</label>
+            <textarea id="inputProdDesc" class="form-input" rows="3" style="resize: vertical;" placeholder="Lorem ipsum dolor sit amet..."></textarea>
+          </div>
+
+          <!-- Row 3: Sold Out Checkbox & Action Buttons (Delete + Save) -->
+          <div class="flex items-center justify-between pt-2">
+            <label class="flex items-center gap-2 cursor-pointer text-xs font-medium text-textDark">
+              <input type="checkbox" id="chkSoldOut" class="accent-dustyPink w-4 h-4" />
+              Mark as <strong>SOLD OUT</strong>
+            </label>
+
+            <div class="flex items-center gap-3">
+              <button id="btnDeleteProd" onclick="deleteCurrentProduct()" class="bg-red-50 hover:bg-red-100 text-danger font-semibold px-5 py-2.5 rounded-xl border border-red-200 transition cursor-pointer">
+                Delete Set
+              </button>
+              <button onclick="saveProduct()" class="bg-lavenderInput hover:bg-lavenderInputFocus text-periwinkleTitle font-semibold px-8 py-2.5 rounded-xl border border-borderSoft transition cursor-pointer">
+                Save Product
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Products Display Grid (3 columns) -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="productsGridContainer">
+          <!-- Cards injected dynamically via JS -->
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toastNotification"></div>
+
+  <script>
+    // Initial Products State
+    let productsList = [
+      {
+        id: 1,
+        name: "Amethyst Fang",
+        price: 1000,
+        photo: "photos/presson-one.png",
+        desc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor.",
+        soldOut: false
+      },
+      {
+        id: 2,
+        name: "Starlit Nails",
+        price: 500,
+        photo: "photos/presson-two.png",
+        desc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor.",
+        soldOut: false
+      },
+      {
+        id: 3,
+        name: "Deep Sea",
+        price: 600,
+        photo: "photos/presson-three.png",
+        desc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor.",
+        soldOut: false
+      },
+      {
+        id: 4,
+        name: "Lush Green By Ersa",
+        price: 1000,
+        photo: "photos/presson-four.png",
+        desc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor.",
+        soldOut: true
+      },
+      {
+        id: 5,
+        name: "Mocha Muse",
+        price: 500,
+        photo: "photos/presson-five.png",
+        desc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor.",
+        soldOut: false
+      },
+      {
+        id: 6,
+        name: "Cat Eye Nails",
+        price: 400,
+        photo: "photos/presson-six.png",
+        desc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor.",
+        soldOut: false
+      }
+    ];
+
+    let currentEditingId = 1;
+
+    function applyImgFallback(imgElement, text) {
+      const parent = imgElement.parentElement;
+      parent.innerHTML = `<span style="font-size: 0.75rem; font-weight: 600; color: var(--dusty-pink);">${text}</span>`;
+    }
+
+    function showToast(message) {
+      const toast = document.getElementById('toastNotification');
+      toast.textContent = message;
+      toast.style.display = 'block';
+      setTimeout(() => { toast.style.display = 'none'; }, 3500);
+    }
+
+    function toggleSubMenu(id) {
+      const el = document.getElementById(id);
+      const isHidden = el.style.display === 'none';
+      el.style.display = isHidden ? 'flex' : 'none';
+      const iconId = id.replace('Sub', 'Icon');
+      document.getElementById(iconId).textContent = isHidden ? '▲' : '▼';
+    }
+
+    function renderProductsGrid() {
+      const container = document.getElementById('productsGridContainer');
+      container.innerHTML = '';
+
+      productsList.forEach(prod => {
+        const isActive = currentEditingId === prod.id;
+        const card = document.createElement('div');
+        card.className = `product-card ${isActive ? 'active' : ''} ${prod.soldOut ? 'sold-out' : ''}`;
+        card.onclick = () => editProduct(prod.id);
+
+        card.innerHTML = `
+          <div class="product-img-wrap">
+            <span>${prod.name}</span>
+            ${prod.soldOut ? '<div class="sold-badge">SOLD</div>' : ''}
+          </div>
+          <div class="p-4 flex flex-col gap-1 border-t border-borderSoft bg-white flex-1">
+            <h4 class="font-alice text-lg text-dustyPink leading-tight">${prod.name}</h4>
+            <span class="font-outfit font-bold text-sm text-textDark">₱${prod.price}</span>
+            <p class="text-xs text-textMuted line-clamp-2 mt-1 leading-relaxed">${prod.desc}</p>
+            <div class="flex items-center justify-between mt-4 pt-2 border-t border-dashed border-borderSoft">
+              <span class="text-xs font-semibold ${prod.soldOut ? 'text-danger' : 'text-textMuted'}">
+                ${prod.soldOut ? 'Sold Out' : 'Available'}
+              </span>
+              <button onclick="toggleProductStatus(event, ${prod.id})" class="bg-lavenderInput hover:bg-lavenderInputFocus text-xs font-semibold text-textDark px-3 py-1.5 rounded-lg border border-borderSoft transition cursor-pointer">
+                Toggle Status
+              </button>
+            </div>
+          </div>
+        `;
+
+        container.appendChild(card);
+      });
+    }
+
+    function editProduct(id) {
+      currentEditingId = id;
+      const prod = productsList.find(p => p.id === id);
+      if (!prod) return;
+
+      document.getElementById('formHeaderTitle').textContent = `Editing: ${prod.name}`;
+      document.getElementById('inputProdName').value = prod.name;
+      document.getElementById('inputProdPrice').value = prod.price;
+      document.getElementById('inputProdPhoto').value = prod.photo;
+      document.getElementById('inputProdDesc').value = prod.desc;
+      document.getElementById('chkSoldOut').checked = prod.soldOut;
+      document.getElementById('btnDeleteProd').style.display = 'inline-block';
+
+      renderProductsGrid();
+    }
+
+    function switchToAddNewMode() {
+      currentEditingId = null;
+      document.getElementById('formHeaderTitle').textContent = 'Add New Press-on Set';
+      document.getElementById('inputProdName').value = '';
+      document.getElementById('inputProdPrice').value = '';
+      document.getElementById('inputProdPhoto').value = 'photos/presson-one.png';
+      document.getElementById('inputProdDesc').value = '';
+      document.getElementById('chkSoldOut').checked = false;
+      document.getElementById('btnDeleteProd').style.display = 'none';
+
+      renderProductsGrid();
+      showToast('Form cleared! Enter details to add a new set.');
+    }
+
+    function handleFileSelect(event) {
+      const file = event.target.files[0];
+      if (file) {
+        const filePath = `photos/${file.name}`;
+        document.getElementById('inputProdPhoto').value = filePath;
+        showToast(`Selected photo file: ${file.name}`);
+      }
+    }
+
+    function saveProduct() {
+      const name = document.getElementById('inputProdName').value.trim();
+      const price = parseFloat(document.getElementById('inputProdPrice').value) || 0;
+      const photo = document.getElementById('inputProdPhoto').value.trim() || 'photos/presson-one.png';
+      const desc = document.getElementById('inputProdDesc').value.trim();
+      const soldOut = document.getElementById('chkSoldOut').checked;
+
+      if (!name) {
+        showToast('Please enter a product name!');
+        return;
+      }
+
+      if (currentEditingId !== null) {
+        const prod = productsList.find(p => p.id === currentEditingId);
+        if (prod) {
+          prod.name = name;
+          prod.price = price;
+          prod.photo = photo;
+          prod.desc = desc;
+          prod.soldOut = soldOut;
+          showToast(`Updated "${name}" successfully!`);
+        }
+      } else {
+        const newId = productsList.length ? Math.max(...productsList.map(p => p.id)) + 1 : 1;
+        const newProd = { id: newId, name, price, photo, desc, soldOut };
+        productsList.push(newProd);
+        currentEditingId = newId;
+        showToast(`Added new set "${name}" successfully!`);
+      }
+
+      editProduct(currentEditingId);
+    }
+
+    function deleteCurrentProduct() {
+      if (currentEditingId === null) return;
+      const prod = productsList.find(p => p.id === currentEditingId);
+      if (!prod) return;
+
+      if (confirm(`Are you sure you want to delete "${prod.name}"?`)) {
+        productsList = productsList.filter(p => p.id !== currentEditingId);
+        showToast(`Deleted "${prod.name}" successfully!`);
+        if (productsList.length > 0) {
+          editProduct(productsList[0].id);
+        } else {
+          switchToAddNewMode();
+        }
+      }
+    }
+
+    function toggleProductStatus(event, id) {
+      event.stopPropagation();
+      const prod = productsList.find(p => p.id === id);
+      if (prod) {
+        prod.soldOut = !prod.soldOut;
+        if (currentEditingId === id) {
+          document.getElementById('chkSoldOut').checked = prod.soldOut;
+        }
+        renderProductsGrid();
+        showToast(`"${prod.name}" status set to ${prod.soldOut ? 'Sold Out' : 'Available'}`);
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      editProduct(1);
+    });
+  </script>
+</body>
+</html>
