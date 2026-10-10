@@ -8,23 +8,126 @@
 document.addEventListener("components:loaded", initializeCheckout, { once: true });
 document.addEventListener("components:loaded", initializeSharedCart, { once: true });
 
+const CART_STORAGE_KEY = "aureji_claws_cart";
+const CART_CHECKOUT_ITEM_KEY = "aureji_claws_checkout_item";
+let cartState = readStoredCart();
+let selectedCartIndex = null;
+let refreshCartView = () => {};
+let handleCartStorageUpdate = () => {};
+
+function parseCart(rawCart) {
+  if (rawCart === null) return [];
+
+  try {
+    const parsedCart = JSON.parse(rawCart);
+    if (!Array.isArray(parsedCart) || parsedCart.some((item) => (
+      !item
+      || typeof item.productId !== "string"
+      || typeof item.productName !== "string"
+      || typeof item.image !== "string"
+      || !Number.isFinite(item.price)
+      || !Number.isInteger(item.quantity)
+      || item.quantity < 1
+    ))) {
+      throw new Error("Saved cart data has an invalid format.");
+    }
+    return parsedCart;
+  } catch (error) {
+    console.error("Saved cart could not be read:", error);
+    return [];
+  }
+}
+
+function readStoredCart() {
+  try {
+    return parseCart(localStorage.getItem(CART_STORAGE_KEY));
+  } catch (error) {
+    console.error("Saved cart is unavailable in this browser:", error);
+    return [];
+  }
+}
+
+function saveCart() {
+  try {
+    localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cartState));
+  } catch (error) {
+    console.error("Cart changes could not be saved in this browser:", error);
+  }
+  refreshCartView();
+}
+
+window.addEventListener("storage", (event) => {
+  if (event.key !== CART_STORAGE_KEY) return;
+  cartState = parseCart(event.newValue);
+  handleCartStorageUpdate();
+});
+
 function initializeSharedCart() {
   const cartIconBtn = document.getElementById("cartIconBtn");
   const cartPanel = document.getElementById("cartPanel");
   const cartItemsEl = document.getElementById("cartItems");
   const cartCountEl = document.getElementById("cartCount");
+  const cartRemoveBtn = document.getElementById("cartRemoveBtn");
+  const cartCheckoutBtn = document.getElementById("cartCheckoutBtn");
 
-  if (!cartIconBtn || !cartPanel || !cartItemsEl || !cartCountEl) {
+  if (!cartIconBtn || !cartPanel || !cartItemsEl || !cartCountEl
+    || !cartRemoveBtn || !cartCheckoutBtn) {
     console.error("Cart could not start: required shared cart elements are missing.");
     return;
   }
 
-  if (!cartItemsEl.children.length) {
-    const emptyMessage = document.createElement("p");
-    emptyMessage.className = "cart-empty-msg";
-    emptyMessage.textContent = "Your cart is empty.";
-    cartItemsEl.appendChild(emptyMessage);
+  function renderSharedCart() {
+    cartItemsEl.replaceChildren();
+    cartCountEl.textContent = String(
+      cartState.reduce((count, item) => count + item.quantity, 0)
+    );
+    cartRemoveBtn.disabled = selectedCartIndex === null;
+    cartCheckoutBtn.disabled = selectedCartIndex === null;
+
+    if (cartState.length === 0) {
+      const emptyMessage = document.createElement("p");
+      emptyMessage.className = "cart-empty-msg";
+      emptyMessage.textContent = "Your cart is empty.";
+      cartItemsEl.appendChild(emptyMessage);
+      return;
+    }
+
+    cartState.forEach((item, index) => {
+      const row = document.createElement("button");
+      row.type = "button";
+      row.className = "cart-item-row";
+      row.setAttribute("aria-pressed", String(index === selectedCartIndex));
+
+      const image = document.createElement("img");
+      image.src = item.image;
+      image.alt = "";
+
+      const details = document.createElement("span");
+      details.className = "cart-item-info";
+      const name = document.createElement("span");
+      name.className = "cart-item-name";
+      name.textContent = item.productName;
+      const price = document.createElement("span");
+      price.className = "cart-item-price";
+      price.textContent = `₱${item.price} × ${item.quantity}`;
+      details.append(name, price);
+      row.append(image, details);
+
+      if (index === selectedCartIndex) row.style.background = "#FFD1E0";
+      row.addEventListener("click", () => {
+        selectedCartIndex = index;
+        refreshCartView();
+      });
+      cartItemsEl.appendChild(row);
+    });
   }
+
+  refreshCartView = renderSharedCart;
+  handleCartStorageUpdate = () => {
+    selectedCartIndex = null;
+    refreshCartView();
+  };
+  renderSharedCart();
 
   cartIconBtn.addEventListener("click", (event) => {
     event.stopPropagation();
@@ -39,6 +142,30 @@ function initializeSharedCart() {
     if (!cartPanel.contains(event.target) && !cartIconBtn.contains(event.target)) {
       cartPanel.classList.add("hidden");
     }
+  });
+
+  cartRemoveBtn.addEventListener("click", () => {
+    if (selectedCartIndex === null || !cartState[selectedCartIndex]) return;
+    cartState.splice(selectedCartIndex, 1);
+    selectedCartIndex = null;
+    saveCart();
+  });
+
+  cartCheckoutBtn.addEventListener("click", () => {
+    if (document.getElementById("checkoutModal")
+      || selectedCartIndex === null
+      || !cartState[selectedCartIndex]) return;
+
+    try {
+      sessionStorage.setItem(
+        CART_CHECKOUT_ITEM_KEY,
+        cartState[selectedCartIndex].productId
+      );
+    } catch (error) {
+      console.error("Checkout could not be prepared in this browser:", error);
+      return;
+    }
+    window.location.assign("/PressonPage.html");
   });
 }
 
@@ -94,10 +221,7 @@ async function initializeCheckout() {
     return;
   }
 
-  // Cart state exists in this browser tab only; the server receives it at checkout.
-  let cart = [];
   let selectedProduct = null;
-  let selectedCartIndex = null;
 
   function readProduct(card) {
     return {
@@ -110,11 +234,13 @@ async function initializeCheckout() {
 
   function renderCart() {
     cartItemsEl.replaceChildren();
-    cartCountEl.textContent = String(cart.reduce((count, item) => count + item.quantity, 0));
+    cartCountEl.textContent = String(
+      cartState.reduce((count, item) => count + item.quantity, 0)
+    );
     cartRemoveBtn.disabled = selectedCartIndex === null;
     cartCheckoutBtn.disabled = selectedCartIndex === null;
 
-    if (cart.length === 0) {
+    if (cartState.length === 0) {
       const emptyMessage = document.createElement("p");
       emptyMessage.className = "cart-empty-msg";
       emptyMessage.textContent = "Your cart is empty.";
@@ -122,7 +248,7 @@ async function initializeCheckout() {
       return;
     }
 
-    cart.forEach((item, index) => {
+    cartState.forEach((item, index) => {
       const row = document.createElement("button");
       row.type = "button";
       row.className = "cart-item-row";
@@ -146,20 +272,20 @@ async function initializeCheckout() {
       if (index === selectedCartIndex) row.style.background = "#FFD1E0";
       row.addEventListener("click", () => {
         selectedCartIndex = index;
-        renderCart();
+        refreshCartView();
       });
       cartItemsEl.appendChild(row);
     });
   }
 
   function addToCart(product) {
-    const existingItem = cart.find((item) => item.productId === product.productId);
+    const existingItem = cartState.find((item) => item.productId === product.productId);
     if (existingItem) {
       existingItem.quantity += 1;
     } else {
-      cart.push({ ...product, quantity: 1 });
+      cartState.push({ ...product, quantity: 1 });
     }
-    renderCart();
+    saveCart();
   }
 
   function renderProductCatalog(container, products) {
@@ -218,7 +344,13 @@ async function initializeCheckout() {
     });
   }
 
-  // Add-to-cart changes only the temporary cart; Buy Now opens checkout directly.
+  // Adding to cart saves across pages; Buy Now opens checkout directly.
+  refreshCartView = renderCart;
+  handleCartStorageUpdate = () => {
+    selectedCartIndex = null;
+    refreshCartView();
+  };
+
   productGrid.querySelectorAll(".cart-add-btn").forEach((button) => {
     button.addEventListener("click", () => {
       const card = button.closest(".product-card");
@@ -236,16 +368,9 @@ async function initializeCheckout() {
     });
   });
 
-  cartRemoveBtn.addEventListener("click", () => {
-    if (selectedCartIndex === null) return;
-    cart.splice(selectedCartIndex, 1);
-    selectedCartIndex = null;
-    renderCart();
-  });
-
   cartCheckoutBtn.addEventListener("click", () => {
-    if (selectedCartIndex === null || !cart[selectedCartIndex]) return;
-    selectedProduct = { ...cart[selectedCartIndex] };
+    if (selectedCartIndex === null || !cartState[selectedCartIndex]) return;
+    selectedProduct = { ...cartState[selectedCartIndex] };
     cartPanel.classList.add("hidden");
     openCheckout();
   });
@@ -286,7 +411,7 @@ async function initializeCheckout() {
     step3.classList.add("hidden");
     updateStepIndicators(1);
 
-    const lineItems = selectedProduct ? [selectedProduct] : cart;
+    const lineItems = selectedProduct ? [selectedProduct] : cartState;
     orderItemPreview.replaceChildren();
     lineItems.forEach((item) => {
       const line = document.createElement("p");
@@ -294,6 +419,29 @@ async function initializeCheckout() {
       orderItemPreview.appendChild(line);
     });
     modal.classList.remove("hidden");
+  }
+
+  function openPendingCartCheckout() {
+    let requestedProductId;
+    try {
+      requestedProductId = sessionStorage.getItem(CART_CHECKOUT_ITEM_KEY);
+      sessionStorage.removeItem(CART_CHECKOUT_ITEM_KEY);
+    } catch (error) {
+      console.error("Pending checkout could not be restored:", error);
+      return;
+    }
+
+    if (!requestedProductId) return;
+    const cartIndex = cartState.findIndex((item) => item.productId === requestedProductId);
+    if (cartIndex === -1) {
+      console.error("Pending checkout item is no longer in the cart.");
+      return;
+    }
+
+    selectedCartIndex = cartIndex;
+    selectedProduct = { ...cartState[cartIndex] };
+    cartPanel.classList.add("hidden");
+    openCheckout();
   }
 
   function closeCheckout() {
@@ -375,7 +523,8 @@ async function initializeCheckout() {
       updateStepIndicators(3);
 
       if (selectedCartIndex !== null) {
-        cart.splice(selectedCartIndex, 1);
+        cartState.splice(selectedCartIndex, 1);
+        saveCart();
       }
       selectedCartIndex = null;
       selectedProduct = null;
@@ -389,4 +538,5 @@ async function initializeCheckout() {
   });
 
   renderCart();
+  openPendingCartCheckout();
 }
