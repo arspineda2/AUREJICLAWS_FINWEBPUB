@@ -13,6 +13,11 @@ async function loadPublicContent() {
     renderContactDetails(result.content.contact);
   } catch (error) {
     console.error("Public site content could not be loaded:", error);
+  } finally {
+    // MODIFIED (1 of 3): added this "finally" block.
+    // It starts the slider whether the API worked or not, so the
+    // hardcoded slides in HomePage.html still work if the fetch fails.
+    initHeroSlider();
   }
 }
 
@@ -63,25 +68,50 @@ function renderHeroSlides(slides) {
     dotsContainer.appendChild(dot);
   });
 
-  let currentIndex = 0;
-  let slideTimer;
+  // MODIFIED (2 of 3): the slider logic that used to be here
+  // (currentIndex, slideTimer, showSlide, startAutoSlide, and the dot
+  // click listeners) was moved out into initHeroSlider() below.
+  // This function now only builds the slides and dots.
+}
+
+// NEW (3 of 3): this whole function is new. It holds the slider logic
+// that was moved out of renderHeroSlides(), and it now works with both
+// the API slides and the hardcoded HTML slides.
+function initHeroSlider() {
+  const slider = document.querySelector(".hero-slider");
+  const dotsContainer = document.querySelector(".slider-dots");
+  if (!slider || !dotsContainer) return;
+
   const panels = [...slider.querySelectorAll(".slide")];
   const dots = [...dotsContainer.querySelectorAll(".dot")];
+  if (panels.length < 2) return;
+
+  let currentIndex = 0;
+  let slideTimer;
+
   const showSlide = (index) => {
     panels[currentIndex].classList.remove("active");
-    dots[currentIndex].classList.remove("active");
+    dots[currentIndex]?.classList.remove("active");
     currentIndex = index;
     panels[currentIndex].classList.add("active");
-    dots[currentIndex].classList.add("active");
+    dots[currentIndex]?.classList.add("active");
   };
+
   const startAutoSlide = () => {
     clearInterval(slideTimer);
-    slideTimer = setInterval(() => showSlide((currentIndex + 1) % panels.length), 8000);
+    slideTimer = setInterval(
+      () => showSlide((currentIndex + 1) % panels.length),
+      5000 
+    );
   };
-  dots.forEach((dot) => dot.addEventListener("click", () => {
-    showSlide(Number(dot.dataset.index));
-    startAutoSlide();
-  }));
+
+  dots.forEach((dot) =>
+    dot.addEventListener("click", () => {
+      showSlide(Number(dot.dataset.index));
+      startAutoSlide();
+    })
+  );
+
   startAutoSlide();
 }
 
