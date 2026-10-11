@@ -1,5 +1,5 @@
 /*
- * Product workflow:
+ * Product model and catalog workflow:
  * Products are edited through the authenticated catalog API and rendered by
  * both the public shop and the checkout API.
  */

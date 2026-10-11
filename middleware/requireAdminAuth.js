@@ -1,3 +1,4 @@
+/* Admin session authentication middleware. */
 const requireAdminAuth = function(req, res, next) {
   if (req.session && req.session.isAdminAuthenticated) {
     return next();

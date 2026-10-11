@@ -1,3 +1,4 @@
+/* Website content API routes. */
 const express = require("express");
 const mongoose = require("mongoose");
 const SiteContent = require("../models/SiteContent");

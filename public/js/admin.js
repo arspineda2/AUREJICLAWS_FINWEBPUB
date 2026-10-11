@@ -155,6 +155,13 @@ async function renderOrders() {
         const image = document.createElement('img');
         image.src = order.paymentScreenshot;
         image.alt = 'GCash payment screenshot';
+        
+        // Add size limits here
+        image.style.maxWidth = '250px';
+        image.style.maxHeight = '250px';
+        image.style.objectFit = 'contain';
+        image.style.borderRadius = '8px';
+        
         proof.appendChild(image);
         content.appendChild(proof);
       }

@@ -1,3 +1,4 @@
+/* Main application server and API configuration. */
 // Load local configuration before reading process.env; .env stays outside public/.
 require("dotenv").config();
 const express = require("express");

@@ -8,6 +8,36 @@ function addOrderDetail(container, label, value) {
   container.appendChild(line);
 }
 
+// Fullscreen image preview modal handler
+function openImageLightbox(imageSrc) {
+  const existingOverlay = document.getElementById('adminImageLightbox');
+  if (existingOverlay) existingOverlay.remove();
+
+  const overlay = document.createElement('div');
+  overlay.id = 'adminImageLightbox';
+  overlay.style.position = 'fixed';
+  overlay.style.inset = '0';
+  overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.85)';
+  overlay.style.zIndex = '99999';
+  overlay.style.display = 'flex';
+  overlay.style.alignItems = 'center';
+  overlay.style.justifyContent = 'center';
+  overlay.style.padding = '20px';
+  overlay.style.cursor = 'zoom-out';
+
+  const img = document.createElement('img');
+  img.src = imageSrc;
+  img.style.maxWidth = '90vw';
+  img.style.maxHeight = '90vh';
+  img.style.objectFit = 'contain';
+  img.style.borderRadius = '12px';
+  img.style.boxShadow = '0 10px 30px rgba(0,0,0,0.5)';
+
+  overlay.appendChild(img);
+  overlay.addEventListener('click', () => overlay.remove());
+  document.body.appendChild(overlay);
+}
+
 async function renderOrders() {
   if (!ordersContainer) return;
   ordersContainer.textContent = 'Loading orders...';
@@ -35,7 +65,7 @@ async function renderOrders() {
       card.className = 'booking-card';
 
       const header = document.createElement('div');
-      header.className = 'flex items-start justify-between';
+      header.className = 'flex items-start justify-between mb-4';
       
       const title = document.createElement('h3');
       title.className = 'font-alice text-2xl text-dustyPink';
@@ -46,8 +76,12 @@ async function renderOrders() {
       status.textContent = order.status || 'Pending';
       header.append(title, status);
 
+      // Two-column layout container: Left = Customer Info, Right = Payment Screenshot (below Pending)
+      const bodyWrapper = document.createElement('div');
+      bodyWrapper.className = 'flex flex-col md:flex-row justify-between items-start gap-6';
+
       const details = document.createElement('div');
-      details.className = 'admin-order-details';
+      details.className = 'admin-order-details flex-1';
       addOrderDetail(details, 'Customer Name', order.customerName);
       addOrderDetail(details, 'Email', order.customerEmail);
       addOrderDetail(details, 'Contact Number', order.contactNo);
@@ -58,24 +92,38 @@ async function renderOrders() {
         addOrderDetail(details, 'Ordered At', new Date(order.createdAt).toLocaleString());
       }
 
-      // Render payment screenshot preview if available
+      bodyWrapper.appendChild(details);
+
+      // Render payment screenshot preview positioned on the right
       if (order.paymentScreenshot) {
         const proofWrapper = document.createElement('div');
-        proofWrapper.className = 'mt-4';
+        proofWrapper.className = 'flex flex-col items-start md:items-end';
+
         const proofLabel = document.createElement('p');
-        proofLabel.innerHTML = '<strong>Payment Screenshot:</strong>';
+        proofLabel.className = 'text-xs text-textMuted mb-1';
+        proofLabel.innerHTML = '<strong>Payment Screenshot</strong> (click to enlarge):';
+
         const img = document.createElement('img');
         img.src = order.paymentScreenshot;
         img.alt = 'GCash Payment Proof';
-        img.className = 'max-w-xs rounded border border-borderSoft mt-2';
+        img.style.maxWidth = '220px';
+        img.style.maxHeight = '220px';
+        img.style.objectFit = 'contain';
+        img.style.borderRadius = '8px';
+        img.style.cursor = 'pointer';
+        img.className = 'border border-borderSoft shadow-sm hover:opacity-90 transition';
+
+        // Open image directly in modal on click
+        img.addEventListener('click', () => openImageLightbox(order.paymentScreenshot));
+
         proofWrapper.append(proofLabel, img);
-        details.appendChild(proofWrapper);
+        bodyWrapper.appendChild(proofWrapper);
       }
 
-      card.append(header, details);
+      card.append(header, bodyWrapper);
 
       const actions = document.createElement('div');
-      actions.className = 'admin-order-actions';
+      actions.className = 'admin-order-actions mt-4 pt-4 border-t border-borderSoft';
 
       // If order is pending, show Approve and Reject actions
       if (order.status === 'Pending') {
@@ -99,7 +147,7 @@ async function renderOrders() {
         actions.append(approveBtn, rejectBtn);
       }
 
-      // If order is finished (Approved or Rejected), show Delete Order button (Soft Delete)
+      // If order is finished (Approved or Rejected), show Delete Order button
       if (order.status === 'Approved' || order.status === 'Rejected') {
         const deleteOrderBtn = document.createElement('button');
         deleteOrderBtn.type = 'button';
@@ -121,7 +169,7 @@ async function renderOrders() {
             if (!res.ok || !result.success) throw new Error(result.message);
             
             showToast(result.message || 'Order removed from dashboard.');
-            renderOrders(); // Refresh the orders list
+            renderOrders();
           } catch (err) {
             alert(err.message || 'Failed to delete order.');
             deleteOrderBtn.disabled = false;
@@ -152,33 +200,39 @@ async function renderOrders() {
 }
 
 async function approveOrder(orderId, button) {
+  if (!confirm("Are you sure you verified this GCash reference number and want to approve this order?")) return;
+
   button.disabled = true;
+  button.textContent = 'Processing...';
+
   try {
     const response = await fetch(`/api/orders/approve/${orderId}`, { method: 'POST' });
     const result = await response.json();
     if (!response.ok || !result.success) throw new Error(result.message);
-    showToast(result.message);
+    
+    showToast(result.message || 'Order approved successfully.');
     await renderOrders();
   } catch (error) {
     alert(error.message || 'Failed to approve order.');
     button.disabled = false;
+    button.textContent = 'Approve';
   }
 }
 
 async function rejectOrder(orderId, button) {
-  const reason = prompt("Enter a reason for rejection (optional):");
-  if (reason === null) return; // user cancelled prompt
+  if (!confirm("Are you sure you want to reject this order?")) return;
 
   button.disabled = true;
   try {
     const response = await fetch(`/api/orders/reject/${orderId}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ reason })
+      body: JSON.stringify({ reason: 'Payment could not be verified.' })
     });
     const result = await response.json();
     if (!response.ok || !result.success) throw new Error(result.message);
-    showToast(result.message);
+    
+    showToast(result.message || 'Order rejected successfully.');
     await renderOrders();
   } catch (error) {
     alert(error.message || 'Failed to reject order.');

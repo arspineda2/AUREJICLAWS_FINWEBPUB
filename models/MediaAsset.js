@@ -1,3 +1,4 @@
+/* Uploaded media asset model. */
 const mongoose = require("mongoose");
 
 const mediaAssetSchema = new mongoose.Schema({

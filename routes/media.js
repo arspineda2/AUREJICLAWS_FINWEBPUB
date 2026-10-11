@@ -1,3 +1,4 @@
+/* Media asset API routes. */
 const express = require("express");
 const multer = require("multer");
 const mongoose = require("mongoose");

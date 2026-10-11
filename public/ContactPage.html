@@ -11,6 +11,7 @@
 
   <link rel="stylesheet" href="nav.css" />
   <link rel="stylesheet" href="contact.css" />
+  <link rel="stylesheet" href="checkout.css" />
 </head>
 <body>
   <div data-include="header.html"></div>
@@ -113,7 +114,94 @@
       </section>
 
     </div>
+
   </main>
+  <div id="checkoutModal" class="modal-overlay hidden">
+    <div class="modal-box">
+      <button id="modalCloseBtn" class="modal-close" aria-label="Close checkout">&times;</button>
+      <div class="modal-steps">
+        <span class="step-label active">1. Delivery</span>
+        <span class="step-label">2. Payment</span>
+        <span class="step-label">3. Confirmation</span>
+      </div>
+      <div id="orderItemPreview" class="order-item-preview" aria-live="polite"></div>
+      <div id="step1" class="modal-step">
+        <h3 class="step-subtitle">Delivery Details</h3>
+        <form id="addressForm" class="modal-form">
+          <div class="form-field">
+            <label for="fullName">Full name</label>
+            <input type="text" id="fullName" name="fullName" maxlength="120" autocomplete="name" required>
+          </div>
+          <div class="form-row">
+            <div class="form-field">
+              <label for="email">Email</label>
+              <input type="email" id="email" name="email" maxlength="254" autocomplete="email" required>
+            </div>
+            <div class="form-field">
+              <label for="contactNo">Contact number</label>
+              <input type="tel" id="contactNo" name="contactNo" maxlength="40" autocomplete="tel" required>
+            </div>
+          </div>
+          <div class="form-field">
+            <label for="address">Delivery address</label>
+            <input type="text" id="address" name="address" maxlength="500" autocomplete="street-address" required>
+          </div>
+          <div class="form-field">
+            <label for="notes1">Delivery notes (optional)</label>
+            <textarea id="notes1" name="notes1" rows="2" maxlength="1000"></textarea>
+          </div>
+          <label class="consent-row">
+            <input type="checkbox" id="consentCheckbox" name="consent" value="true" required>
+            <span>By submitting your details, you agree that we may use them to process and deliver your order.</span>
+          </label>
+          <button type="submit" class="btn btn-primary modal-submit-btn">Continue to Payment</button>
+        </form>
+      </div>
+      <div id="step2" class="modal-step hidden">
+        <h3 class="step-subtitle">Payment Details</h3>
+        <form id="paymentForm" class="modal-form" enctype="multipart/form-data">
+          <div class="form-field">
+            <label for="paymentMethod">Payment method</label>
+            <input type="text" id="paymentMethod" name="paymentMethod" value="GCash" readonly>
+          </div>
+          <div class="form-row">
+            <div class="form-field">
+              <label for="refNumber">Reference number</label>
+              <input type="text" id="refNumber" name="refNumber" maxlength="100" required>
+            </div>
+            <div class="form-field">
+              <label for="dateSent">Date sent</label>
+              <input type="date" id="dateSent" name="dateSent" required>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-field">
+              <label for="timeSent">Time sent</label>
+              <input type="time" id="timeSent" name="timeSent" required>
+            </div>
+            <div class="form-field">
+              <label for="proofUpload">Payment screenshot (JPEG, PNG, or WebP; max 4 MB)</label>
+              <input type="file" id="proofUpload" name="proofUpload" accept="image/jpeg,image/png,image/webp" required>
+              <span id="fileNameDisplay">No file chosen</span>
+            </div>
+          </div>
+          <div class="form-field">
+            <label for="notes2">Payment notes (optional)</label>
+            <textarea id="notes2" name="notes2" rows="2" maxlength="1000"></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary modal-submit-btn">Submit Order</button>
+        </form>
+      </div>
+      <div id="step3" class="modal-step hidden">
+        <div class="thank-you-box">
+          <h2>Thank you for ordering from Aureji Claws!</h2>
+          <p>For order updates, order confirmation, and payment confirmation please check your inbox.</p>
+          <p class="thank-you-subnote">(Payment confirmation will be sent as soon as the payment is verified by our team.)</p>
+          <div id="orderConfirmationDetails" class="receipt-box" aria-live="polite"></div>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <div data-include="footer.html"></div>
 
@@ -232,6 +320,7 @@
       }
     });
   </script>
+
 
 </body>
 </html>

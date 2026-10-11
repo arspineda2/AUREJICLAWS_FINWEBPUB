@@ -1,3 +1,4 @@
+/* Product catalog API routes. */
 const express = require("express");
 const mongoose = require("mongoose");
 const Product = require("../models/Product");

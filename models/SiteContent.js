@@ -1,3 +1,4 @@
+/* Editable website content model. */
 const mongoose = require("mongoose");
 
 const siteContentSchema = new mongoose.Schema({

@@ -1,6 +1,6 @@
-/* Defines what happens when the app receives an order request: 
-reads the submitted form and screenshot, validates the data and products, calculates the total, 
-then calls the model to save the order. */
+/* Order API routes:
+ * Validate submitted forms and screenshots, calculate totals, and save orders.
+ */
 const express = require("express");
 const multer = require("multer");
 const Order = require("../models/Order");

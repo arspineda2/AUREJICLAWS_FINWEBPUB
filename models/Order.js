@@ -1,5 +1,4 @@
-/* Defines what an order looks like in MongoDB: customer details,
-purchased items, total, payment proof, and status. */
+/* Order model: customer details, purchased items, total, payment proof, and status. */
 const mongoose = require("mongoose");
 
 const orderSchema = new mongoose.Schema({

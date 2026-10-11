@@ -152,10 +152,19 @@ function initializeSharedCart() {
   });
 
   cartCheckoutBtn.addEventListener("click", () => {
-    if (document.getElementById("checkoutModal")
-      || selectedCartIndex === null
-      || !cartState[selectedCartIndex]) return;
+    if (selectedCartIndex === null || !cartState[selectedCartIndex]) return;
 
+    // If the modal exists on this page, open it directly!
+    const modal = document.getElementById("checkoutModal");
+    if (modal) {
+      cartPanel.classList.add("hidden");
+      if (typeof window.openModalCheckout === "function") {
+        window.openModalCheckout(cartState[selectedCartIndex]);
+      }
+      return;
+    }
+
+    // Otherwise, redirect to PressOnPage if the modal isn't on the page
     try {
       sessionStorage.setItem(
         CART_CHECKOUT_ITEM_KEY,
@@ -170,40 +179,39 @@ function initializeSharedCart() {
 }
 
 async function initializeCheckout() {
-  const productGrid = document.getElementById("productGrid");
   const modal = document.getElementById("checkoutModal");
   const addressForm = document.getElementById("addressForm");
   const paymentForm = document.getElementById("paymentForm");
 
-  if (!productGrid && !modal && !addressForm && !paymentForm) return;
+  // If the modal or forms are missing from the page entirely, exit safely
+  if (!modal || !addressForm || !paymentForm) return;
 
-  if (!productGrid || !modal || !addressForm || !paymentForm) {
-    console.error("Checkout could not start: required product or modal elements are missing.");
-    return;
-  }
+  const productGrid = document.getElementById("productGrid");
 
-  try {
-    const response = await fetch("/api/products");
-    const result = await response.json();
-    if (!response.ok || !result.success || !Array.isArray(result.products)) {
-      throw new Error(result.message || "Products could not be loaded.");
+  // Only try to fetch and render products if the productGrid exists on this page
+  if (productGrid) {
+    try {
+      const response = await fetch("/api/products");
+      const result = await response.json();
+      if (!response.ok || !result.success || !Array.isArray(result.products)) {
+        throw new Error(result.message || "Products could not be loaded.");
+      }
+      renderProductCatalog(productGrid, result.products);
+    } catch (error) {
+      console.error("Product catalog could not be loaded:", error);
+      productGrid.textContent = "The product catalog is temporarily unavailable. Please try again later.";
+      productGrid.setAttribute("role", "alert");
+      return;
     }
-    renderProductCatalog(productGrid, result.products);
-  } catch (error) {
-    console.error("Product catalog could not be loaded:", error);
-    productGrid.textContent = "The product catalog is temporarily unavailable. Please try again later.";
-    productGrid.setAttribute("role", "alert");
-    return;
   }
 
+  // Query all necessary UI elements safely after confirming modal/forms exist
   const cartIconBtn = document.getElementById("cartIconBtn");
   const cartPanel = document.getElementById("cartPanel");
   const cartItemsEl = document.getElementById("cartItems");
   const cartCountEl = document.getElementById("cartCount");
   const cartRemoveBtn = document.getElementById("cartRemoveBtn");
   const cartCheckoutBtn = document.getElementById("cartCheckoutBtn");
-  const filterBtn = document.getElementById("filterBtn");
-  const filterMenu = document.getElementById("filterMenu");
   const modalCloseBtn = document.getElementById("modalCloseBtn");
   const stepLabels = [...document.querySelectorAll(".step-label")];
   const step1 = document.getElementById("step1");
@@ -213,9 +221,11 @@ async function initializeCheckout() {
   const confirmationBox = document.getElementById("orderConfirmationDetails");
   const fileInput = document.getElementById("proofUpload");
   const fileNameDisplay = document.getElementById("fileNameDisplay");
+  const filterBtn = document.getElementById("filterBtn");
+  const filterMenu = document.getElementById("filterMenu");
 
-  if ([cartIconBtn, cartPanel, cartItemsEl, cartCountEl, cartRemoveBtn, cartCheckoutBtn,
-    filterBtn, filterMenu, modalCloseBtn, step1, step2, step3, orderItemPreview,
+ if ([cartIconBtn, cartPanel, cartItemsEl, cartCountEl, cartRemoveBtn, cartCheckoutBtn,
+    modalCloseBtn, step1, step2, step3, orderItemPreview,
     confirmationBox, fileInput, fileNameDisplay].some((element) => !element)) {
     console.error("Checkout could not start: one or more required cart or checkout elements are missing.");
     return;
@@ -344,29 +354,30 @@ async function initializeCheckout() {
     });
   }
 
-  // Adding to cart saves across pages; Buy Now opens checkout directly.
   refreshCartView = renderCart;
   handleCartStorageUpdate = () => {
     selectedCartIndex = null;
     refreshCartView();
   };
 
-  productGrid.querySelectorAll(".cart-add-btn").forEach((button) => {
-    button.addEventListener("click", () => {
-      const card = button.closest(".product-card");
-      if (card) addToCart(readProduct(card));
+  if (productGrid) {
+    productGrid.querySelectorAll(".cart-add-btn").forEach((button) => {
+      button.addEventListener("click", () => {
+        const card = button.closest(".product-card");
+        if (card) addToCart(readProduct(card));
+      });
     });
-  });
 
-  productGrid.querySelectorAll(".buy-now-overlay").forEach((button) => {
-    button.addEventListener("click", () => {
-      const card = button.closest(".product-card");
-      if (!card) return;
-      selectedProduct = { ...readProduct(card), quantity: 1 };
-      selectedCartIndex = null;
-      openCheckout();
+    productGrid.querySelectorAll(".buy-now-overlay").forEach((button) => {
+      button.addEventListener("click", () => {
+        const card = button.closest(".product-card");
+        if (!card) return;
+        selectedProduct = { ...readProduct(card), quantity: 1 };
+        selectedCartIndex = null;
+        openCheckout();
+      });
     });
-  });
+  }
 
   cartCheckoutBtn.addEventListener("click", () => {
     if (selectedCartIndex === null || !cartState[selectedCartIndex]) return;
@@ -375,31 +386,30 @@ async function initializeCheckout() {
     openCheckout();
   });
 
-  // Close popovers when clicking outside them.
-  document.addEventListener("click", (event) => {
-    if (!filterMenu.contains(event.target) && !filterBtn.contains(event.target)) {
-      filterMenu.classList.add("hidden");
-    }
-  });
-
-  filterBtn.addEventListener("click", (event) => {
-    event.stopPropagation();
-    filterMenu.classList.toggle("hidden");
-  });
-
-  // Sort the displayed cards. Best-selling order needs real sales analytics,
-  // so until that exists it keeps the page's current order.
-  document.querySelectorAll(".filter-option").forEach((option) => {
-    option.addEventListener("click", () => {
-      const cards = [...productGrid.children];
-      if (option.dataset.sort === "availability") {
-        cards.sort((first, second) => Number(first.classList.contains("sold-out"))
-          - Number(second.classList.contains("sold-out")));
+  if (filterBtn && filterMenu && productGrid) {
+    document.addEventListener("click", (event) => {
+      if (!filterMenu.contains(event.target) && !filterBtn.contains(event.target)) {
+        filterMenu.classList.add("hidden");
       }
-      cards.forEach((card) => productGrid.appendChild(card));
-      filterMenu.classList.add("hidden");
     });
-  });
+
+    filterBtn.addEventListener("click", (event) => {
+      event.stopPropagation();
+      filterMenu.classList.toggle("hidden");
+    });
+
+    document.querySelectorAll(".filter-option").forEach((option) => {
+      option.addEventListener("click", () => {
+        const cards = [...productGrid.children];
+        if (option.dataset.sort === "availability") {
+          cards.sort((first, second) => Number(first.classList.contains("sold-out"))
+            - Number(second.classList.contains("sold-out")));
+        }
+        cards.forEach((card) => productGrid.appendChild(card));
+        filterMenu.classList.add("hidden");
+      });
+    });
+  }
 
   function openCheckout() {
     addressForm.reset();
@@ -420,6 +430,11 @@ async function initializeCheckout() {
     });
     modal.classList.remove("hidden");
   }
+
+  window.openModalCheckout = (item) => {
+    selectedProduct = { ...item };
+    openCheckout();
+  };
 
   function openPendingCartCheckout() {
     let requestedProductId;
@@ -466,8 +481,6 @@ async function initializeCheckout() {
     });
   }
 
-  // Keep the address step in the browser until payment is submitted.
-  // No customer data is sent to Atlas until the final checkout request.
   addressForm.addEventListener("submit", (event) => {
     event.preventDefault();
     step1.classList.add("hidden");
@@ -479,8 +492,6 @@ async function initializeCheckout() {
     fileNameDisplay.textContent = fileInput.files[0]?.name || "No file chosen";
   });
 
-  // Send both forms' values and the image in one multipart request.
-  // The backend rechecks the product IDs and prices before saving to Atlas.
   paymentForm.addEventListener("submit", async (event) => {
     event.preventDefault();
     if (!selectedProduct) {
@@ -511,7 +522,6 @@ async function initializeCheckout() {
         throw new Error(result.error || "The order could not be saved.");
       }
 
-      // Use text nodes rather than HTML strings for server/customer-provided values.
       const orderIdLine = document.createElement("p");
       orderIdLine.textContent = `Order ID: ${result.orderId}`;
       const totalLine = document.createElement("p");

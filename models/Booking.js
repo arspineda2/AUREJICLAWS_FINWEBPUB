@@ -1,5 +1,5 @@
 /*
- * Booking workflow:
+ * Booking model and appointment workflow:
  * 1. The public booking endpoint validates the submitted customer, service,
  *    and requested schedule, then creates a Booking document.
  * 2. New bookings start as Pending so the business can review availability.
