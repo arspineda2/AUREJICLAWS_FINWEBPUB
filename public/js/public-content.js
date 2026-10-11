@@ -13,6 +13,11 @@ async function loadPublicContent() {
     renderContactDetails(result.content.contact);
   } catch (error) {
     console.error("Public site content could not be loaded:", error);
+  } finally {
+    // MODIFIED (1 of 3): added this "finally" block.
+    // It starts the slider whether the API worked or not, so the
+    // hardcoded slides in HomePage.html still work if the fetch fails.
+    initHeroSlider();
   }
 }
 
@@ -63,26 +68,82 @@ function renderHeroSlides(slides) {
     dotsContainer.appendChild(dot);
   });
 
-  let currentIndex = 0;
-  let slideTimer;
+  // MODIFIED (2 of 3): the slider logic that used to be here
+  // (currentIndex, slideTimer, showSlide, startAutoSlide, and the dot
+  // click listeners) was moved out into initHeroSlider() below.
+  // This function now only builds the slides and dots.
+}
+
+// NEW (3 of 3): this whole function is new. It holds the slider logic
+// that was moved out of renderHeroSlides(), and it now works with both
+// the API slides and the hardcoded HTML slides.
+function initHeroSlider() {
+  const slider = document.querySelector(".hero-slider");
+  const dotsContainer = document.querySelector(".slider-dots");
+  if (!slider || !dotsContainer) return;
+
   const panels = [...slider.querySelectorAll(".slide")];
   const dots = [...dotsContainer.querySelectorAll(".dot")];
+  if (panels.length < 2) return;
+
+  let currentIndex = 0;
+  let slideTimer;
+
   const showSlide = (index) => {
     panels[currentIndex].classList.remove("active");
-    dots[currentIndex].classList.remove("active");
+    dots[currentIndex]?.classList.remove("active");
     currentIndex = index;
     panels[currentIndex].classList.add("active");
-    dots[currentIndex].classList.add("active");
+    dots[currentIndex]?.classList.add("active");
   };
+
   const startAutoSlide = () => {
     clearInterval(slideTimer);
-    slideTimer = setInterval(() => showSlide((currentIndex + 1) % panels.length), 8000);
+    slideTimer = setInterval(
+      () => showSlide((currentIndex + 1) % panels.length),
+      5000 
+    );
   };
-  dots.forEach((dot) => dot.addEventListener("click", () => {
-    showSlide(Number(dot.dataset.index));
-    startAutoSlide();
-  }));
+
+  dots.forEach((dot) =>
+    dot.addEventListener("click", () => {
+      showSlide(Number(dot.dataset.index));
+      startAutoSlide();
+    })
+  );
+
   startAutoSlide();
+}
+
+// Fallback video for the first Instagram item (the reel).
+// Used when the API post has no "videoUrl" field.
+const DEFAULT_REEL_VIDEO = "/videos/reel-one.mp4";
+
+function createReelVideo(post) {
+  const video = document.createElement("video");
+  video.src = post.videoUrl ? publicImageUrl(post.videoUrl) : DEFAULT_REEL_VIDEO;
+  if (post.imageUrl) video.poster = publicImageUrl(post.imageUrl); // thumbnail until it plays
+
+  // These must be set as JS properties (not just attributes) for autoplay to work
+  video.muted = true;
+  video.defaultMuted = true;
+  video.loop = true;
+  video.autoplay = true;
+  video.playsInline = true;
+  video.preload = "auto";
+  video.setAttribute("muted", "");
+  video.setAttribute("playsinline", "");
+
+  const tryPlay = () => video.play().catch(() => {});
+  video.addEventListener("canplay", tryPlay, { once: true });
+  tryPlay();
+
+  // If the browser blocks autoplay, retry on the first user interaction
+  ["click", "touchstart", "scroll"].forEach((evt) =>
+    window.addEventListener(evt, tryPlay, { once: true, passive: true })
+  );
+
+  return video;
 }
 
 function renderInstagramPosts(content) {
@@ -90,18 +151,27 @@ function renderInstagramPosts(content) {
   if (!gallery || !Array.isArray(content.instagramPosts)) return;
   gallery.replaceChildren();
   content.instagramPosts.forEach((post, index) => {
+    const isReel = index === 0;
+
     const link = document.createElement("a");
-    link.className = index === 0 ? "gallery-reelitem" : "gallery-item";
+    link.className = isReel ? "gallery-reelitem" : "gallery-item";
     link.href = post.link;
     link.target = "_blank";
     link.rel = "noopener noreferrer";
-    const image = document.createElement("img");
-    image.src = publicImageUrl(post.imageUrl);
-    image.alt = `Aureji Claws Instagram ${index === 0 ? "reel" : "post"} ${index + 1}`;
+
+    let media;
+    if (isReel) {
+      media = createReelVideo(post);
+    } else {
+      media = document.createElement("img");
+      media.src = publicImageUrl(post.imageUrl);
+      media.alt = `Aureji Claws Instagram post ${index + 1}`;
+    }
+
     const label = document.createElement("span");
     label.className = "view-post-text";
-    label.textContent = index === 0 ? "View Reel" : "View Post";
-    link.append(image, label);
+    label.textContent = isReel ? "View Reel" : "View Post";
+    link.append(media, label);
     gallery.appendChild(link);
   });
 

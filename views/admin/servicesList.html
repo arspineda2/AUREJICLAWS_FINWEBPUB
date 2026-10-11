@@ -100,30 +100,6 @@
             <!-- Rendered by JS -->
           </div>
         </section>
-
-        <details class="bg-white rounded-2xl border border-borderSoft shadow-sm">
-          <summary class="p-5 font-semibold text-periwinkleTitle cursor-pointer">Website service menu heading</summary>
-          <div class="p-6 pt-0 flex flex-col gap-4">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div class="flex flex-col gap-1.5">
-                <label class="text-xs font-semibold text-periwinkleTitle" for="inputMenuTitle">Menu Title</label>
-                <input type="text" id="inputMenuTitle" class="form-input" />
-              </div>
-              <div class="flex flex-col gap-1.5 md:col-span-2">
-                <label class="text-xs font-semibold text-periwinkleTitle" for="inputMenuNote">Subtitle / Description Note</label>
-                <input type="text" id="inputMenuNote" class="form-input" />
-              </div>
-            </div>
-            <div class="flex flex-wrap justify-between items-center gap-3">
-              <div class="flex items-center gap-2 flex-1">
-                <label class="text-xs font-semibold text-periwinkleTitle whitespace-nowrap" for="inputMenuBtnText">Button Text</label>
-                <input type="text" id="inputMenuBtnText" class="form-input flex-1" />
-              </div>
-              <button type="button" onclick="saveHeaderConfig()" class="bg-lavenderInput hover:bg-lavenderInputFocus text-periwinkleTitle font-semibold px-6 py-2 rounded-xl border border-borderSoft transition cursor-pointer">Update Heading</button>
-            </div>
-          </div>
-        </details>
-
       </div>
     </main>
   </div>
@@ -214,9 +190,6 @@
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          title: document.getElementById('inputMenuTitle').value.trim(),
-          note: document.getElementById('inputMenuNote').value.trim(),
-          buttonText: document.getElementById('inputMenuBtnText').value.trim(),
           categories: serviceCategories
         })
       });
@@ -225,16 +198,24 @@
     async function reloadServices(selectedItemId) {
       const { content } = await adminRequest('/api/site-content');
       serviceCategories = content.serviceMenu.categories;
-      document.getElementById('inputMenuTitle').value = content.serviceMenu.title;
-      document.getElementById('inputMenuNote').value = content.serviceMenu.note;
-      document.getElementById('inputMenuBtnText').value = content.serviceMenu.buttonText;
+      
+      // Safely check if elements exist before assigning values
+      const titleInput = document.getElementById('inputMenuTitle');
+      if (titleInput) titleInput.value = content.serviceMenu.title;
+      
+      const noteInput = document.getElementById('inputMenuNote');
+      if (noteInput) noteInput.value = content.serviceMenu.note;
+      
+      const btnInput = document.getElementById('inputMenuBtnText');
+      if (btnInput) btnInput.value = content.serviceMenu.buttonText;
       renderServicesList();
+      
       const allServices = serviceCategories.flatMap(category =>
-        category.items.map(item => ({ category, item })));
+      category.items.map(item => ({ category, item })));
       const selected = allServices.find(entry => entry.item.id === selectedItemId) || allServices[0] || null;
       if (selected) editService(selected.category.id, selected.item.id);
       else prepareNewService(serviceCategories[0]?.id);
-    }
+}
 
     async function saveHeaderConfig() {
       try {

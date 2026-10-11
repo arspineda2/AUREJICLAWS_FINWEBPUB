@@ -54,6 +54,8 @@ body {
 
 .logo {
   z-index: 2;
+  /* NEW: the logo can't be squeezed smaller by the nav links */
+  flex-shrink: 0;
 }
 
 .logo img {
@@ -90,17 +92,26 @@ body {
   left: 50%;
   transform: translateX(-50%);
   display: flex;
-  gap: 2rem;
+  /* NEW: keeps all the links on ONE row, they never drop to a second line */
+  flex-wrap: nowrap;
+  /* MODIFIED: was "gap: 2rem;" now shrinks as the screen gets smaller
+     so the links still fit on one row before the hamburger menu appears */
+  gap: clamp(0.9rem, 2.4vw, 2rem);
 }
 
 .nav-links a {
   text-decoration: none;
   font-family: var(--font-secondary);
-  font-size: 0.85rem;
-  letter-spacing: 1.2px;
+  /* MODIFIED: was "font-size: 0.85rem;" now shrinks slightly on smaller screens */
+  font-size: clamp(0.7rem, 1.2vw, 0.85rem);
+  /* MODIFIED: was "letter-spacing: 1.2px;" slightly tighter on smaller screens */
+  letter-spacing: clamp(0.6px, 0.12vw, 1.2px);
   font-weight: 500;
   color: var(--text-dark);
   transition: color 0.2s ease;
+  /* NEW: keeps each nav link as ONE piece, so a name like "About Us"
+     never splits into two lines (e.g. "About" / "Us") */
+  white-space: nowrap;
 }
 
 .nav-links a:hover {
@@ -113,24 +124,32 @@ body {
 .hero-section {
   position: relative;
   width: 100%;
-  min-height: 80vh;
+  /* REMOVED: "min-height: 80vh;" (it made the hero taller/shorter per device).
+     The height now comes from the slider's aspect-ratio below. */
   overflow: hidden;
 }
 
 .hero-slider {
   position: relative;
   width: 100%;
-  min-height: 80vh;
+  /* REMOVED: "min-height: 80vh;"
+     MODIFIED: fixed landscape rectangle on EVERY screen size.
+     The photo scales down with the width and never changes shape.
+     Change 21 / 9 to adjust it (16 / 9 = taller, 2.4 / 1 = wider). */
+  aspect-ratio: 21 / 9;
 }
 
 .hero-slider .slide {
   position: absolute;
   inset: 0;
+  /* cover + center keeps the photo fixed; since the box ratio never changes,
+     the photo is cropped the same way on every device */
   background-size: cover;
   background-position: center;
   display: flex;
   align-items: center;
-  padding: 0 8%;
+  /* MODIFIED: was "padding: 0 8%;" now 6% so it fits the scaled hero */
+  padding: 0 6%;
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.8s ease-in-out;
@@ -157,7 +176,8 @@ body {
 .hero-slider .hero-content {
   position: relative;
   z-index: 3;
-  max-width: 500px;
+  /* MODIFIED: was "max-width: 500px;" now a % so the text block shrinks with the hero */
+  max-width: 42%;
   color: #ffffff;
   text-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
   transform: translateY(15px);
@@ -172,24 +192,36 @@ body {
 
 .hero-title {
   font-family: var(--font-header);
-  font-size: 3.2rem;
+  /* MODIFIED: was "font-size: 3.2rem;" now scales with screen width, like the picture does */
+  font-size: clamp(1.1rem, 3.2vw, 3.2rem);
   font-weight: 400;
-  margin-bottom: 0.75rem;
+  /* MODIFIED: was "margin-bottom: 0.75rem;" now relative to the font size */
+  margin-bottom: 0.5em;
   line-height: 1.15;
 }
 
 .hero-description {
   font-family: var(--font-secondary);
-  font-size: 0.9rem;
+  /* MODIFIED: was "font-size: 0.9rem;" now scales with screen width, with a readable minimum */
+  font-size: clamp(0.65rem, 1.1vw, 0.9rem);
   font-weight: 300;
-  line-height: 1.6;
-  margin-bottom: 1.5rem;
+  /* MODIFIED: was "line-height: 1.6;" slightly tighter so more text fits */
+  line-height: 1.5;
+  /* MODIFIED: was "margin-bottom: 1.5rem;" now relative to the font size */
+  margin-bottom: 1em;
   opacity: 0.95;
+}
+
+/* NEW: the hero button scales down with the hero too */
+.hero-slider .hero-content .btn {
+  font-size: clamp(0.65rem, 1vw, 0.8rem);
+  padding: clamp(6px, 0.8vw, 10px) clamp(14px, 1.8vw, 22px);
 }
 
 .slider-dots {
   position: absolute;
-  bottom: 2rem;
+  /* MODIFIED: was "bottom: 2rem;" now scales with the hero */
+  bottom: 4%;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
@@ -215,27 +247,74 @@ body {
   border-color: var(--accent-pink);
 }
 
+/* MODIFIED: phones only (600px and below).
+   Before: the description was hidden and the button stayed.
+   Now: the button is hidden and the description shows instead. */
+@media (max-width: 600px) {
+  /* NEW: hide the hero button on phones */
+  .hero-slider .hero-content .btn {
+    display: none;
+  }
+
+  /* MODIFIED: was "display: none;" so the description now shows.
+     It is capped at 4 lines with "..." so long text never runs into the dots.
+     Change 4 to 5 or 3 to show more or fewer lines. */
+  .hero-slider .hero-description {
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    font-size: 0.6rem;
+    line-height: 1.4;
+    margin-bottom: 0;
+  }
+
+  /* MODIFIED: was 55%, now wider so the description has room */
+  .hero-slider .hero-content {
+    max-width: 62%;
+  }
+
+  .dot {
+    width: 7px;
+    height: 7px;
+  }
+
+  .dot.active {
+    width: 18px;
+  }
+
+  .slider-dots {
+    gap: 0.4rem;
+  }
+}
+
 /* ==========================================
    FEATURES SECTION (PRESS-ON & SERVICES)
 ========================================== */
 .features-section {
-  padding: 4.5rem 8%;
+  /* MODIFIED: was "padding: 4.5rem 8%;" the top/bottom space now scales with the
+     screen width so the section shrinks like a picture. Side padding stays 8%. */
+  padding: clamp(1.5rem, 4.5vw, 4.5rem) 8%;
   background-color: var(--bg-cream);
 }
 
 .cards-container {
   display: grid;
+  /* Stays 2 columns on EVERY screen size (desktop, tablet, phone) */
   grid-template-columns: repeat(2, 1fr);
-  gap: 3rem;
+  /* MODIFIED: was "gap: 3rem;" now scales with the screen width */
+  gap: clamp(0.75rem, 3vw, 3rem);
   max-width: 1100px;
   margin: 0 auto;
 }
 
 .feature-card .card-image-box {
   width: 100%;
+  /* Same 16 / 10 landscape photo box on every screen size */
   aspect-ratio: 16 / 10;
   overflow: hidden;
-  margin-bottom: 1.25rem;
+  /* MODIFIED: was "margin-bottom: 1.25rem;" now scales with the screen width */
+  margin-bottom: clamp(0.5rem, 1.25vw, 1.25rem);
 }
 
 .feature-card .card-image-box img {
@@ -247,37 +326,57 @@ body {
 
 .card-title {
   font-family: var(--font-header);
-  font-size: 1.85rem;
+  /* MODIFIED: was "font-size: 1.85rem;" now scales with the screen width */
+  font-size: clamp(1rem, 2.4vw, 1.85rem);
   font-weight: 400;
-  margin-bottom: 0.5rem;
+  /* MODIFIED: was "margin-bottom: 0.5rem;" now relative to the font size */
+  margin-bottom: 0.3em;
   color: #3b2820;
 }
 
 .card-text {
-  font-size: 0.85rem;
+  /* MODIFIED: was "font-size: 0.85rem;" now scales with the screen width,
+     with a small readable minimum */
+  font-size: clamp(0.6rem, 1.1vw, 0.85rem);
+  /* NEW: slightly tighter line height so the text takes less space on small screens */
+  line-height: 1.5;
   color: var(--text-muted);
-  margin-bottom: 1.25rem;
+  /* MODIFIED: was "margin-bottom: 1.25rem;" now scales with the screen width */
+  margin-bottom: clamp(0.5rem, 1.25vw, 1.25rem);
+}
+
+/* NEW: the "See more" buttons scale down with the cards, same idea as the hero button */
+.feature-card .btn {
+  font-size: clamp(0.6rem, 1vw, 0.8rem);
+  padding: clamp(5px, 0.8vw, 10px) clamp(12px, 1.8vw, 22px);
 }
 
 /* ==========================================
    MULTIMEDIA & PROMOTIONAL INTEGRATION
 ========================================== */
 .multimedia-section {
-  padding: 3rem 8% 5rem;
+  /* MODIFIED: was "padding: 3rem 8% 5rem;" the top/bottom space now shrinks
+     with the screen width. Side padding stays 8%. */
+  padding: clamp(1.5rem, 4vw, 3rem) 8% clamp(2rem, 6vw, 5rem);
   background-color: var(--bg-cream);
   text-align: center;
 }
 
 .claw-club-header {
-  margin-bottom: 2.5rem;
+  /* MODIFIED: was "margin-bottom: 2.5rem;" now scales with the screen width */
+  margin-bottom: clamp(1rem, 3vw, 2.5rem);
 }
 
 .section-heading {
   font-family: var(--font-header);
-  font-size: 2rem;
-  letter-spacing: 2px;
+  /* MODIFIED: was "font-size: 2rem;" now scales with the screen width */
+  font-size: clamp(1rem, 3.2vw, 2rem);
+  /* MODIFIED: was "letter-spacing: 2px;" slightly tighter on smaller screens */
+  letter-spacing: clamp(1px, 0.25vw, 2px);
   color: #3b2820;
   margin-bottom: 0.5rem;
+  /* NEW: "JOIN THE CLAW CLUB" stays on one line, the words never split */
+  white-space: nowrap;
 }
 
 .instagram-handle {
@@ -285,19 +384,25 @@ body {
   align-items: center;
   gap: 0.4rem;
   text-decoration: none;
-  font-size: 0.9rem;
+  /* MODIFIED: was "font-size: 0.9rem;" now scales with the screen width */
+  font-size: clamp(0.65rem, 1.6vw, 0.9rem);
   color: var(--text-dark);
   font-weight: 500;
 }
 
 .gallery-grid {
   display: grid;
+  /* Stays 3 columns (big reel on the left + 2x2 posts) on EVERY screen size */
   grid-template-columns: 1.45fr 1fr 1fr;
-  gap: 24px;
+  /* MODIFIED: was "gap: 24px;" now shrinks with the screen width, so the
+     reel and posts get smaller on mobile instead of staying big */
+  gap: clamp(6px, 2.6vw, 24px);
   max-width: 900px;
   margin: 0 auto;
 }
 
+/* UNTOUCHED (except the border-radius line below): the layout rules of the reel
+   box are exactly the same as in your working file, so the video keeps its size */
 .gallery-reelitem {
   position: relative;
   display: block;
@@ -305,7 +410,8 @@ body {
   grid-row: 1 / span 2;
   align-self: stretch;
   min-height: 0;
-  border-radius: 12px;
+  /* MODIFIED: was "border-radius: 12px;" now scales down on small screens */
+  border-radius: clamp(6px, 1.4vw, 12px);
   overflow: hidden;
   text-decoration: none;
   cursor: pointer;
@@ -317,16 +423,20 @@ body {
 .gallery-reelitem::after {
   content: "";
   position: absolute;
-  top: 12px;
-  right: 12px;
-  width: 28px;
-  height: 28px;
+  /* MODIFIED: was "top: 12px; right: 12px;" now scales with the screen width */
+  top: clamp(5px, 1.4vw, 12px);
+  right: clamp(5px, 1.4vw, 12px);
+  /* MODIFIED: was "width: 28px; height: 28px;" the play icon shrinks on small screens */
+  width: clamp(16px, 3.2vw, 28px);
+  height: clamp(16px, 3.2vw, 28px);
   z-index: 2;
-  background: rgba(0, 0, 0, 0.45) url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'><path d='M8 5v14l11-7z'/></svg>") center / 16px no-repeat;
+  /* MODIFIED: the play triangle size was "16px", now "57%" so it scales with the circle */
+  background: rgba(0, 0, 0, 0.45) url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'><path d='M8 5v14l11-7z'/></svg>") center / 57% no-repeat;
   border-radius: 50%;
   pointer-events: none;
 }
 
+/* UNTOUCHED: the reel image/video rules are byte-for-byte the same as your working file */
 .gallery-reelitem img,
 .gallery-reelitem video {
   position: absolute;
@@ -345,7 +455,8 @@ body {
   width: 100%;
   height: auto;
   aspect-ratio: 4 / 5;
-  border-radius: 12px;
+  /* MODIFIED: was "border-radius: 12px;" now scales down on small screens */
+  border-radius: clamp(6px, 1.4vw, 12px);
   overflow: hidden;
   text-decoration: none;
   cursor: pointer;
@@ -354,6 +465,7 @@ body {
   will-change: transform;
 }
 
+/* UNTOUCHED */
 .gallery-item img,
 .gallery-item video {
   width: 100%;
@@ -374,7 +486,8 @@ body {
   opacity: 0;
   z-index: 2;
   color: #ffffff;
-  font-size: 15px;
+  /* MODIFIED: was "font-size: 15px;" now scales with the screen width */
+  font-size: clamp(0.5rem, 1.6vw, 15px);
   font-weight: 600;
   letter-spacing: 1px;
   text-transform: uppercase;
@@ -415,22 +528,30 @@ body {
 ========================================== */
 .site-footer {
   background-color: var(--bg-white);
-  padding: 3.5rem 8% 1.5rem;
+  /* MODIFIED: was "padding: 3.5rem 8% 1.5rem;" the top/bottom space now shrinks
+     with the screen width. Side padding stays 8%. */
+  padding: clamp(1.5rem, 4vw, 3.5rem) 8% clamp(0.75rem, 1.5vw, 1.5rem);
   border-top: 1px solid #eee;
 }
 
 .footer-top {
   display: grid;
+  /* Stays 4 columns (logo + 3 link columns) on EVERY screen size */
   grid-template-columns: 1.5fr 1fr 1fr 1fr;
-  gap: 2rem;
+  /* MODIFIED: was "gap: 2rem;" now scales with the screen width */
+  gap: clamp(0.5rem, 2.5vw, 2rem);
   max-width: 1100px;
-  margin: 0 auto 3rem;
+  /* MODIFIED: was "margin: 0 auto 3rem;" the bottom space now scales too */
+  margin: 0 auto clamp(1.25rem, 3.5vw, 3rem);
 }
 
 .footer-logo {
-  height: 100px;
+  /* MODIFIED: was "height: 100px;" now scales with the screen width */
+  height: clamp(45px, 9vw, 100px);
   width: auto;
-  margin-bottom: 1rem;
+  /* NEW: the logo can never be wider than its column */
+  max-width: 100%;
+  margin-bottom: clamp(0.4rem, 1vw, 1rem);
 }
 
 .footer-links {
@@ -443,21 +564,35 @@ body {
 
 .footer-links a {
   text-decoration: none;
-  font-size: 0.8rem;
+  /* MODIFIED: was "font-size: 0.8rem;" now scales with the screen width */
+  font-size: clamp(0.5rem, 1.2vw, 0.8rem);
   color: var(--accent-pink);
+  /* NEW: each footer link stays as ONE piece, the words never split into two lines */
+  white-space: nowrap;
 }
 
 .footer-heading {
-  font-size: 0.8rem;
+  /* MODIFIED: was "font-size: 0.8rem;" now scales with the screen width */
+  font-size: clamp(0.5rem, 1.2vw, 0.8rem);
   font-weight: 600;
-  letter-spacing: 1px;
-  margin-bottom: 0.75rem;
+  /* MODIFIED: was "letter-spacing: 1px;" slightly tighter on smaller screens */
+  letter-spacing: clamp(0.4px, 0.1vw, 1px);
+  /* MODIFIED: was "margin-bottom: 0.75rem;" now scales with the screen width */
+  margin-bottom: clamp(0.4rem, 1vw, 0.75rem);
   color: var(--accent-pink);
+  /* NEW: each footer heading stays on one line */
+  white-space: nowrap;
 }
 
 .footer-col p {
-  font-size: 0.8rem;
+  /* MODIFIED: was "font-size: 0.8rem;" now scales with the screen width */
+  font-size: clamp(0.5rem, 1.2vw, 0.8rem);
+  /* NEW: tighter line height so the text takes less space on small screens */
+  line-height: 1.4;
   color: var(--text-muted);
+  /* NEW: words are never broken in the middle, text only wraps between words */
+  word-break: keep-all;
+  overflow-wrap: normal;
 }
 
 .footer-col a {
@@ -468,8 +603,10 @@ body {
 .footer-bottom {
   text-align: center;
   border-top: 1px solid #f0f0f0;
-  padding-top: 1.5rem;
-  font-size: 0.75rem;
+  /* MODIFIED: was "padding-top: 1.5rem;" now scales with the screen width */
+  padding-top: clamp(0.6rem, 1.5vw, 1.5rem);
+  /* MODIFIED: was "font-size: 0.75rem;" now scales with the screen width */
+  font-size: clamp(0.5rem, 1.1vw, 0.75rem);
   color: #999999;
 }
 
@@ -734,6 +871,9 @@ body {
     border-radius: 6px;
     padding: 1.25rem 1.5rem;
     flex-direction: column;
+    /* NEW: resets the one-row setting from the desktop nav, because inside
+       the hamburger dropdown the links are stacked in a column on purpose */
+    flex-wrap: nowrap;
     gap: 1rem;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     z-index: 9999;
@@ -745,39 +885,36 @@ body {
     font-size: 0.75rem;
     letter-spacing: 1px;
     font-weight: 600;
+    /* white-space: nowrap is inherited from the .nav-links a rule above,
+       so each link in the dropdown also stays on one line */
   }
 
   .menu-checkbox:checked ~ .nav-links {
     display: flex;
   }
 
-  .hero-section {
-    min-height: 55vh;
-    padding: 2.5rem 6%;
-  }
+  /* REMOVED: the ".hero-section { min-height: 55vh; padding: 2.5rem 6%; }" rule
+     was here. It made the hero shorter on phones and tablets, so it's deleted
+     to keep the same landscape view as desktop. */
 
-  .hero-title {
-    font-size: 2.2rem;
-  }
+  /* REMOVED: the ".hero-title { font-size: 2.2rem; }" rule was here.
+     The title size is now handled by clamp() in the hero section above. */
 
-  .cards-container {
-    grid-template-columns: 1fr;
-    gap: 2.5rem;
-  }
+  /* REMOVED: the ".cards-container { grid-template-columns: 1fr; gap: 2.5rem; }" rule
+     was here. It stacked the Press-on and Services cards into one column on
+     tablets and phones, so it's deleted to keep the same 2-column view as desktop. */
 
-  .gallery-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 0.75rem;
-  }
+  /* REMOVED: the ".gallery-grid { grid-template-columns: repeat(2, 1fr); gap: 0.75rem; }"
+     rule was here. It changed the gallery to 2 big columns on tablets and phones, which
+     made the reel and posts look huge. It's deleted so the gallery keeps the desktop
+     layout and just scales down. */
 
-  .section-heading {
-    font-size: 1.5rem;
-  }
+  /* REMOVED: the ".section-heading { font-size: 1.5rem; }" rule was here.
+     It would override the new clamp() size, which already scales the heading. */
 
-  .footer-top {
-    grid-template-columns: 1fr;
-    gap: 2rem;
-  }
+  /* REMOVED: the ".footer-top { grid-template-columns: 1fr; gap: 2rem; }" rule was here.
+     It stacked the footer into one column on tablets and phones, so it's deleted to
+     keep the same 4-column desktop view. */
 
   .cart-panel { 
     right: 12px; 
@@ -787,8 +924,10 @@ body {
 }
 
 @media (max-width: 600px) {
-  .product-grid,
-  .cards-container {
+  /* MODIFIED: was ".product-grid,\n  .cards-container {". I removed ".cards-container"
+     from this selector so the Press-on and Services cards stay side by side on phones.
+     The product grid (shop page) still goes to 1 column, same as before. */
+  .product-grid {
     grid-template-columns: 1fr;
     gap: 24px;
   }

@@ -394,21 +394,19 @@ function loadIgForm(index) {
   document.getElementById('igPhotoInput').value = post.photo || '';
 }
 
-function handleIgLocalFile(event) {
+async function handleIgLocalFile(event) {
   const file = event.target.files[0];
   if (!file) return;
 
-  const reader = new FileReader();
-  reader.onload = () => {
-    if (typeof reader.result !== 'string') {
-      showToast('Could not load the selected image.');
-      return;
-    }
-    document.getElementById('igPhotoInput').value = reader.result;
-    showToast('Image selected. Click Update to save this post slot.');
-  };
-  reader.onerror = () => showToast('Could not load the selected image.');
-  reader.readAsDataURL(file);
+  try {
+    showToast('Uploading image...');
+    const uploadedUrl = await adminUploadImage(file);
+    document.getElementById('igPhotoInput').value = uploadedUrl;
+    showToast('Image uploaded successfully! Click Update to save this post slot.');
+  } catch (error) {
+    console.error('Instagram image upload failed:', error);
+    showToast(error.message || 'File too large or upload failed.');
+  }
 }
 
 function handleIgUpdate(event) {
@@ -487,6 +485,21 @@ function resetProductForm() {
   document.getElementById('prodDescInput').value = '';
   document.getElementById('prodSoldOutInput').checked = false;
   document.getElementById('productFormHeading').textContent = 'Add New Press-on Set';
+}
+
+async function handleProductLocalFile(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  try {
+    showToast('Uploading product image...');
+    const uploadedUrl = await adminUploadImage(file); // Uses your backend media route
+    document.getElementById('prodPhotoInput').value = uploadedUrl;
+    showToast('Product image uploaded successfully! Click Save Product to apply changes.');
+  } catch (error) {
+    console.error('Product image upload failed:', error);
+    showToast(error.message || 'File too large or upload failed.');
+  }
 }
 
 function handleProductUpdate(event) {

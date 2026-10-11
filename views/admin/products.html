@@ -97,10 +97,10 @@
             <div class="flex flex-col gap-1.5">
               <div class="flex items-center justify-between">
                 <label class="text-xs font-semibold text-periwinkleTitle">Photo Path</label>
-                <button type="button" onclick="document.getElementById('hiddenFileInput').click()" class="text-xs text-dustyPink font-semibold hover:underline cursor-pointer">Browse local file</button>
+                <button type="button" onclick="document.getElementById('productHiddenFileInput').click()" class="text-xs text-dustyPink font-semibold hover:underline cursor-pointer">Browse local file</button>
               </div>
               <input type="text" id="inputProdPhoto" class="form-input" placeholder="photos/presson-one.png" readonly />
-              <input type="file" id="hiddenFileInput" hidden accept="image/jpeg,image/png,image/webp" onchange="handleFileSelect(event)" />
+              <input type="file" id="productHiddenFileInput" hidden accept="image/jpeg,image/png,image/webp" onchange="handleProductLocalFile(event)" />
             </div>
           </div>
 
@@ -225,7 +225,7 @@
       document.getElementById('chkSoldOut').checked = prod.soldOut;
       document.getElementById('btnDeleteProd').hidden = false;
       selectedProductImage = null;
-      document.getElementById('hiddenFileInput').value = '';
+      document.getElementById('productHiddenFileInput').value = ''; // Updated ID here
 
       renderProductsGrid();
     }
@@ -241,68 +241,67 @@
       document.getElementById('chkSoldOut').checked = false;
       document.getElementById('btnDeleteProd').hidden = true;
       selectedProductImage = null;
-      document.getElementById('hiddenFileInput').value = '';
+      document.getElementById('productHiddenFileInput').value = ''; // Updated ID here
 
       renderProductsGrid();
       showToast('Form cleared! Enter details to add a new set.');
     }
 
-    function handleFileSelect(event) {
+    // Replace handleFileSelect with handleProductLocalFile to match your HTML onchange
+    async function handleProductLocalFile(event) {
       const file = event.target.files[0];
-      if (file) {
-        selectedProductImage = file;
-        document.getElementById('inputProdPhoto').value = `${file.name} (uploads when saved)`;
-      }
-    }
+      if (!file) return;
+      try {
+        showToast('Uploading image...');
+        const uploadedUrl = await adminUploadImage(file); // Uploads directly to media.js route
+        selectedProductImage = null; // Clear pending file since it's already uploaded
+        document.getElementById('inputProdPhoto').value = uploadedUrl;
+        showToast('Image uploaded successfully!');
+      } catch (error) {
+        console.error('Product image upload failed:', error);
+        showToast(error.message || 'File too large or upload failed.');
+  }
+}
 
     async function saveProduct() {
-      const name = document.getElementById('inputProdName').value.trim();
-      const price = Number(document.getElementById('inputProdPrice').value);
-      const stocks = Number(document.getElementById('inputProdStock').value);
-      const desc = document.getElementById('inputProdDesc').value.trim();
-      const soldOut = document.getElementById('chkSoldOut').checked;
+  const name = document.getElementById('inputProdName').value.trim();
+  const price = Number(document.getElementById('inputProdPrice').value);
+  const stocks = Number(document.getElementById('inputProdStock').value);
+  const desc = document.getElementById('inputProdDesc').value.trim();
+  const soldOut = document.getElementById('chkSoldOut').checked;
+  const imageUrl = document.getElementById('inputProdPhoto').value.trim(); // Directly grab the uploaded URL string
 
-      if (!name) {
-        showToast('Please enter a product name!');
-        return;
-      }
-      if (!desc) {
-        showToast('Please enter a product description.');
-        return;
-      }
-      if (!Number.isFinite(price) || price < 0 || !Number.isInteger(stocks) || stocks < 0) {
-        showToast('Enter a valid price and whole-number stock quantity.');
-        return;
-      }
-      if (!soldOut && stocks === 0) {
-        showToast('Set the stock quantity above zero or mark this product sold out.');
-        return;
-      }
+  if (!name) {
+    showToast('Please enter a product name!');
+    return;
+  }
+  if (!desc) {
+    showToast('Please enter a product description.');
+    return;
+  }
+  if (!Number.isFinite(price) || price < 0 || !Number.isInteger(stocks) || stocks < 0) {
+    showToast('Enter a valid price and whole-number stock quantity.');
+    return;
+  }
 
-      try {
-        const current = productsList.find(product => product.id === currentEditingId);
-        const productId = current?.productId
-          || name.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 80)
-          || `product-${Date.now()}`;
-        if (!current && productsList.some(product => product.productId === productId)) {
-          showToast('A product with this name already exists. Choose a different name.');
-          return;
-        }
-        const imageUrl = selectedProductImage
-          ? await adminUploadImage(selectedProductImage)
-          : (current?.photo || document.getElementById('inputProdPhoto').value.trim());
-        const result = await adminRequest(`/api/products/${encodeURIComponent(productId)}`, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ productName: name, price, stocks, soldOut, description: desc, imageUrl })
-        });
-        await loadProducts(result.product.productId);
-        showToast(`Saved "${name}" successfully.`);
-      } catch (error) {
-        console.error('Product save failed:', error);
-        showToast(error.message || 'Could not save product.');
-      }
-    }
+  try {
+    const current = productsList.find(product => product.id === currentEditingId);
+    const productId = current?.productId
+      || name.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 80)
+      || `product-${Date.now()}`;
+
+    const result = await adminRequest(`/api/products/${encodeURIComponent(productId)}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ productName: name, price, stocks, soldOut, description: desc, imageUrl })
+    });
+    await loadProducts(result.product.productId);
+    showToast(`Saved "${name}" successfully.`);
+  } catch (error) {
+    console.error('Product save failed:', error);
+    showToast(error.message || 'Could not save product.');
+  }
+}
 
     async function deleteCurrentProduct() {
       if (currentEditingId === null) return;

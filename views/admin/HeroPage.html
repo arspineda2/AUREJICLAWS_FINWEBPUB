@@ -91,30 +91,40 @@
         </div>
 
         <!-- Editor Form -->
-        <div class="grid grid-cols-2 gap-6 bg-white p-6 rounded-2xl border border-borderSoft shadow-sm">
-          <div class="flex flex-col gap-1.5">
-            <label class="text-xs font-semibold text-periwinkleTitle">Title</label>
-            <input type="text" id="inputTitle" class="form-input" oninput="liveUpdate()" placeholder="Enter slide title..." />
+         <div class="grid grid-cols-2 gap-6 bg-white p-6 rounded-2xl border border-borderSoft shadow-sm">
+        
+          <!-- Column 1 -->
+           <div class="flex flex-col gap-4">
+            <div class="flex flex-col gap-1.5">
+              <label class="text-xs font-semibold text-periwinkleTitle">Title</label>
+              <input type="text" id="inputTitle" class="form-input" oninput="liveUpdate()" placeholder="Enter slide title..." />
+            </div>
+            <div class="flex flex-col gap-1.5">
+              <label class="text-xs font-semibold text-periwinkleTitle">Button Text</label>
+              <input type="text" id="inputBtnText" class="form-input" oninput="liveUpdate()" placeholder="Enter button text..." />
+            </div>
           </div>
-          <div class="flex flex-col gap-1.5">
-            <label class="text-xs font-semibold text-periwinkleTitle">Button Text</label>
-            <input type="text" id="inputBtnText" class="form-input" oninput="liveUpdate()" placeholder="Enter button text..." />
+          
+          <!-- Column 2 (Now ordered with Button Link first, followed by Background Photo) -->
+           <div class="flex flex-col gap-4">
+            <div class="flex flex-col gap-1.5">
+              <label class="text-xs font-semibold text-periwinkleTitle">Button Link</label>
+              <input type="url" id="inputButtonHref" class="form-input" placeholder="https://... or page name" />
+            </div>
+            <div class="flex flex-col gap-1.5">
+              <label class="text-xs font-semibold text-periwinkleTitle">Background Photo</label>
+              <div class="flex items-center gap-2">
+                <input type="text" id="inputPhoto" class="form-input flex-1" placeholder="photos/herosecimg.png" readonly />
+                <input type="file" id="hiddenFileInput" hidden accept="image/jpeg,image/png,image/webp" onchange="handleFileSelect(event)" />
+              </div>
+              <button type="button" onclick="document.getElementById('hiddenFileInput').click()" class="text-xs text-dustyPink font-semibold text-left hover:underline mt-1 cursor-pointer">Browse local file</button>
+            </div>
           </div>
-          <div class="flex flex-col gap-1.5">
-            <label class="text-xs font-semibold text-periwinkleTitle">Button Link</label>
-            <input type="url" id="inputButtonHref" class="form-input" placeholder="https://... or page name" />
-          </div>
-          <div class="flex flex-col gap-1.5">
+          
+          <!-- Description spans full width below -->
+           <div class="flex flex-col gap-1.5 md:col-span-2">
             <label class="text-xs font-semibold text-periwinkleTitle">Description</label>
             <textarea id="inputDesc" class="form-input resize-vertical" rows="4" oninput="liveUpdate()" placeholder="Enter description text..."></textarea>
-          </div>
-          <div class="flex flex-col gap-1.5">
-            <label class="text-xs font-semibold text-periwinkleTitle">Background Photo</label>
-            <div class="flex items-center gap-2">
-              <input type="text" id="inputPhoto" class="form-input flex-1" placeholder="photos/herosecimg.png" readonly />
-              <input type="file" id="hiddenFileInput" hidden accept="image/jpeg,image/png,image/webp" onchange="handleFileSelect(event)" />
-            </div>
-            <button type="button" onclick="document.getElementById('hiddenFileInput').click()" class="text-xs text-dustyPink font-semibold text-left hover:underline mt-1 cursor-pointer">Browse local file</button>
           </div>
         </div>
 
