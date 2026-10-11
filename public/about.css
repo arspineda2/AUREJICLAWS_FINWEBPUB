@@ -1,11 +1,30 @@
-/* Aica About CSS 10.05.2026 */
+/* <!--====================== UPDATED RESPONSIVENESS - INJEL =========================--> */
+body {
+  font-family: var(--font-secondary);
+  background-color: var(--bg-cream);
+  color: var(--text-dark);
+  line-height: 1.6;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Ensure the main page area expands so footer is pushed down */
 .about-page {
+  flex: 1;
   position: relative;
   isolation: isolate;
   overflow: hidden;
   background:
     radial-gradient(ellipse at 22% 50%, rgba(157, 165, 139, 0.12), transparent 48%),
     #faf9f5;
+}
+
+.site-footer {
+  margin-top: auto;
+  background-color: var(--bg-white);
+  padding: clamp(1.5rem, 4vw, 3.5rem) 8% clamp(0.75rem, 1.5vw, 1.5rem);
+  border-top: 1px solid #eee;
 }
 
 .about-page::before {
@@ -21,23 +40,27 @@
 .about-story {
   position: relative;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(360px, 1fr);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   align-items: stretch;
-  gap: 0; 
+  gap: 0;
   width: 100%;
   min-height: max(620px, 78vh);
-  padding: 3.5rem 0 3.5rem max(6%, calc((100vw - 1200px) / 2));
+  /* Fixed missing minus operator */
+  padding: clamp(1rem, 3.5vw, 3.5rem) 0 0 max(6%, calc((100vw - 1200px) / 2));
 }
 
 .about-copy {
   max-width: 620px;
   color: #6b4d48;
+  padding-bottom: clamp(1rem, 3.5vw, 3.5rem);
+  padding-right: clamp(0.25rem, 1.5vw, 1rem);
 }
 
 .about-brand-logo {
   display: block;
-  width: clamp(190px, 28vw, 300px);
-  height: 140px;
+  width: clamp(95px, 28vw, 300px);
+  height: auto;
+  aspect-ratio: 300 / 140;
   margin: 0 auto 0.2rem;
   object-fit: cover;
   object-position: center;
@@ -47,7 +70,7 @@
   margin-top: 0;
   margin-bottom: 0.4rem;
   color: #e06d93;
-  font-size: 0.8rem;
+  font-size: clamp(0.5rem, 1.2vw, 0.8rem);
   font-weight: 700;
   letter-spacing: 0.18em;
   text-align: center;
@@ -55,47 +78,49 @@
 }
 
 .about-copy h1 {
-  margin-bottom: 1.25rem;
+  margin-bottom: clamp(0.5rem, 1.5vw, 1.25rem);
   color: #6b4d48;
   font-family: var(--font-header);
-  font-size: clamp(2rem, 4vw, 3rem);
+  font-size: clamp(1.4rem, 4vw, 3rem);
   font-weight: 400;
   line-height: 1.15;
   text-align: center;
 }
 
 .about-copy > p {
-  margin-bottom: 1rem;
-  font-size: 1rem;
+  margin-bottom: clamp(0.4rem, 1.2vw, 1rem);
+  font-size: clamp(0.85rem, 1.45vw, 1rem);
   letter-spacing: 0.035em;
-  line-height: 1.8;
+  line-height: 1.7;
 }
 
 .about-mission {
-  margin-top: 1.5rem;
-  padding: 1rem 1.25rem;
-  border-left: 3px solid var(--color-pink);
+  margin-top: clamp(0.6rem, 1.8vw, 1.5rem);
+  padding: clamp(0.6rem, 1.5vw, 1rem) clamp(0.75rem, 2vw, 1.25rem);
+  border-left: 3px solid var(--color-pink, #e06d93);
   background: rgba(255, 255, 255, 0.72);
 }
 
 .about-mission h2 {
-  margin-bottom: 0.35rem;
+  margin-bottom: clamp(0.15rem, 0.4vw, 0.35rem);
   color: #e06d93;
   font-family: var(--font-header);
-  font-size: 1.25rem;
+  font-size: clamp(0.9rem, 1.7vw, 1.25rem);
   font-weight: 400;
 }
 
 .about-mission p {
   color: #6b4d48;
+  font-size: clamp(0.8rem, 1.3vw, 0.95rem);
+  line-height: 1.5;
 }
 
 .about-image-wrap {
   align-self: stretch;
   display: flex;
   min-height: 0;
-  align-items: center;
-  justify-content: flex-end; 
+  align-items: flex-end;
+  justify-content: flex-end;
   overflow: hidden;
   width: 100%;
 }
@@ -106,43 +131,28 @@
   height: 100%;
   max-width: none;
   object-fit: cover;
-  object-position: center; 
-  transform: none;
+  object-position: right bottom;
   filter: drop-shadow(0 14px 20px rgba(107, 77, 72, 0.12));
 }
 
-@media (max-width: 700px) {
-  .about-page::before {
-    background-position: center 3rem;
-    background-size: 100vw auto;
-    opacity: 0.08;
-  }
-
+/* --- Responsive Breakpoint (Tablets and Mobile) --- */
+@media (max-width: 900px) {
   .about-story {
-    grid-template-columns: 1fr;
-    gap: 1.5rem;
-    min-height: 0;
-    padding: 2.5rem 7%;
+    grid-template-columns: 1fr; /* Switch to single column */
+    min-height: auto;
+    padding: 2.5rem 1.25rem;
+    justify-items: center; /* Centers the content box horizontally */
   }
 
-  .about-image-wrap {
-    min-height: 300px;
-    grid-row: 1;
-  }
-
-  .about-image-wrap img {
+  .about-copy {
+    max-width: 680px;
     width: 100%;
-    height: 100%;
-    max-height: 340px;
-    object-fit: contain;
+    padding-right: 0;
+    padding-bottom: 1rem;
   }
 
-  .about-brand-logo {
-    height: 120px;
-    margin-top: 0.5rem;
-  }
-
-  .about-copy > p {
-    font-size: 0.95rem;
+  /* Completely hides the side photo */
+  .about-image-wrap {
+    display: none;
   }
 }
