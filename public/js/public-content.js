@@ -177,7 +177,7 @@ function createReelVideo(post) {
   return video;
 }
 
-unction renderInstagramPosts(content) {
+function renderInstagramPosts(content) {
   const gallery = document.querySelector(".gallery-grid");
   if (!gallery || !Array.isArray(content.instagramPosts)) return;
   gallery.replaceChildren();
