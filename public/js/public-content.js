@@ -115,23 +115,63 @@ function initHeroSlider() {
   startAutoSlide();
 }
 
-function renderInstagramPosts(content) {
+// Fallback video for the first Instagram item (the reel).
+// Used when the API post has no "videoUrl" field.
+const DEFAULT_REEL_VIDEO = "/videos/reel-one.mp4";
+
+function createReelVideo(post) {
+  const video = document.createElement("video");
+  video.src = post.videoUrl ? publicImageUrl(post.videoUrl) : DEFAULT_REEL_VIDEO;
+  if (post.imageUrl) video.poster = publicImageUrl(post.imageUrl); // thumbnail until it plays
+
+  // These must be set as JS properties (not just attributes) for autoplay to work
+  video.muted = true;
+  video.defaultMuted = true;
+  video.loop = true;
+  video.autoplay = true;
+  video.playsInline = true;
+  video.preload = "auto";
+  video.setAttribute("muted", "");
+  video.setAttribute("playsinline", "");
+
+  const tryPlay = () => video.play().catch(() => {});
+  video.addEventListener("canplay", tryPlay, { once: true });
+  tryPlay();
+
+  // If the browser blocks autoplay, retry on the first user interaction
+  ["click", "touchstart", "scroll"].forEach((evt) =>
+    window.addEventListener(evt, tryPlay, { once: true, passive: true })
+  );
+
+  return video;
+}
+
+unction renderInstagramPosts(content) {
   const gallery = document.querySelector(".gallery-grid");
   if (!gallery || !Array.isArray(content.instagramPosts)) return;
   gallery.replaceChildren();
   content.instagramPosts.forEach((post, index) => {
+    const isReel = index === 0;
+
     const link = document.createElement("a");
-    link.className = index === 0 ? "gallery-reelitem" : "gallery-item";
+    link.className = isReel ? "gallery-reelitem" : "gallery-item";
     link.href = post.link;
     link.target = "_blank";
     link.rel = "noopener noreferrer";
-    const image = document.createElement("img");
-    image.src = publicImageUrl(post.imageUrl);
-    image.alt = `Aureji Claws Instagram ${index === 0 ? "reel" : "post"} ${index + 1}`;
+
+    let media;
+    if (isReel) {
+      media = createReelVideo(post);
+    } else {
+      media = document.createElement("img");
+      media.src = publicImageUrl(post.imageUrl);
+      media.alt = `Aureji Claws Instagram post ${index + 1}`;
+    }
+
     const label = document.createElement("span");
     label.className = "view-post-text";
-    label.textContent = index === 0 ? "View Reel" : "View Post";
-    link.append(image, label);
+    label.textContent = isReel ? "View Reel" : "View Post";
+    link.append(media, label);
     gallery.appendChild(link);
   });
 
