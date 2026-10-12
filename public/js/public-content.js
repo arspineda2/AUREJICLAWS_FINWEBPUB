@@ -146,38 +146,7 @@ function createReelVideo(post) {
   return video;
 }
 
-// Fallback video for the first Instagram item (the reel).
-// Used when the API post has no "videoUrl" field.
-const DEFAULT_REEL_VIDEO = "/videos/reel-one.mp4";
-
-function createReelVideo(post) {
-  const video = document.createElement("video");
-  video.src = post.videoUrl ? publicImageUrl(post.videoUrl) : DEFAULT_REEL_VIDEO;
-  if (post.imageUrl) video.poster = publicImageUrl(post.imageUrl); // thumbnail until it plays
-
-  // These must be set as JS properties (not just attributes) for autoplay to work
-  video.muted = true;
-  video.defaultMuted = true;
-  video.loop = true;
-  video.autoplay = true;
-  video.playsInline = true;
-  video.preload = "auto";
-  video.setAttribute("muted", "");
-  video.setAttribute("playsinline", "");
-
-  const tryPlay = () => video.play().catch(() => {});
-  video.addEventListener("canplay", tryPlay, { once: true });
-  tryPlay();
-
-  // If the browser blocks autoplay, retry on the first user interaction
-  ["click", "touchstart", "scroll"].forEach((evt) =>
-    window.addEventListener(evt, tryPlay, { once: true, passive: true })
-  );
-
-  return video;
-}
-
-unction renderInstagramPosts(content) {
+function renderInstagramPosts(content) {
   const gallery = document.querySelector(".gallery-grid");
   if (!gallery || !Array.isArray(content.instagramPosts)) return;
   gallery.replaceChildren();
