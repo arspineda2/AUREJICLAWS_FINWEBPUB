@@ -28,9 +28,7 @@ app.use(session({
 }));
 
 // Email Transporter (Nodemailer)
-// Replace the old const transporter = nodemailer.createTransport({...}) with this:
 const transporter = require("./config/email");
-
 
 // Admin Schema & Model for Atlas Lookup (Targets 'admins' collection explicitly)
 const adminSchema = new mongoose.Schema({
@@ -38,6 +36,53 @@ const adminSchema = new mongoose.Schema({
   password: { type: String, required: true }
 });
 const Admin = mongoose.models.Admin || mongoose.model('Admin', adminSchema, 'admins');
+
+// Database Connection Function with Caching for Serverless
+let isConnected = false;
+
+async function connectToAtlas() {
+  if (isConnected || mongoose.connection.readyState === 1) {
+    isConnected = true;
+    return;
+  }
+
+  if (!process.env.MONGO_URI) {
+    console.warn("MongoDB is not configured. Website pages are available; order saving is disabled.");
+    return;
+  }
+
+  try {
+    if (/^mongodb\+srv:\/\//i.test(process.env.MONGO_URI)) {
+      const connectionUrl = new URL(process.env.MONGO_URI);
+      await dns.resolveSrv(`_mongodb._tcp.${connectionUrl.hostname}`);
+    }
+
+    await mongoose.connect(process.env.MONGO_URI, {
+      dbName: process.env.MONGO_DB_NAME || "aureji_claws",
+      serverSelectionTimeoutMS: 10000
+    });
+    isConnected = true;
+    console.log("Successfully connected to MongoDB Atlas.");
+  } catch (error) {
+    const code = error.code || (error.cause && error.cause.code);
+    if (["ECONNREFUSED", "ETIMEDOUT", "ENOTFOUND", "EAI_AGAIN"].includes(code)) {
+      console.error(`Atlas DNS lookup failed (${code}): check network DNS settings.`);
+    } else if (code === 18 || code === 8000) {
+      console.error("Atlas authentication failed: verify MONGO_URI username/password.");
+    } else {
+      const detail = typeof error.message === "string"
+        ? error.message.replace(/mongodb(?:\+srv)?:\/\/[^\s"'`]+/gi, "[redacted MongoDB URI]")
+        : "No error details available.";
+      console.error(`Atlas connection failed (${error.name}): ${detail}`);
+    }
+  }
+}
+
+// Ensure database connection middleware runs on incoming serverless API requests
+app.use(async (req, res, next) => {
+  await connectToAtlas();
+  next();
+});
 
 // Step A: Admin requests OTP / Logs in
 app.post('/admin/login', async (req, res) => {
@@ -47,24 +92,20 @@ app.post('/admin/login', async (req, res) => {
     const cleanEmail = email ? email.trim() : '';
     const cleanPassword = password ? password.trim() : '';
 
-    // Search email in Atlas case-insensitively using Regex
     const admin = await Admin.findOne({
       email: { $regex: new RegExp(`^${cleanEmail}$`, 'i') }
     });
 
-    // Check if admin exists and password matches
     if (!admin || admin.password !== cleanPassword) {
       return res.status(401).json({ success: false, message: 'Invalid credentials.' });
     }
 
-    // Generate 6-digit OTP
     const generatedOTP = Math.floor(100000 + Math.random() * 900000).toString();
 
     req.session.pendingAdminEmail = cleanEmail;
     req.session.otp = generatedOTP;
     req.session.otpExpires = Date.now() + 5 * 60 * 1000;
 
-    // Send email via Nodemailer
     await transporter.sendMail({
       from: process.env.EMAIL_USER,
       to: cleanEmail,
@@ -99,7 +140,7 @@ app.post('/admin/verify-otp', (req, res) => {
   res.status(400).json({ success: false, message: 'Incorrect OTP.' });
 });
 
-// Authentication Middleware[cite: 2]
+// Authentication Middleware
 const requireAdminAuth = require("./middleware/requireAdminAuth");
 
 const adminPageFiles = {
@@ -132,7 +173,7 @@ app.get('/admin/:page', requireAdminPage, (req, res) => {
   return res.sendFile(path.join(__dirname, 'views', 'admin', pageFile));
 });
 
-//Admint Logout Route
+// Admin Logout Route
 app.post('/admin/logout', requireAdminAuth, (req, res) => {
   req.session.destroy((err) => {
     if (err) {
@@ -190,41 +231,12 @@ app.use("/api/site-content", siteContentRoutes);
 const mediaRoutes = require("./routes/media");
 app.use("/api/media", mediaRoutes);
 
-// Database Connection Function
-async function connectToAtlas() {
-  if (!process.env.MONGO_URI) {
-    console.warn("MongoDB is not configured. Website pages are available; order saving is disabled.");
-    return;
-  }
-
-  try {
-    if (/^mongodb\+srv:\/\//i.test(process.env.MONGO_URI)) {
-      const connectionUrl = new URL(process.env.MONGO_URI);
-      await dns.resolveSrv(`_mongodb._tcp.${connectionUrl.hostname}`);
-    }
-
-    await mongoose.connect(process.env.MONGO_URI, {
-      dbName: process.env.MONGO_DB_NAME || "aureji_claws",
-      serverSelectionTimeoutMS: 10000
-    });
-    console.log("Successfully connected to MongoDB Atlas.");
-  } catch (error) {
-    const code = error.code || (error.cause && error.cause.code);
-    if (["ECONNREFUSED", "ETIMEDOUT", "ENOTFOUND", "EAI_AGAIN"].includes(code)) {
-      console.error(`Atlas DNS lookup failed (${code}): check network DNS settings.`);
-    } else if (code === 18 || code === 8000) {
-      console.error("Atlas authentication failed: verify MONGO_URI username/password.");
-    } else {
-      const detail = typeof error.message === "string"
-        ? error.message.replace(/mongodb(?:\+srv)?:\/\/[^\s"'`]+/gi, "[redacted MongoDB URI]")
-        : "No error details available.";
-      console.error(`Atlas connection failed (${error.name}): ${detail}`);
-    }
-  }
+// Local Development Listener & Vercel Serverless Export
+if (process.env.NODE_ENV !== 'production') {
+  app.listen(PORT, async () => {
+    console.log(`Aureji Claws site running at http://localhost:${PORT}`);
+    await connectToAtlas();
+  });
 }
 
-// Single Express App Listener
-app.listen(PORT, async () => {
-  console.log(`Aureji Claws site running at http://localhost:${PORT}`);
-  await connectToAtlas();
-});
+module.exports = app;
