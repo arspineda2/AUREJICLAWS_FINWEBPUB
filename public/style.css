@@ -38,6 +38,7 @@ body {
   line-height: 1.6;
 }
 
+
 /* ==========================================
    HEADER / NAVBAR
 ========================================== */
@@ -448,7 +449,15 @@ body {
   transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1),
               filter 0.4s ease;
 }
-
+/* =========================================================
+   ENFORCE THEME CREAM BACKGROUND ON PRESS-ON PAGE
+========================================================= */
+html,
+body,
+main.main,
+.shop-section {
+  background-color: var(--bg-cream) !important;
+}
 .gallery-item {
   position: relative;
   display: block;
