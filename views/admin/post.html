@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <base href="/" />
-  <title>Aureji Claws - Instagram Posts Manager</title>
+  <title>Aureji Claws - Edit Instagram Posts</title>
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -13,16 +13,27 @@
   <script src="/js/admin-pages.js" defer></script>
 </head>
 <body>
+  <!-- ========================================== -->
+  <!-- ======== SIDE BAR AND BURGER MENU ======== -->
+  <!-- ========================================== -->
+
+  <!-- BURGER MENU STATE (must stay a direct child of body, before header + main body) -->
+  <input type="checkbox" id="navToggle" class="nav-toggle" hidden>
+  <label for="navToggle" class="nav-overlay" aria-hidden="true"></label>
 
   <!-- Header -->
   <header class="dash-header">
     <div class="flex items-center gap-3">
+      <!-- Burger button (visible on tablet / mobile only) -->
+      <label for="navToggle" class="burger-btn" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </label>
       <div class="dash-logo-box">
         <img src="photos/Logo.png" alt="Logo" onerror="applyImgFallback(this, 'A')" />
       </div>
       <h1 class="font-alice text-2xl text-dustyPink">Admin Dashboard</h1>
     </div>
-    <div class="flex items-center gap-6 text-sm">
+    <div class="flex items-center gap-6 text-sm header-actions-wrap">
       <span class="text-textDark font-medium">admin</span>
       <a href="/login.html" onclick="adminPageLogout(event)" class="text-danger hover:underline font-medium">Log out</a>
     </div>
@@ -36,7 +47,6 @@
       <div>
         <button class="nav-dropdown-btn" onclick="toggleSubMenu('homeSub')">
           <span>Home</span>
-          <span id="homeIcon">▲</span>
         </button>
         <div id="homeSub" class="nav-submenu">
           <a href="/admin/hero" class="nav-sublink">Hero page</a>
@@ -48,7 +58,6 @@
       <div>
         <button class="nav-dropdown-btn" onclick="toggleSubMenu('pressSub')">
           <span>Press-on</span>
-          <span id="pressIcon">▼</span>
         </button>
         <div id="pressSub" class="nav-submenu" hidden>
           <a href="/admin/products" class="nav-sublink">Products</a>
@@ -60,15 +69,23 @@
       <div>
         <button class="nav-dropdown-btn" onclick="toggleSubMenu('servSub')">
           <span>Services</span>
-          <span id="servIcon">▼</span>
         </button>
         <div id="servSub" class="nav-submenu" hidden>
           <a href="/admin/services" class="nav-sublink">Services List</a>
           <a href="/admin/bookings" class="nav-sublink">Booked</a>
         </div>
       </div>
-    </aside>
 
+      <!-- Log out (shown only inside the burger drawer on tablet / mobile) -->
+      <div class="sidebar-logout">
+        <a href="/login.html" onclick="adminPageLogout(event)" class="sidebar-logout-btn">Log out</a>
+      </div>
+    </aside>
+    
+
+  <!-- ========================================== -->
+  <!-- ======== EDIT INSTAGRAM POSTS PAGE ======= -->
+  <!-- ========================================== -->
     <!-- Center Workspace -->
     <main class="dash-content-area">
       <div class="dash-content-inner">
@@ -112,32 +129,32 @@
           <div class="post-slot-card active" id="slot1Card" onclick="selectSlot(1)">
             <span class="slot-badge">Slot 1</span>
             <img class="post-slot-image" id="slot1Image" alt="" />
-            <span class="font-outfit text-sm font-semibold text-periwinkleTitle" id="slot1Label">Post 1</span>
+            <span class="font-outfit text-sm font-semibold text-periwinkleTitle" id="slot1Label">Reel 1</span>
           </div>
           <div class="post-slot-card" id="slot2Card" onclick="selectSlot(2)">
             <span class="slot-badge">Slot 2</span>
             <img class="post-slot-image" id="slot2Image" alt="" />
-            <span class="font-outfit text-sm font-semibold text-periwinkleTitle" id="slot2Label">Post 2</span>
+            <span class="font-outfit text-sm font-semibold text-periwinkleTitle" id="slot2Label">Post 1</span>
           </div>
           <div class="post-slot-card" id="slot3Card" onclick="selectSlot(3)">
             <span class="slot-badge">Slot 3</span>
             <img class="post-slot-image" id="slot3Image" alt="" />
-            <span class="font-outfit text-sm font-semibold text-periwinkleTitle" id="slot3Label">Post 3</span>
+            <span class="font-outfit text-sm font-semibold text-periwinkleTitle" id="slot3Label">Post 2</span>
           </div>
           <div class="post-slot-card" id="slot4Card" onclick="selectSlot(4)">
             <span class="slot-badge">Slot 4</span>
             <img class="post-slot-image" id="slot4Image" alt="" />
-            <span class="font-outfit text-sm font-semibold text-periwinkleTitle" id="slot4Label">Post 4</span>
+            <span class="font-outfit text-sm font-semibold text-periwinkleTitle" id="slot4Label">Post 3</span>
           </div>
           <div class="post-slot-card" id="slot5Card" onclick="selectSlot(5)">
             <span class="slot-badge">Slot 5</span>
             <img class="post-slot-image" id="slot5Image" alt="" />
-            <span class="font-outfit text-sm font-semibold text-periwinkleTitle" id="slot5Label">Post 5</span>
+            <span class="font-outfit text-sm font-semibold text-periwinkleTitle" id="slot5Label">Post 4</span>
           </div>
           <div class="post-slot-card" id="slot6Card" onclick="selectSlot(6)">
             <span class="slot-badge">Slot 6</span>
             <img class="post-slot-image" id="slot6Image" alt="" />
-            <span class="font-outfit text-sm font-semibold text-periwinkleTitle" id="slot6Label">Post 6</span>
+            <span class="font-outfit text-sm font-semibold text-periwinkleTitle" id="slot6Label">Post 5</span>
           </div>
         </div>
 

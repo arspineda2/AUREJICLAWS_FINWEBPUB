@@ -77,20 +77,9 @@ button {
   gap: 12px;
 }
 
-.header-logo-wrap, .dash-logo-box {
-  width: 38px;
-  height: 38px;
-  background-color: var(--bg-cream);
-  border: 1px solid var(--border-soft);
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
 .header-logo-wrap img, .dash-logo-box img {
-  width: 20px;
-  height: 20px;
+  width: 60px;
+  height: 60px;
   object-fit: contain;
 }
 
@@ -98,7 +87,7 @@ button {
   font-family: var(--font-alice);
   font-size: 1.55rem;
   color: var(--dusty-pink);
-  font-weight: 400;
+  font-weight: 800;
   letter-spacing: 0.5px;
 }
 
@@ -185,6 +174,10 @@ button {
   font-weight: 600;
 }
 
+/* =========================================================
+   EDIT HERO PAGE
+   ========================================================= */
+
 .admin-main, .dash-content-area {
   flex: 1;
   padding: 32px;
@@ -209,6 +202,49 @@ button {
   font-weight: 400;
   margin-bottom: 22px;
   letter-spacing: 0.5px;
+}
+
+.slide-tab {
+  background-color: #EEEBF5;
+  color: var(--periwinkle-title);
+  border: 1px solid transparent;
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-family: var(--font-outfit);
+  font-size: 0.82rem;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.slide-tab.active,
+.slide-tab:hover {
+  background-color: #DDD8EB;
+  border-color: #C2BED9;
+  font-weight: 600;
+}
+
+/* ==================
+   HERO PREVIEW BOX
+   ================== */
+.hero-preview-box {
+  width: 100%;
+  min-height: 340px;
+  height: auto;
+  background-color: #1A181C;
+  border-radius: 16px;
+  border: 2px solid var(--border-soft);
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  color: #FFFFFF;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.04);
 }
 
 /* =========================================================
@@ -246,7 +282,8 @@ button {
 }
 
 /* File browse button spacing fix */
-button[onclick*="hiddenFileInput"] {
+button[onclick*="hiddenFileInput"],
+button[onclick*="productHiddenFileInput"] {
   background: none;
   border: none;
   color: var(--dusty-pink);
@@ -257,7 +294,8 @@ button[onclick*="hiddenFileInput"] {
   margin-bottom: 4px;
   display: inline-block;
 }
-button[onclick*="hiddenFileInput"]:hover {
+button[onclick*="hiddenFileInput"]:hover,
+button[onclick*="productHiddenFileInput"]:hover {
   text-decoration: underline;
 }
 
@@ -285,57 +323,9 @@ button[onclick*="hiddenFileInput"]:hover {
 }
 
 /* =========================================================
-   SERVICES LIST ROW ALIGNMENT
+   EDIT INSTAGRAM PAGE
    ========================================================= */
-.service-item-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 12px 14px;
-  border-bottom: 1px solid rgba(165, 174, 149, 0.5);
-  font-family: var(--font-header);
-  color: #6b4d48;
-  font-size: 1.1rem;
-  transition: background-color 0.15s ease;
-}
 
-.service-item-row:hover {
-  background-color: #F8F5F2;
-}
-
-.action-btn-sm {
-  padding: 6px 12px;
-  font-size: 0.78rem;
-  font-weight: 600;
-  border-radius: 8px;
-  cursor: pointer;
-  margin-left: 6px;
-  border: 1px solid var(--border-soft);
-}
-
-/* =========================================================
-   HERO PREVIEW BOX
-   ========================================================= */
-.hero-preview-box {
-  width: 100%;
-  height: 340px;
-  background-color: #1A181C;
-  border-radius: 16px;
-  border: 2px solid var(--border-soft);
-  padding: 40px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: flex-start;
-  color: #FFFFFF;
-  position: relative;
-  overflow: hidden;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.04);
-}
-
-/* =========================================================
-   INSTAGRAM PREVIEW REVERSED LAYOUT
-   ========================================================= */
 .instagram-preview-section {
   display: flex;
   flex-direction: row-reverse;
@@ -346,6 +336,7 @@ button[onclick*="hiddenFileInput"]:hover {
   background: #FFFFFF;
   border: 1px solid var(--border-soft);
   border-radius: 16px;
+  transition: all 0.2s ease;
 }
 
 .instagram-preview-copy {
@@ -371,13 +362,35 @@ button[onclick*="hiddenFileInput"]:hover {
   object-fit: cover;
 }
 
+.instagram-preview-fallback {
+  padding: 16px;
+  text-align: center;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.instagram-preview-slot {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(34, 34, 34, 0.65);
+  color: #FFFFFF;
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 6px;
+  backdrop-filter: blur(2px);
+  z-index: 2;
+}
+
 /* =========================================================
-   PRODUCT CARDS (SOLD OUT BADGE & OUTLINE FIX)
+   PRODUCT CARDS & EDIT PRODUCTS PAGE
    ========================================================= */
-.product-cards-grid, #productsGridContainer {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 24px;
+.product-cards-grid, 
+#productsGridContainer {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 20px;
 }
 
 .product-card, .admin-prod-card {
@@ -385,7 +398,7 @@ button[onclick*="hiddenFileInput"]:hover {
   background-color: #FFFFFF;
   border-radius: 18px;
   overflow: hidden;
-  border: 2px solid transparent !important; /* Removes focus outline box */
+  border: 2px solid transparent !important;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
   cursor: pointer;
   transition: all 0.2s ease;
@@ -427,6 +440,122 @@ button[onclick*="hiddenFileInput"]:hover {
   z-index: 2;
 }
 
+.ig-card, .post-slot-card {
+  background-color: #EFECE9;
+  border-radius: 12px;
+  overflow: hidden;
+  aspect-ratio: 4 / 5;
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  position: relative;
+  cursor: pointer;
+  border: 3px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.ig-card.active, .post-slot-card.active { 
+  border-color: var(--dusty-pink) !important; 
+  box-shadow: 0 0 0 2px rgba(216, 125, 154, 0.25);
+}
+
+.ig-card img, .post-slot-image { 
+  width: 100%; 
+  height: 100%; 
+  object-fit: cover; 
+  display: block; 
+}
+
+.slot-badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: rgba(34, 34, 34, 0.65);
+  color: #FFFFFF;
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 6px;
+  backdrop-filter: blur(2px);
+  z-index: 2;
+}
+
+.post-slot-card > span[id*="Label"] {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(255, 255, 255, 0.9);
+  padding: 6px 12px;
+  text-align: center;
+  backdrop-filter: blur(4px);
+  z-index: 2;
+}
+
+.ig-grid-container {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 22px;
+}
+
+/* =========================================================
+   FORCE 3x2 GRID OF 6 ON ALL SCREENS (INSTAGRAM SLOTS)
+   ========================================================= */
+.grid:has(.post-slot-card) {
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 16px;
+}
+
+@media (max-width: 600px) {
+  .grid:has(.post-slot-card) {
+    gap: 8px !important;
+  }
+
+  .slot-badge {
+    font-size: 0.6rem;
+    padding: 2px 5px;
+    top: 5px;
+    left: 5px;
+  }
+
+  .post-slot-card > span[id*="Label"] {
+    font-size: 0.72rem;
+    padding: 3px 6px;
+  }
+}
+
+/* =========================================================
+   SERVICES LIST ROW ALIGNMENT
+   ========================================================= */
+.service-item-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px;
+  border-bottom: 1px solid rgba(165, 174, 149, 0.5);
+  font-family: var(--font-header, var(--font-outfit));
+  color: #6b4d48;
+  font-size: 1.05rem;
+  transition: background-color 0.15s ease;
+  gap: 12px;
+}
+
+.service-item-row:hover {
+  background-color: #F8F5F2;
+}
+
+.action-btn-sm {
+  padding: 5px 10px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-left: 4px;
+  border: 1px solid var(--border-soft);
+  white-space: nowrap;
+  transition: all 0.2s ease;
+}
+
 .product-card.sold-out .product-img-wrap img,
 .admin-prod-card.sold-out .admin-prod-img-wrap img { 
   filter: grayscale(40%); 
@@ -457,38 +586,6 @@ button[onclick*="hiddenFileInput"]:hover {
   display: block;
 }
 
-.ig-card, .post-slot-card {
-  background-color: #EFECE9;
-  border-radius: 12px;
-  overflow: hidden;
-  aspect-ratio: 4 / 5;
-  width: 100%;
-  max-width: 220px;
-  height: auto;
-  position: relative;
-  cursor: pointer;
-  border: 3px solid transparent;
-  transition: all 0.2s ease;
-}
-
-.ig-card.active, .post-slot-card.active { 
-  border-color: var(--dusty-pink) !important; 
-  box-shadow: 0 0 0 2px rgba(216, 125, 154, 0.25);
-}
-
-.ig-card img, .post-slot-image { 
-  width: 100%; 
-  height: 100%; 
-  object-fit: cover; 
-  display: block; 
-}
-
-.ig-grid-container {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 22px;
-}
-
 /* =========================================================
    UTILITY CLASS MAPPINGS
    ========================================================= */
@@ -506,22 +603,27 @@ button[onclick*="hiddenFileInput"]:hover {
 .grid-cols-1 { grid-template-columns: repeat(1, minmax(0, 1fr)); }
 .grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .gap-1 { gap: 0.25rem; }
-.gap-1.5 { gap: 0.375rem; }
+.gap-1\.5 { gap: 0.375rem; }
 .gap-2 { gap: 0.5rem; }
 .gap-3 { gap: 0.75rem; }
 .gap-4 { gap: 1rem; }
 .gap-6 { gap: 1.5rem; }
 .gap-8 { gap: 2rem; }
 .w-full { width: 100%; }
+
+.max-w-md { max-width: 28rem; }
+.max-h-24 { max-height: 6rem; }
+
 .p-4 { padding: 1rem; }
 .p-6 { padding: 1.5rem; }
 .p-8 { padding: 2rem; }
 .p-16 { padding: 4rem; }
 .px-4 { padding-left: 1rem; padding-right: 1rem; }
+.px-5 { padding-left: 1.25rem; padding-right: 1.25rem; }
 .px-6 { padding-left: 1.5rem; padding-right: 1.5rem; }
 .px-8 { padding-left: 2rem; padding-right: 2rem; }
 .py-2 { padding-top: 0.5rem; padding-bottom: 0.5rem; }
-.py-2.5 { padding-top: 0.625rem; padding-bottom: 0.625rem; }
+.py-2\.5 { padding-top: 0.625rem; padding-bottom: 0.625rem; }
 .py-3 { padding-top: 0.75rem; padding-bottom: 0.75rem; }
 .pt-1 { padding-top: 0.25rem; }
 .pt-2 { padding-top: 0.5rem; }
@@ -563,7 +665,6 @@ button[onclick*="hiddenFileInput"]:hover {
 .border-t { border-top: 1px solid var(--border-soft); }
 .border-b { border-bottom: 1px solid var(--border-soft); }
 .border-borderSoft { border-color: var(--border-soft); }
-.border-dashed { border-style: dashed; }
 .rounded-lg { border-radius: 0.5rem; }
 .rounded-xl { border-radius: 0.75rem; }
 .rounded-2xl { border-radius: 1rem; }
@@ -578,7 +679,7 @@ button[onclick*="hiddenFileInput"]:hover {
 .text-textMuted { color: var(--text-muted); }
 .text-periwinkleTitle { color: var(--periwinkle-title); }
 .text-dustyPink { color: var(--dusty-pink); }
-.text-danger { color: `var(--danger); }
+.text-danger { color: var(--danger); }
 .text-gray-300 { color: #d1d5db; }
 .border-dustyPink\/30 { border-color: color-mix(in srgb, var(--dusty-pink) 30%, transparent); }
 .border-red-200 { border-color: #fecaca; }
@@ -588,6 +689,7 @@ button[onclick*="hiddenFileInput"]:hover {
 .hover\:underline:hover { text-decoration: underline; }
 
 @media (min-width: 768px) {
+  .md\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .md\:grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .md\:col-span-2 { grid-column: span 2 / span 2; }
   .md\:flex-row { flex-direction: row; }
@@ -598,7 +700,16 @@ button[onclick*="hiddenFileInput"]:hover {
   .admin-layout, .dash-main-body { flex-direction: column; height: auto; }
   .admin-sidebar, .dash-sidebar { width: 100%; border-right: none; border-bottom: 1px solid var(--border-soft); }
   .admin-main, .dash-content-area { padding: 24px; }
-  .instagram-preview-section { flex-direction: column-reverse; }
+  .instagram-preview-section { 
+    flex-direction: column-reverse; 
+    align-items: center;
+    text-align: center;
+    gap: 20px;
+    padding: 20px;
+  }
+  .instagram-preview-frame {
+    width: 220px;
+  }
 }
 
 /* Toast Notification */
@@ -616,3 +727,323 @@ button[onclick*="hiddenFileInput"]:hover {
   z-index: 10000;
 }
 .admin-toast.show, #toastNotification.show { display: block; }
+
+/* =========================================================
+   BURGER MENU (TABLET / MOBILE)
+   ========================================================= */
+.nav-toggle { display: none; }
+.burger-btn { display: none; }
+.nav-overlay { display: none; }
+.sidebar-logout { display: none; }
+
+@media (max-width: 1024px) {
+  .admin-header, .dash-header {
+    padding: 0 16px;
+  }
+
+  .burger-btn {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    flex-shrink: 0;
+    width: 38px;
+    height: 38px;
+    padding: 0 9px;
+    background-color: var(--bg-cream);
+    border: 1px solid var(--border-soft);
+    border-radius: 10px;
+    cursor: pointer;
+  }
+
+  .burger-btn span {
+    display: block;
+    height: 2px;
+    background-color: var(--dusty-pink);
+    border-radius: 2px;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+  }
+
+  .header-actions-wrap {
+    display: none;
+  }
+
+  .admin-layout, .dash-main-body {
+    flex-direction: row;
+    height: calc(100vh - 70px);
+  }
+
+  .admin-sidebar, .dash-sidebar {
+    position: fixed;
+    top: 70px;
+    left: 0;
+    bottom: 0;
+    width: 260px;
+    border-right: 1px solid var(--border-soft);
+    border-bottom: none;
+    transform: translateX(-100%);
+    transition: transform 0.25s ease;
+    z-index: 90;
+    box-shadow: 4px 0 16px rgba(0, 0, 0, 0.06);
+  }
+
+  .nav-toggle:checked ~ .admin-layout .admin-sidebar,
+  .nav-toggle:checked ~ .dash-main-body .dash-sidebar {
+    transform: translateX(0);
+  }
+
+  .nav-toggle:checked ~ .nav-overlay {
+    display: block;
+    position: fixed;
+    inset: 70px 0 0 0;
+    background: rgba(34, 34, 34, 0.25);
+    z-index: 80;
+  }
+
+  .nav-toggle:checked ~ .admin-header .burger-btn span:nth-child(1),
+  .nav-toggle:checked ~ .dash-header .burger-btn span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .nav-toggle:checked ~ .admin-header .burger-btn span:nth-child(2),
+  .nav-toggle:checked ~ .dash-header .burger-btn span:nth-child(2) { opacity: 0; }
+  .nav-toggle:checked ~ .admin-header .burger-btn span:nth-child(3),
+  .nav-toggle:checked ~ .dash-header .burger-btn span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+  .sidebar-logout {
+    display: flex;
+    flex-direction: column;
+    margin-top: auto;
+    padding-top: 16px;
+    border-top: 1px solid var(--border-soft);
+  }
+
+  .sidebar-logout-btn {
+    width: 100%;
+    background-color: var(--lavender-btn);
+    color: #3C3E52;
+    border: none;
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-family: var(--font-outfit);
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: background-color 0.2s ease;
+  }
+
+  .sidebar-logout-btn:hover {
+    background-color: var(--lavender-btn-hover);
+  }
+}
+
+/* Tablet adjustments */
+@media (max-width: 768px) {
+  .product-cards-grid, 
+  #productsGridContainer {
+    gap: 10px !important;
+  }
+
+  .product-card, 
+  .admin-prod-card {
+    border-radius: 12px;
+  }
+
+  .product-img-wrap, 
+  .admin-prod-img-wrap {
+    border-radius: 12px;
+  }
+
+  .sold-badge, 
+  .admin-prod-sold-badge {
+    font-size: 13px !important;
+    letter-spacing: 1px !important;
+  }
+
+  .ig-grid-container {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .grid.grid-cols-1.md\:grid-cols-3,
+  .grid.grid-cols-1.md\:grid-cols-2 {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .grid.grid-cols-1.md\:grid-cols-3 .md\:col-span-2 {
+    grid-column: span 1 / span 1;
+  }
+
+  .grid-cols-2 {
+    grid-template-columns: 1fr;
+  }
+
+  .hero-preview-box {
+    padding: 28px;
+    min-height: 280px;
+  }
+  .hero-preview-box h3 {
+    font-size: 1.85rem;
+  }
+
+  .flex.items-center.gap-2:has(.slide-tab) {
+    overflow-x: auto;
+    padding-bottom: 6px;
+    width: 100%;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* =========================================================
+     SERVICES LIST: TABLET & MOBILE RE-ORDERING FIX
+     ========================================================= */
+  /* Turn the row into a 2-column Grid: Left side for info, right side for actions */
+  .service-item-row {
+    display: grid !important;
+    grid-template-columns: 1fr auto !important;
+    align-items: center;
+    gap: 4px 12px;
+    padding: 10px 12px;
+  }
+
+  /* 1st element: Service Name -> Top Left */
+  .service-item-row > *:nth-child(1) {
+    grid-column: 1 / 2;
+    grid-row: 1 / 2;
+    font-size: 0.96rem;
+    font-weight: 500;
+    line-height: 1.25;
+    word-break: break-word;
+  }
+
+  /* 2nd element (or element with buttons): Edit/Delete -> Spans full height on the Far Right */
+  .service-item-row > *:has(button),
+  .service-item-row > .service-actions-wrap,
+  .service-item-row > *:nth-child(2):has(.action-btn-sm) {
+    grid-column: 2 / 3 !important;
+    grid-row: 1 / 3 !important;
+    display: flex !important;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 4px;
+    margin-left: auto;
+  }
+
+  /* Price element: Placed directly below the name on the Left */
+  .service-item-row > *:nth-child(2):not(:has(button)):not(.action-btn-sm),
+  .service-item-row > *:nth-child(3):not(:has(button)) {
+    grid-column: 1 / 2 !important;
+    grid-row: 2 / 3 !important;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    font-weight: 500;
+    margin-top: 2px;
+    text-align: left !important;
+  }
+
+  /* Compact button styling */
+  .action-btn-sm {
+    padding: 4px 8px;
+    font-size: 0.72rem;
+    border-radius: 6px;
+    margin-left: 2px;
+  }
+}
+
+/* Phone adjustments */
+@media (max-width: 520px) {
+  .dash-content-inner .bg-white .flex.items-center.justify-between.pt-2,
+  section[aria-labelledby="serviceEditorTitle"] .flex.justify-end.gap-3 {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+
+  .dash-content-inner .bg-white .flex.items-center.gap-3 {
+    display: flex;
+    flex-direction: column-reverse;
+    width: 100%;
+    gap: 8px;
+  }
+
+  #btnDeleteProd,
+  button[onclick="saveProduct()"],
+  section[aria-labelledby="serviceEditorTitle"] button {
+    width: 100%;
+    text-align: center;
+    padding: 10px 14px;
+  }
+
+  section[aria-labelledby="serviceListTitle"] {
+    padding: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .header-title, .dash-header h1 { font-size: 1.25rem; }
+  .admin-main, .dash-content-area { padding: 16px; }
+
+  .product-cards-grid, 
+  #productsGridContainer {
+    gap: 6px !important;
+  }
+
+  .product-card, 
+  .admin-prod-card {
+    border-radius: 8px;
+  }
+
+  .product-img-wrap, 
+  .admin-prod-img-wrap {
+    border-radius: 8px;
+  }
+
+  .sold-badge, 
+  .admin-prod-sold-badge {
+    font-size: 10px !important;
+    letter-spacing: 0.5px !important;
+  }
+
+  .ig-grid-container {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+  }
+
+  .instagram-preview-section {
+    padding: 16px;
+    gap: 16px;
+  }
+
+  .instagram-preview-frame {
+    width: 180px;
+  }
+
+  .hero-preview-box {
+    padding: 20px 16px;
+    min-height: auto;
+  }
+  .hero-preview-box h3 {
+    font-size: 1.5rem;
+  }
+  .hero-preview-box button {
+    width: 100%;
+    text-align: center;
+  }
+  .flex.justify-end > button {
+    width: 100%;
+    text-align: center;
+  }
+
+  /* Tighter compact rows on narrow mobile screens */
+  .service-item-row {
+    padding: 8px 10px;
+  }
+
+  .service-item-row > *:nth-child(1) {
+    font-size: 0.9rem;
+  }
+
+  .service-item-row > *:nth-child(2):not(:has(button)):not(.action-btn-sm),
+  .service-item-row > *:nth-child(3):not(:has(button)) {
+    font-size: 0.78rem;
+  }
+
+  .action-btn-sm {
+    padding: 3px 6px;
+    font-size: 0.68rem;
+  }
+}
