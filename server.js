@@ -6,7 +6,7 @@ const path = require("node:path");
 const dns = require("node:dns/promises");
 const mongoose = require("mongoose");
 const nodemailer = require("nodemailer");
-const MongoStore = require("connect-mongo");
+const MongoStore = require("connect-mongo").default;
 const session = require("express-session");
 
 const app = express();
