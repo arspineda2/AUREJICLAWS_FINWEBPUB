@@ -250,8 +250,4 @@ if (process.env.NODE_ENV !== 'production') {
   });
 }
 
-<<<<<<< HEAD
 module.exports = app;
-=======
-module.exports = app;
->>>>>>> 0bd0e2b472098d077364d5a02f7f80dd524eea50
