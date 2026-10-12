@@ -1,5 +1,5 @@
 /* Main application server and API configuration. */
-// Load local configuration before reading process.env; .env stays outside public/.
+// Load local configuration before reading process.env; .env stays outside public/.[cite: 16]
 require("dotenv").config();
 const express = require("express");
 const path = require("node:path");
@@ -12,14 +12,14 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const publicDir = path.join(__dirname, "public");
 
-// Parse ordinary API bodies. The order endpoint uses Multer for its multipart screenshot.
+// Parse ordinary API bodies. The order endpoint uses Multer for its multipart screenshot.[cite: 16]
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Serve only public site files. Payment screenshots are deliberately not exposed as static files.
+// Serve only public site files. Payment screenshots are deliberately not exposed as static files.[cite: 16]
 app.use(express.static(publicDir));
 
-// Session Setup
+// Session Setup[cite: 16]
 app.use(session({
   secret: process.env.SESSION_SECRET || 'supersecretkey',
   resave: false,
@@ -27,22 +27,29 @@ app.use(session({
   cookie: { maxAge: 3600000 }
 }));
 
-// Email Transporter (Nodemailer)
+// Email Transporter (Nodemailer)[cite: 16]
 const transporter = require("./config/email");
 
-// Admin Schema & Model for Atlas Lookup (Targets 'admins' collection explicitly)
+// Admin Schema & Model for Atlas Lookup (Targets 'admins' collection explicitly)[cite: 16]
 const adminSchema = new mongoose.Schema({
   email: { type: String, required: true },
   password: { type: String, required: true }
 });
 const Admin = mongoose.models.Admin || mongoose.model('Admin', adminSchema, 'admins');
 
-// Database Connection Function with Caching for Serverless
-let isConnected = false;
+// Resilient Database Connection Function with Serverless Retry Buffer
+async function ensureDbConnection() {
+  if (mongoose.connection.readyState === 1) return true;
+  // Give it up to 2 seconds to reconnect if serverless spun down or blipped
+  for (let i = 0; i < 4; i++) {
+    await new Promise(resolve => setTimeout(resolve, 500));
+    if (mongoose.connection.readyState === 1) return true;
+  }
+  return false;
+}
 
 async function connectToAtlas() {
-  if (isConnected || mongoose.connection.readyState === 1) {
-    isConnected = true;
+  if (await ensureDbConnection()) {
     return;
   }
 
@@ -61,7 +68,6 @@ async function connectToAtlas() {
       dbName: process.env.MONGO_DB_NAME || "aureji_claws",
       serverSelectionTimeoutMS: 10000
     });
-    isConnected = true;
     console.log("Successfully connected to MongoDB Atlas.");
   } catch (error) {
     const code = error.code || (error.cause && error.cause.code);
@@ -84,7 +90,7 @@ app.use(async (req, res, next) => {
   next();
 });
 
-// Step A: Admin requests OTP / Logs in
+// Step A: Admin requests OTP / Logs in[cite: 16]
 app.post('/admin/login', async (req, res) => {
   const { email, password } = req.body;
 
@@ -121,7 +127,7 @@ app.post('/admin/login', async (req, res) => {
   }
 });
 
-// Step B: Verify OTP
+// Step B: Verify OTP[cite: 16]
 app.post('/admin/verify-otp', (req, res) => {
   const { userOTP } = req.body;
 
@@ -140,7 +146,7 @@ app.post('/admin/verify-otp', (req, res) => {
   res.status(400).json({ success: false, message: 'Incorrect OTP.' });
 });
 
-// Authentication Middleware
+// Authentication Middleware[cite: 2, 16]
 const requireAdminAuth = require("./middleware/requireAdminAuth");
 
 const adminPageFiles = {
@@ -173,7 +179,7 @@ app.get('/admin/:page', requireAdminPage, (req, res) => {
   return res.sendFile(path.join(__dirname, 'views', 'admin', pageFile));
 });
 
-// Admin Logout Route
+// Admin Logout Route[cite: 16]
 app.post('/admin/logout', requireAdminAuth, (req, res) => {
   req.session.destroy((err) => {
     if (err) {
@@ -184,7 +190,7 @@ app.post('/admin/logout', requireAdminAuth, (req, res) => {
   });
 });
 
-// Page routes
+// Page routes[cite: 16]
 app.get("/", (req, res) => {
   res.sendFile(path.join(publicDir, "HomePage.html"));
 });
@@ -209,16 +215,16 @@ app.get("/script.js", (req, res) => {
   res.sendFile(path.join(publicDir, "script.js"));
 });
 
-// Readiness route
+// Readiness route[cite: 16]
 app.get("/api/health", (req, res) => {
   res.json({ status: "ok", database: mongoose.connection.readyState === 1 ? "connected" : "disconnected" });
 });
 
-// Order Routes
+// Order Routes[cite: 16]
 const orderRoutes = require("./routes/orders");
 app.use("/api/orders", orderRoutes);
 
-// Booking Routes
+// Booking Routes[cite: 16]
 const bookingRoutes = require("./routes/bookings");
 app.use("/api/bookings", bookingRoutes);
 
@@ -231,7 +237,7 @@ app.use("/api/site-content", siteContentRoutes);
 const mediaRoutes = require("./routes/media");
 app.use("/api/media", mediaRoutes);
 
-// Local Development Listener & Vercel Serverless Export
+// Local Development Listener & Vercel Serverless Export[cite: 16]
 if (process.env.NODE_ENV !== 'production') {
   app.listen(PORT, async () => {
     console.log(`Aureji Claws site running at http://localhost:${PORT}`);
