@@ -242,12 +242,41 @@ app.use("/api/site-content", siteContentRoutes);
 const mediaRoutes = require("./routes/media");
 app.use("/api/media", mediaRoutes);
 
-// Local Development Listener & Vercel Serverless Export[cite: 16]
-if (process.env.NODE_ENV !== 'production') {
-  app.listen(PORT, async () => {
-    console.log(`Aureji Claws site running at http://localhost:${PORT}`);
-    await connectToAtlas();
-  });
+// Database Connection Function
+async function connectToAtlas() {
+  if (!process.env.MONGO_URI) {
+    console.warn("MongoDB is not configured. Website pages are available; order saving is disabled.");
+    return;
+  }
+
+  try {
+    if (/^mongodb\+srv:\/\//i.test(process.env.MONGO_URI)) {
+      const connectionUrl = new URL(process.env.MONGO_URI);
+      await dns.resolveSrv(`_mongodb._tcp.${connectionUrl.hostname}`);
+    }
+
+    await mongoose.connect(process.env.MONGO_URI, {
+      dbName: process.env.MONGO_DB_NAME || "aureji_claws",
+      serverSelectionTimeoutMS: 10000
+    });
+    console.log("Successfully connected to MongoDB Atlas.");
+  } catch (error) {
+    const code = error.code || (error.cause && error.cause.code);
+    if (["ECONNREFUSED", "ETIMEDOUT", "ENOTFOUND", "EAI_AGAIN"].includes(code)) {
+      console.error(`Atlas DNS lookup failed (${code}): check network DNS settings.`);
+    } else if (code === 18 || code === 8000) {
+      console.error("Atlas authentication failed: verify MONGO_URI username/password.");
+    } else {
+      const detail = typeof error.message === "string"
+        ? error.message.replace(/mongodb(?:\+srv)?:\/\/[^\s"'`]+/gi, "[redacted MongoDB URI]")
+        : "No error details available.";
+      console.error(`Atlas connection failed (${error.name}): ${detail}`);
+    }
+  }
 }
 
-module.exports = app;
+// Single Express App Listener
+app.listen(PORT, async () => {
+  console.log(`Aureji Claws site running at http://localhost:${PORT}`);
+  await connectToAtlas();
+});
