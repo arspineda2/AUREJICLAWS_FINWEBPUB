@@ -81,7 +81,7 @@ Changes are saved to the database and show immediately on the public pages.
 - Product catalog and checkout, with server-side stock and price verification
 - GCash-only payment submission with screenshot upload
 - Order storage in MongoDB, with admin approve/reject workflow and automatic customer emails
-- Admin login protected by password + emailed one-time code (OTP), password hashed with bcrypt
+- Admin login protected by password + emailed one-time code (OTP)
 - Admin-managed site content: hero slides, Instagram gallery, service menu, contact info
 - Admin-managed product catalog (create/update/delete, backed by MongoDB — not localStorage)
 - Services booking/appointment flow, with admin status updates and confirmation/cancellation emails
@@ -92,8 +92,7 @@ Changes are saved to the database and show immediately on the public pages.
 | Piece | What we use it for |
 |---|---|
 | Express | Routing and middleware — handles every request that hits the server |
-| MongoDB Atlas + Mongoose | Stores orders, admins, products, bookings, media, and site content |
-| bcrypt | Hashes admin passwords before they're stored, and verifies a login attempt against the hash — the database never holds a real password (see "Admin login flow" below) |
+| MongoDB Atlas + Mongoose + connect-mongo | Stores orders, admins, products, bookings, media, site content, and sessions |
 | express-session | Keeps an admin "logged in" between requests, using a secure cookie (`connect.sid`) with a 1-hour expiry (`maxAge: 3600000`) and explicit destruction on logout |
 | Multer | Reads uploaded files (checkout's GCash screenshot, admin media uploads) into memory — never written straight to disk/`public/` |
 | Nodemailer | Sends the admin's OTP, order approval/rejection emails, and booking confirmation/cancellation emails, via Gmail (`config/email.js`) |
@@ -105,52 +104,70 @@ No frontend framework and no template engine (no EJS/React) — every page is a 
 ```
 aurejiclaws/
 ├── config/
-│   └── email.js                  # nodemailer transporter setup — OTP, order, and booking emails
-│                                    all go through this
+│   └── email.js                        # nodemailer transporter setup — OTP, order, and booking emails all go through this
 ├── middleware/
-│   └── requireAdminAuth.js       # checks req.session.isAdminAuthenticated; 403s or redirects
-│                                    to login if it's not set — applied to every admin-only route
+│   └── requireAdminAuth.js             # checks req.session.isAdminAuthenticated; 403s or redirects to login if it's not set — applied to every admin-only route
 ├── models/
-│   ├── Admin.js                   # { email, password } — password is a bcrypt hash, never plain text
-│   ├── Booking.js                 # appointment submissions: contact info, service, date/time slot,
-│   │                                 status, soft-delete flag (isDeleted)
-│   ├── MediaAsset.js              # binary buffer storage for admin-uploaded images
-│   ├── Order.js                   # customer info, verified items array, total, GCash payment details,
-│   │                                 binary payment-proof buffer, status
-│   ├── Product.js                 # press-on inventory: productId, name, price, stocks, description
-│   └── SiteContent.js             # hero slides, Instagram gallery, service menu, contact info —
-│                                     the data the dashboard's "local-only" panels now actually save to
+│   ├── Admin.js                        # { email, password } — password is a bcrypt hash, never plain text
+│   ├── Booking.js                      # appointment submissions: contact info, service, date/time slot, status, soft-delete flag (isDeleted)
+│   ├── MediaAsset.js                   # binary buffer storage for admin-uploaded images
+│   ├── Order.js                        # customer info, verified items array, total, GCash payment details, binary payment-proof buffer, status
+│   ├── Product.js                      # press-on inventory: productId, name, price, stocks, description
+│   └── SiteContent.js                  # hero slides, Instagram gallery, service menu, contact info —
+│                                         the data the dashboard's "local-only" panels now actually save to
+├── node_modules/
+├── public/
+│   ├── js/
+│   │   ├── admin-bookings.js        # Manages appointment status updates on the dashboard
+│   │   ├── admin-orders.js          # Manages order reviews, payment confirmations, and lightboxes
+│   │   ├── admin-pages.js           # Central admin requests and client-side image compression helper
+│   │   ├── admin.js                 # Dashboard layout and tab management logic
+│   │   ├── components.js            # Dynamically injects shared header and footer templates
+│   │   ├── login.js                 # Handles admin login form submissions and OTP verification
+│   │   ├── public-content.js        # Fetches and renders live data on public pages
+│   │   └── script.js                # Manages the global customer shopping cart and checkout modal
+│   ├── photos/
+│   ├── videos/
+│   ├── about.css
+│   ├── AboutPage.html
+│   ├── admin.css
+│   ├── checkout.css
+│   ├── contact.css
+│   ├── ContactPage.html
+│   ├── footer.html
+│   ├── header.html
+│   ├── HomePage.html
+│   ├── login.html
+│   ├── nav.css
+│   ├── PressonPage.html
+│   ├── privacy.css
+│   ├── privacy.html
+│   ├── refund.html
+│   ├── services.css
+│   ├── ServicesPage.html
+│   ├── style.css
+│   └── terms.html
 ├── routes/
 │   ├── bookings.js                # POST /api/bookings, admin list/status-update/soft-delete
 │   ├── media.js                   # admin image upload + secure binary serving
 │   ├── orders.js                  # checkout, admin order list, approve/reject
 │   ├── products.js                # public catalog + admin create/update/delete, auto-seeds defaults
 │   └── site-content.js            # load/update hero, Instagram, services, contact sections
-├── scripts/
-│   └── migrate-hash-admin-password.js   # one-time script to hash any admin password still
-│                                           stored as plain text from before the bcrypt fix
 ├── views/
-│   └── temporary-admin.html       # the admin dashboard page. Deliberately NOT inside public/ —
+│   ├── admin/
+│   │   ├── booked.html
+│   │   ├── HeroPage.html
+│   │   ├── orders.html
+│   │   ├── post.html
+│   │   ├── products.html
+│   │   └── servicesList.html
+│   └── admin.html                 # the admin dashboard page. Deliberately NOT inside public/ —
 │                                     see "Why the admin page isn't in public/" below
-├── public/                         # every customer-facing page, plus shared CSS/JS — served as-is
-│   ├── HomePage.html, AboutPage.html, PressonPage.html, ServicesPage.html, ContactPage.html
-│   ├── login.html                  # admin login form
-│   ├── header.html, footer.html    # shared markup, injected by components.js on every page
-│   ├── style.css + per-page .css files
-│   └── js/
-│       ├── components.js             # loads shared header/footer via [data-include] placeholders,
-│       │                               highlights the active nav link, fires "components:loaded"
-│       ├── script.js                  # global Press-on cart + checkout — cart/checkout listeners
-│       │                               now initialize on every page (not just PressonPage.html), via
-│       │                               relaxed guard clauses, so the cart persists while browsing
-│       ├── login.js                    # admin login form → calls /admin/login then /admin/verify-otp
-│       ├── admin.js                    # dashboard shell + Hero/Instagram/Products/Services panels —
-│       │                               now backed by routes/site-content.js and routes/products.js
-│       └── admin-orders.js             # order review: status badges, payment-proof thumbnails,
-│                                       full-screen lightbox preview, confirm() dialogs before
-│                                       approve/reject
-├── .env                             # secrets — never committed (see Setup)
-└── server.js                         # app setup: sessions, admin login/OTP routes, page routes,
+├── .env                           # secrets — never committed (see Setup)
+├── .gitignore
+├── package-lock.json
+├── package.json
+└── server.js                      # app setup: sessions, admin login/OTP routes, page routes,
                                         DB connection, mounts routes/orders.js, bookings.js, media.js,
                                         products.js, site-content.js
 ```
@@ -179,16 +196,13 @@ Middleware is code that runs *before* a request reaches its final handler — th
 
 This replaced an earlier prototype where the OTP was generated and shown directly in the browser — insecure, since anyone could read it from the page. The real flow is entirely server-side:
 
-1. **`POST /admin/login`** — admin submits email + password from `login.html`. The server looks up the `Admin` document in MongoDB and checks the password with bcrypt. If it matches, the server generates a random 6-digit code, saves it to `req.session` (server-side, not sent to the browser) along with a 5-minute expiry, and emails it to the admin via `config/email.js`.
+1. **`POST /admin/login`** — admin submits email + password from login.html. The server looks up the Admin document in MongoDB and checks the password directly. If it matches, the server generates a random 6-digit code, saves it to req.session (server-side, not sent to the browser) along with a 5-minute expiry, and emails it to the admin via config/email.js.
 2. **`POST /admin/verify-otp`** — admin submits the code they received by email. The server compares it against what's stored in the session (not what the browser claims). If it matches and hasn't expired, `req.session.isAdminAuthenticated` is set to `true`.
 3. **`GET /admin`** — now that the session is authenticated, `requireAdminAuth` lets the request through and serves `views/temporary-admin.html`.
 
 ### Why the admin page isn't in `public/`
 
 `express.static` serves *everything* inside `public/` to *anyone*, with no login check — that's what static file serving means. If the admin dashboard lived there, anyone could open it directly, bypassing login entirely. Keeping it in `views/` means the **only** way to receive that file is through the `GET /admin` route, which runs `requireAdminAuth` first.
-
-
-`models/Admin.js` now hashes the password with `bcrypt` in a `pre('save')` hook before it ever reaches MongoDB, and exposes `admin.comparePassword(candidate)` instead of a direct `===`/`!==` check. `POST /admin/login` calls `await admin.comparePassword(password)`. Because hashing only happens on `.save()`, the admin account(s) created before this change still have their old plain-text password sitting in Atlas — `scripts/migrate-hash-admin-password.js` is a one-time script to hash whatever's already there (safe to re-run; it skips rows that are already bcrypt hashes). Run it once after deploying this change, then it's done for good.
 
 > `SESSION_SECRET` still falls back to a hardcoded default if `.env` doesn't set one — fine for local dev, but must be set for any real deployment.
 
@@ -235,7 +249,7 @@ Worth knowing: there's still an unused `BroadcastChannel('aureji_claws_sync_chan
 | Method | Route | What it does | Requires admin login? |
 |---|---|---|---|
 | GET | `/`, `/AboutPage.html`, `/PressonPage.html`, `/ServicesPage.html`, `/ContactPage.html` | Serve the matching page | No |
-| POST | `/admin/login` | Check email/password (bcrypt), email an OTP | No |
+| POST | /admin/login | Check email/password directly, email an OTP | No |
 | POST | `/admin/verify-otp` | Verify the OTP, start the admin session | No |
 | POST | `/admin/logout` | Destroy the admin session | Yes |
 | GET | `/admin` | Serve the admin dashboard | Yes |
@@ -258,7 +272,7 @@ Worth knowing: there's still an unused `BroadcastChannel('aureji_claws_sync_chan
 
 ## Data models
 
-**`Admin`**: `email` (unique), `password` (bcrypt hash — see "Admin login flow" above).
+**`Admin`**: `email` (unique), `password` (verified directly against plain text input in server.js).
 
 **`Order`**
 ```
@@ -302,21 +316,9 @@ Both the `"Approved"` and `"Rejected"` transitions are live — `routes/orders.j
    - `EMAIL_USER` / `EMAIL_PASS` — needed to send OTP, order approval/rejection, and booking confirmation/cancellation emails. This must be a Gmail account, and `EMAIL_PASS` must be a [Gmail app password](https://myaccount.google.com/apppasswords), not the account's normal login password — Google blocks this kind of login otherwise. Each team member testing locally needs their own app password if using their own Gmail account.
    - `SESSION_SECRET` — used to sign the admin's session cookie; use a long random string, not the placeholder
 
-3. If this is a fresh checkout of the bcrypt fix and an admin account was created before it, run the one-time migration once:
-   ```bash
-   node scripts/migrate-hash-admin-password.js
-   ```
-
-4. Start the server:
+3. Start the server:
    ```bash
    npm start
    ```
 
-5. Open `http://localhost:3000`
-
-## What's not built yet
-
-- Admin password hashing — **done** (bcrypt, see "Admin login flow" above); run the migration script once against any pre-existing admin account.
-- Order approve/reject, product catalog admin, bookings admin, site content admin, and media uploads are all now wired to real routes rather than `localStorage` — the earlier "local-only dashboard panel" gap is closed.
-- Remaining known loose end: the unused `BroadcastChannel('aureji_claws_sync_channel')` cross-tab sync in `admin.js` — harmless since every tab now re-fetches from the server, but worth removing as dead code rather than leaving it to confuse the next person reading `admin.js`.
-- `SESSION_SECRET` still falls back to a hardcoded default if `.env` doesn't set one — must be set explicitly for any real deployment.
+4. Open `http://localhost:3000`
